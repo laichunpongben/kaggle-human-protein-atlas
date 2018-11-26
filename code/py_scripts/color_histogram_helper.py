@@ -46,4 +46,4 @@ def to_category(list_, max_=num_class):
 
 if __name__ == '__main__':
     train = get_train()
-    print(train)
+    train.to_csv(os.path.join("input", "train_flattened.csv"), encoding="utf-8")
