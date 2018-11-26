@@ -1,6 +1,6 @@
 .idea/
-data/*.png
-data/*.jpg
-data/*.tiff
+data/**/*.png
+data/**/*.jpg
+data/**/*.tiff
 !.gitkeep
 *.pyc
