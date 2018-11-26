@@ -1,6 +1,8 @@
 .idea/
-data/*.png
+data/**.png
 data/*.jpg
 data/*.tiff
+/mnt/*
+*.ipynb_checkpoints
 !.gitkeep
 *.pyc
