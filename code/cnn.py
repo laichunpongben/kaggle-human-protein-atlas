@@ -1,6 +1,8 @@
 import os
 import numpy as np
 import pandas as pd
+from torch import nn
+from torch.optim import Adam
 from fastai.vision import ImageItemList
 from fastai.vision.transform import get_transforms
 from fastai.vision.learner import create_cnn
@@ -8,18 +10,50 @@ from fastai.vision.models import resnet18
 from fastai.metrics import accuracy
 
 num_class = 28
-PATH = "data/rgb"
+path = "data/rgb"
+arch = resnet18
+size = 32
+
+class FocalLoss(nn.Module):
+    def __init__(self, gamma=2):
+        super().__init__()
+        self.gamma = gamma
+
+    def forward(self, input, target):
+        if not (target.size() == input.size()):
+            raise ValueError("Target size ({}) must be the same as input size ({})"
+                             .format(target.size(), input.size()))
+
+        max_val = (-input).clamp(min=0)
+        loss = input - input * target + max_val + \
+            ((-max_val).exp() + (-input - max_val).exp()).log()
+
+        invprobs = F.logsigmoid(-input * (target * 2.0 - 1.0))
+        loss = (invprobs * self.gamma).exp() * loss
+
+        return loss.sum(dim=1).mean()
+
+def acc(preds,targs,th=0.0):
+    preds = (preds > th).int()
+    targs = targs.int()
+    return (preds==targs).float().mean()
+
 
 tfms = get_transforms(flip_vert=True, max_lighting=0.1, max_zoom=1.05, max_warp=0.)
 stats = ([0.08069, 0.05258, 0.05487], [0.13704, 0.10145, 0.15313])
-data = (ImageItemList.from_csv(PATH, 'train.csv', folder="train", suffix='.png')
+data = (ImageItemList.from_csv(path, 'train.csv', folder="train", suffix='.png')
                      .random_split_by_pct()
                      .label_from_df(sep=' ')
-                     .transform(tfms, size=24)
+                     .transform(tfms, size=size)
                      .databunch()
                      .normalize(stats))
 
-learner = create_cnn(data, resnet18, metrics=accuracy)
+learner = create_cnn(data, arch, ps=0.5)
+learner.opt_fn = Adam
+learner.clip = 1.0 #gradient clipping
+learner.crit = FocalLoss()
+learner.metrics = [acc]
+
 learner.fit_one_cycle(5,1e-2)
 learner.save('mini_train')
 
