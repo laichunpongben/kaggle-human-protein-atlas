@@ -4,9 +4,9 @@ Sharing code for Kaggle Human Protein Atlas competition
 ## Data
 Color filters for the fluorescent images
 
-Green: The protein of interest
+Green (Alexa Flour 488): The protein of interest
 
-Blue: Nucleus
+Blue (DAPI): Nucleus
 
 Red: Microtubules
 
