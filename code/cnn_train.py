@@ -1,3 +1,6 @@
+# Adopted with fastai 1.0 API
+# https://www.kaggle.com/iafoss/pretrained-resnet34-with-rgby-0-460-public-lb
+
 import os
 import numpy as np
 import pandas as pd
