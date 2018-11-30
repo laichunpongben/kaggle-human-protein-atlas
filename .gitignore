@@ -1,6 +1,7 @@
 .idea/
 *.ipynb_checkpoints/
 __py_cache__/
+__pycache__/
 data/**/*.png
 data/**/*.jpg
 data/**/*.tiff
