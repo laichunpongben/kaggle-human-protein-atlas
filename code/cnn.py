@@ -71,6 +71,7 @@ def fit():
     learner.save('mini_train')
 
 def predict(img):
+    learner.load('mini_train')
     return learner.predict(img)
 
 if __name__ == '__main__':
