@@ -72,9 +72,26 @@ def fit():
 
 def predict(img):
     learner.load('mini_train')
-    return learner.predict(img)
+    prediction = learner.predict(img)
+    threshold = 0.4
+
+    classes = []
+    max_confidence = 0.0
+    best_class = None
+    for class_, confidence in enumerate(prediction[0]):
+        if confidence >= threshold:
+            classes.append(str(class_))
+        if confidence > max_confidence:
+            best_class, max_confidence = str(class_), confidence
+
+    if classes:
+        label = " ".join(classes)
+    else:
+        label = best_class
+    return label
 
 if __name__ == '__main__':
-    img = learner.data.train_ds[0][0]
-    result = predict(img)
-    print(result)
+    for i in range(100):
+        img = learner.data.train_ds[i][0]
+        result = predict(img)
+        print(result)
