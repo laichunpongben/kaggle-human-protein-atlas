@@ -15,7 +15,7 @@ from fastai.metrics import accuracy
 num_class = 28
 path = "data/rgb"
 arch = resnet18
-size = 32
+size = 128
 stats = ([0.08069, 0.05258, 0.05487], [0.13704, 0.10145, 0.15313])
 
 
@@ -66,32 +66,39 @@ tfms = get_tfms()
 data = get_data(tfms)
 learner = get_learner(data)
 
+def sigmoid(x):
+    return 1.0/(1.0+np.exp(-x))
+
 def fit():
     learner.fit_one_cycle(5,1e-2)
-    learner.save('mini_train')
+    learner.save('mini_train_128')
 
-def predict(img):
-    learner.load('mini_train')
-    prediction = learner.predict(img)
-    threshold = 0.4
+def predict():
+    learner.load('mini_train_128')
+    preds, y = learner.TTA()
+    print(preds)
+    print(y)
+    preds = np.stack(preds, axis=-1)
+    preds = sigmoid(preds)
+    print(preds)
+    pred = preds.max(axis=-1) #max works better for F1 macro score
+    return pred
 
-    classes = []
-    max_confidence = 0.0
-    best_class = None
-    for class_, confidence in enumerate(prediction[0]):
-        if confidence >= threshold:
-            classes.append(str(class_))
-        if confidence > max_confidence:
-            best_class, max_confidence = str(class_), confidence
+def save_pred(pred, th=0.5, fname='output.csv'):
+    pred_list = []
+    for line in pred:
+        s = ' '.join(list([str(i) for i in np.nonzero(line>th)[0]]))
+        pred_list.append(s)
 
-    if classes:
-        label = " ".join(classes)
-    else:
-        label = best_class
-    return label
+    sample_df = pd.read_csv(os.path.join(path, 'sample_submission.csv'))
+    sample_list = list(sample_df.Id)
+    pred_dic = dict((key, value) for (key, value)
+                in zip(learner.data.test_ds.fnames,pred_list))
+    pred_list_cor = [pred_dic[id] for id in sample_list]
+    df = pd.DataFrame({'Id':sample_list,'Predicted':pred_list_cor})
+    df.to_csv(fname, header=True, index=False)
 
 if __name__ == '__main__':
-    for i in range(100):
-        img = learner.data.train_ds[i][0]
-        result = predict(img)
-        print(result)
+    pred = predict()
+    print(pred)
+    save_pred(pred)
