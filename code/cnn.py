@@ -16,6 +16,8 @@ num_class = 28
 path = "data/rgb"
 arch = resnet18
 size = 32
+stats = ([0.08069, 0.05258, 0.05487], [0.13704, 0.10145, 0.15313])
+
 
 class FocalLoss(nn.Module):
     def __init__(self, gamma=2):
@@ -41,28 +43,37 @@ def acc(preds,targs,th=0.0):
     targs = targs.int()
     return (preds==targs).float().mean()
 
+def get_tfms():
+    return get_transforms(flip_vert=True, max_lighting=0.1, max_zoom=1.05, max_warp=0.)
 
-tfms = get_transforms(flip_vert=True, max_lighting=0.1, max_zoom=1.05, max_warp=0.)
-stats = ([0.08069, 0.05258, 0.05487], [0.13704, 0.10145, 0.15313])
-data = (ImageItemList.from_csv(path, 'train.csv', folder="train", suffix='.png')
-                     .random_split_by_pct()
-                     .label_from_df(sep=' ')
-                     .transform(tfms, size=size)
-                     .databunch()
-                     .normalize(stats))
+def get_data(tfms):
+    return (ImageItemList.from_csv(path, 'train.csv', folder="train", suffix='.png')
+                         .random_split_by_pct()
+                         .label_from_df(sep=' ')
+                         .transform(tfms, size=size)
+                         .databunch()
+                         .normalize(stats))
 
-learner = create_cnn(data, arch, ps=0.5)
-learner.opt_fn = Adam
-learner.clip = 1.0 #gradient clipping
-learner.crit = FocalLoss()
-learner.metrics = [acc]
+def get_learner(data):
+    learner = create_cnn(data, arch, ps=0.5)
+    learner.opt_fn = Adam
+    learner.clip = 1.0 #gradient clipping
+    learner.crit = FocalLoss()
+    learner.metrics = [acc]
+    return learner
 
-learner.fit_one_cycle(5,1e-2)
-learner.save('mini_train')
+tfms = get_tfms()
+data = get_data(tfms)
+learner = get_learner(data)
 
-learner.show_results(figsize=(12,15))
+def fit():
+    learner.fit_one_cycle(5,1e-2)
+    learner.save('mini_train')
 
-#
-# img = learner.data.train_ds[0][0]
-# result = learner.predict(img)
-# print(result)
+def predict(img):
+    return learner.predict(img)
+
+if __name__ == '__main__':
+    img = learner.data.train_ds[0][0]
+    result = predict(img)
+    print(result)
