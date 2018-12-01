@@ -72,9 +72,16 @@ def sigmoid(x):
 def fit():
     learner.fit_one_cycle(5,1e-2)
     learner.save('mini_train_128')
+    print('model fitted and saved')
 
 def predict():
-    learner.load('mini_train_128')
+    if os.path.isfile('mini_train_128') :
+        learner.load('mini_train_128')
+        print('loaded model')
+    else:
+        # ValueError: padding_mode needs to be 'zeros' or 'border', but got reflection (fastai 1.0.31)
+        # fastai/vision/image.py line 92 and 503: padding_mode changed from 'reflection' to 'zeros' to avoid error
+        fit()
     preds, y = learner.TTA()
     print(preds)
     print(y)
