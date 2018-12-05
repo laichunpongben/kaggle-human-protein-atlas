@@ -54,6 +54,7 @@ from mrcnn.config import Config
 from mrcnn import utils
 from mrcnn import model as modellib
 from mrcnn import visualize
+from atlas.code.image_helper import red2mask
 
 # Path to trained weights file
 COCO_WEIGHTS_PATH = os.path.join(ROOT_DIR, "mask_rcnn_coco.h5")
@@ -298,7 +299,7 @@ class NucleusDataset(utils.Dataset):
         # "val": use hard-coded list above
         # "train": use data from stage1_train minus the hard-coded list above
         # else: use the data from the specified sub-directory
-        assert subset in ["train", "val", "stage1_train", "stage1_test", "stage2_test"]
+        assert subset in ["train", "val", "test"]
         subset_dir = "train" if subset in ["train", "val"] else subset
         dataset_dir = os.path.join(dataset_dir, subset_dir)
 
@@ -326,15 +327,12 @@ class NucleusDataset(utils.Dataset):
         """
         info = self.image_info[image_id]
         # Get mask directory from image path
-        # mask_dir = os.path.join(os.path.dirname(os.path.dirname(info['path'])), "masks")
-        mask_dir = info['path'].split(info['id'])[0].replace('dev', 'official')
+        mask_dir = info['path'].split(info['id'])[0].replace('dev', 'official').replace('rgb', 'official')
 
         # Read mask files from .png image
-        mask = []
-        # m = skimage.io.imread(os.path.join(mask_dir, f)).astype(np.bool)
-        m = skimage.io.imread(os.path.join(mask_dir, "{}_red.png".format(info['id'])))
-        mask.append(m)
-        mask = np.stack(mask, axis=-1)
+        img = skimage.io.imread(os.path.join(mask_dir, "{}_red.png".format(info['id'])))
+        mask = red2mask(img)
+        print(mask.shape)
         # Return mask, and array of class IDs of each instance. Since we have
         # one class ID, we return an array of ones
         return mask, np.ones([mask.shape[-1]], dtype=np.int32)
@@ -476,14 +474,27 @@ def detect(model, dataset_dir, subset):
     dataset.prepare()
     # Load over images
     submission = []
+
+    print(dataset.image_ids)
+
     for image_id in dataset.image_ids:
+        print(image_id)
         # Load image and run detection
         image = dataset.load_image(image_id)
         # Detect objects
         r = model.detect([image], verbose=0)[0]
+        print("---ROIS---")
+        print(r["rois"])
+        print("---CLASS_IDS---")
+        print(r["class_ids"])
+        print("---SCORES---")
+        print(r["scores"])
+        print("---MASKS---")
+        print(r["masks"])
         # Encode image to RLE. Returns a string of multiple lines
         source_id = dataset.image_info[image_id]["id"]
         rle = mask_to_rle(source_id, r["masks"], r["scores"])
+        print(rle)
         submission.append(rle)
         # Save image with masks
         visualize.display_instances(
