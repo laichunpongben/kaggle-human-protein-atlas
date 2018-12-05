@@ -7,6 +7,7 @@ import skimage
 from skimage import data, morphology
 from skimage.filters import sobel
 from skimage.color import label2rgb
+from skimage.exposure import adjust_gamma
 import matplotlib.pyplot as plt
 
 
@@ -22,11 +23,15 @@ def merge_rgb(id, input_path, output_path):
     img = Image.fromarray(rgb)
     img.save(os.path.join(output_path, "{}.png".format(id)))
 
-def red2mask(img):
+def img2mask(img):
+    img = adjust_gamma(img, gamma=0.5)  # arbitrary
+
     elevation_map = sobel(img)
     markers = np.zeros_like(img)
     markers[img < 30] = 1
     markers[img > 150] = 2
+
+    # print(markers)
 
     segmentation = morphology.watershed(elevation_map, markers)
     segmentation = ndi.binary_fill_holes(segmentation - 1)
@@ -39,11 +44,16 @@ def red2mask(img):
     # ax.set_title('segmentation')
     # ax.axis('off')
 
+
     num_coin = labeled_coins.max()
+    print(num_coin)
     mask = []
     for i in range(1, num_coin+1):  # 0 is black
         m = np.where(labeled_coins==i, 1, 0)
         mask.append(m)
+    if not mask:
+        empty = np.zeros_like(labeled_coins)
+        mask.append(empty)
     mask = np.stack(mask, axis=-1)
 
 
@@ -52,6 +62,9 @@ def red2mask(img):
     # plt.show()
     #
     return mask
+
+def mask2img(mask):
+    return np.max(mask, axis=-1) * 255
 
 
 if __name__ == '__main__':
@@ -62,9 +75,12 @@ if __name__ == '__main__':
     # for id_ in ids:
     #     merge_rgb(id_, input_path, output_path)
 
-    path = "data/official/train"
-    ids = get_ids(path)
+    dataset_dir = "data/official/train"
+    mask_dir = "data/mask"
+    ids = get_ids(dataset_dir)
     for id_ in sorted(ids):
-        img = skimage.io.imread(os.path.join(path, "{}_red.png".format(id_)))
-        mask = red2mask(img)
+        img = skimage.io.imread(os.path.join(dataset_dir, "{}_blue.png".format(id_)))
+        mask = img2mask(img)
         print(id_, mask.shape)
+        img_mask = mask2img(mask)
+        skimage.io.imsave(os.path.join(mask_dir, "{}_mask.png".format(id_)), img_mask)
