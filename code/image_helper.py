@@ -4,7 +4,8 @@ import PIL
 from PIL import Image
 from scipy import ndimage as ndi
 import skimage
-from skimage import data, morphology
+from skimage import data
+from skimage.morphology import watershed, remove_small_objects
 from skimage.filters import sobel
 from skimage.color import label2rgb
 from skimage.exposure import adjust_gamma
@@ -23,7 +24,7 @@ def merge_rgb(id, input_path, output_path):
     img = Image.fromarray(rgb)
     img.save(os.path.join(output_path, "{}.png".format(id)))
 
-def img2mask(img):
+def get_mask(img):
     img = adjust_gamma(img, gamma=0.5)  # arbitrary
 
     elevation_map = sobel(img)
@@ -33,9 +34,10 @@ def img2mask(img):
 
     # print(markers)
 
-    segmentation = morphology.watershed(elevation_map, markers)
+    segmentation = watershed(elevation_map, markers)
     segmentation = ndi.binary_fill_holes(segmentation - 1)
-    segmentation = morphology.remove_small_objects(segmentation, 9)  # arbitrary
+    segmentation = remove_small_objects(segmentation, 16)  # arbitrary
+    segmentation = ndi.binary_dilation(segmentation, iterations=20)
     labeled_coins, _ = ndi.label(segmentation)
     # print(labeled_coins)
 
@@ -76,11 +78,11 @@ if __name__ == '__main__':
     #     merge_rgb(id_, input_path, output_path)
 
     dataset_dir = "data/official/train"
-    mask_dir = "data/mask"
+    mask_dir = "data/dilated_mask"
     ids = get_ids(dataset_dir)
     for id_ in sorted(ids):
         img = skimage.io.imread(os.path.join(dataset_dir, "{}_blue.png".format(id_)))
-        mask = img2mask(img)
+        mask = get_mask(img)
         print(id_, mask.shape)
         img_mask = mask2img(mask)
         skimage.io.imsave(os.path.join(mask_dir, "{}_mask.png".format(id_)), img_mask)

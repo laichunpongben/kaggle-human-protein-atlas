@@ -54,7 +54,7 @@ from mrcnn.config import Config
 from mrcnn import utils
 from mrcnn import model as modellib
 from mrcnn import visualize
-from atlas.code.image_helper import red2mask
+from atlas.code.image_helper import get_mask
 
 # Path to trained weights file
 COCO_WEIGHTS_PATH = os.path.join(ROOT_DIR, "mask_rcnn_coco.h5")
@@ -330,8 +330,8 @@ class NucleusDataset(utils.Dataset):
         mask_dir = info['path'].split(info['id'])[0].replace('dev', 'official').replace('rgb', 'official')
 
         # Read mask files from .png image
-        img = skimage.io.imread(os.path.join(mask_dir, "{}_red.png".format(info['id'])))
-        mask = red2mask(img)
+        img = skimage.io.imread(os.path.join(mask_dir, "{}_blue.png".format(info['id'])))
+        mask = get_mask(img)
         print(mask.shape)
         # Return mask, and array of class IDs of each instance. Since we have
         # one class ID, we return an array of ones
