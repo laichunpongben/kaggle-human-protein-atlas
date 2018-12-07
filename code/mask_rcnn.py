@@ -194,6 +194,36 @@ VAL_IMAGE_IDS = [
     "affe3674-bb9c-11e8-b2b9-ac1f6b6435d0",
 ]
 
+CLASS_LABEL_MAP = {
+    0:  'Nucleoplasm',
+    1:  'Nuclear membrane',
+    2:  'Nucleoli',
+    3:  'Nucleoli fibrillar center',
+    4:  'Nuclear speckles',
+    5:  'Nuclear bodies',
+    6:  'Endoplasmic reticulum',
+    7:  'Golgi apparatus',
+    8:  'Peroxisomes',
+    9:  'Endosomes',
+    10:  'Lysosomes',
+    11:  'Intermediate filaments',
+    12:  'Actin filaments',
+    13:  'Focal adhesion sites',
+    14:  'Microtubules',
+    15:  'Microtubule ends',
+    16:  'Cytokinetic bridge',
+    17:  'Mitotic spindle',
+    18:  'Microtubule organizing center',
+    19:  'Centrosome',
+    20:  'Lipid droplets',
+    21:  'Plasma membrane',
+    22:  'Cell junctions',
+    23:  'Mitochondria',
+    24:  'Aggresome',
+    25:  'Cytosol',
+    26:  'Cytoplasmic bodies',
+    27:  'Rods & rings'
+}
 
 ############################################################
 #  Configurations
@@ -291,9 +321,11 @@ class NucleusDataset(utils.Dataset):
                 * train: stage1_train excluding validation images
                 * val: validation images from VAL_IMAGE_IDS
         """
-        # Add classes. We have one class.
+        # Add classes. We have 28 classes.
         # Naming the dataset nucleus, and the class nucleus
-        self.add_class("nucleus", 1, "nucleus")
+        for k, v in CLASS_LABEL_MAP:
+            self.add_class(v, k, v)
+        # self.add_class("nucleus", 1, "nucleus")
 
         # Which subset?
         # "val": use hard-coded list above
@@ -330,9 +362,10 @@ class NucleusDataset(utils.Dataset):
         mask_dir = info['path'].split(info['id'])[0].replace('dev', 'official').replace('rgb', 'official')
 
         # Read mask files from .png image
+        # Get mask for 0: Nucleoplasm
         img = skimage.io.imread(os.path.join(mask_dir, "{}_blue.png".format(info['id'])))
         mask = get_mask(img)
-        print(mask.shape)
+
         # Return mask, and array of class IDs of each instance. Since we have
         # one class ID, we return an array of ones
         return mask, np.ones([mask.shape[-1]], dtype=np.int32)
@@ -475,7 +508,7 @@ def detect(model, dataset_dir, subset):
     # Load over images
     submission = []
 
-    print(dataset.image_ids)
+    # print(dataset.image_ids)
 
     for image_id in dataset.image_ids:
         print(image_id)
@@ -483,14 +516,14 @@ def detect(model, dataset_dir, subset):
         image = dataset.load_image(image_id)
         # Detect objects
         r = model.detect([image], verbose=0)[0]
-        print("---ROIS---")
-        print(r["rois"])
-        print("---CLASS_IDS---")
-        print(r["class_ids"])
-        print("---SCORES---")
-        print(r["scores"])
-        print("---MASKS---")
-        print(r["masks"])
+        # print("---ROIS---")
+        # print(r["rois"])
+        # print("---CLASS_IDS---")
+        # print(r["class_ids"])
+        # print("---SCORES---")
+        # print(r["scores"])
+        # print("---MASKS---")
+        # print(r["masks"])
         # Encode image to RLE. Returns a string of multiple lines
         source_id = dataset.image_info[image_id]["id"]
         rle = mask_to_rle(source_id, r["masks"], r["scores"])
