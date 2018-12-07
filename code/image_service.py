@@ -73,6 +73,11 @@ def get_mask(img, channel):
 
     return mask
 
+def get_empty_mask(img):
+    empty = np.zeros_like(img)
+    mask = np.stack([empty], axis=-1)
+    return mask
+
 def mask2img(mask):
     return np.max(mask, axis=-1) * 255
 
