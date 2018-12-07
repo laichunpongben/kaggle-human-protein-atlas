@@ -54,7 +54,8 @@ from mrcnn.config import Config
 from mrcnn import utils
 from mrcnn import model as modellib
 from mrcnn import visualize
-from atlas.code.image_service import get_mask
+from atlas.code.image_service import get_mask, get_empty_mask
+from atlas.code.csv_service import get_annotations
 
 # Path to trained weights file
 COCO_WEIGHTS_PATH = os.path.join(ROOT_DIR, "mask_rcnn_coco.h5")
@@ -225,6 +226,15 @@ CLASS_LABEL_MAP = {
     27:  'Rods & rings'
 }
 
+CHANNEL_CLASS_MAP = {
+    "red": list(range(6, 28)),
+    "blue": list(range(5)),
+    "green": list(range(28)),
+    "yellow": list(range(28))
+}
+
+ANNOTATIONS = get_annotations("data/official/train.csv")
+
 ############################################################
 #  Configurations
 ############################################################
@@ -323,8 +333,8 @@ class NucleusDataset(utils.Dataset):
         """
         # Add classes. We have 28 classes.
         # Naming the dataset nucleus, and the class nucleus
-        for k, v in CLASS_LABEL_MAP:
-            self.add_class(v, k, v)
+        for k, v in CLASS_LABEL_MAP.items():
+            self.add_class("nucleus", k, v)
         # self.add_class("nucleus", 1, "nucleus")
 
         # Which subset?
@@ -335,11 +345,15 @@ class NucleusDataset(utils.Dataset):
         subset_dir = "train" if subset in ["train", "val"] else subset
         dataset_dir = os.path.join(dataset_dir, subset_dir)
 
+        # TODO fix color
+        color = "blue"
+
         if subset == "val":
             image_ids = VAL_IMAGE_IDS
         else:
             # Get image ids from directory names
-            image_ids = [f.split(".png")[0] for f in os.listdir(dataset_dir) if f.endswith(".png")]
+            # image_ids = [f.split(".png")[0] for f in os.listdir(dataset_dir) if f.endswith(".png")]
+            image_ids = [f.split("_{}.png".format(color))[0] for f in os.listdir(dataset_dir) if f.endswith(".png")]
             if subset == "train":
                 image_ids = list(set(image_ids) - set(VAL_IMAGE_IDS))
 
@@ -348,7 +362,7 @@ class NucleusDataset(utils.Dataset):
             self.add_image(
                 "nucleus",
                 image_id=image_id,
-                path=os.path.join(dataset_dir, "{}.png".format(image_id)))
+                path=os.path.join(dataset_dir, "{}_{}.png".format(image_id, color)))
 
     def load_mask(self, image_id):
         """Generate instance masks for an image.
@@ -359,16 +373,37 @@ class NucleusDataset(utils.Dataset):
         """
         info = self.image_info[image_id]
         # Get mask directory from image path
-        mask_dir = info['path'].split(info['id'])[0].replace('dev', 'official').replace('rgb', 'official')
+        id_ = info['id']
+        mask_dir = info['path'].split(id_)[0].replace('dev', 'official').replace('rgb', 'official')
 
         # Read mask files from .png image
-        # Get mask for 0: Nucleoplasm
-        img = skimage.io.imread(os.path.join(mask_dir, "{}_blue.png".format(info['id'])))
-        mask = get_mask(img)
+        color = "blue"  # TODO fix color for 4 channels
+        img = skimage.io.imread(os.path.join(mask_dir, "{}_{}.png".format(id_, color)))
+        mask = get_mask(img, color)
+
+        # Only train for class in known channels
+        classes = ANNOTATIONS.get(id_, [0])
+        classes = list(set(classes).intersection(set(CHANNEL_CLASS_MAP[color])))
+
+        print("CLASSES", id_, classes)
+        class_ids = []
+        if classes:
+            for class_ in classes:
+                arr = np.ones([mask.shape[-1]], dtype=np.int32) * class_
+                class_ids.append(arr)
+            class_ids = np.concatenate(class_ids, axis=-1)
+
+            mask = [mask for x in range(len(classes))]
+            mask = np.concatenate(mask, axis=-1)
+            print("MASK_SHAPE", id_, mask.shape)
+        else:
+            # TODO fix no mask
+            mask = get_empty_mask(img)
+            class_ids = np.zeros([mask.shape[-1]], dtype=np.int32)
 
         # Return mask, and array of class IDs of each instance. Since we have
         # one class ID, we return an array of ones
-        return mask, np.ones([mask.shape[-1]], dtype=np.int32)
+        return mask, class_ids
 
     def image_reference(self, image_id):
         """Return the path of the image."""
