@@ -70,3 +70,8 @@ Training sample size: 124288
 26:  Cytoplasmic bodies
 
 27:  Rods & rings
+
+## Quickstart
+Training single channel
+
+`python3 -m code.mask_rcnn train --dataset=data/blue --subset=train --weights=coco`
