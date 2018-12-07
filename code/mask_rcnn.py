@@ -323,7 +323,7 @@ class NucleusDataset(utils.Dataset):
         """
         # Add classes. We have 28 classes.
         # Naming the dataset nucleus, and the class nucleus
-        for k, v in CLASS_LABEL_MAP:
+        for k, v in CLASS_LABEL_MAP.items():
             self.add_class(v, k, v)
         # self.add_class("nucleus", 1, "nucleus")
 
