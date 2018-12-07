@@ -350,7 +350,7 @@ class NucleusDataset(utils.Dataset):
                 image_id=image_id,
                 path=os.path.join(dataset_dir, "{}.png".format(image_id)))
 
-    def load_mask(self, image_id):
+    def load_mask(self, image_id,channel='blue'):
         """Generate instance masks for an image.
        Returns:
         masks: A bool array of shape [height, width, instance count] with
@@ -363,8 +363,8 @@ class NucleusDataset(utils.Dataset):
 
         # Read mask files from .png image
         # Get mask for 0: Nucleoplasm
-        img = skimage.io.imread(os.path.join(mask_dir, "{}_blue.png".format(info['id'])))
-        mask = get_mask(img)
+        img = skimage.io.imread(os.path.join(mask_dir, "{}_"+channel+".png".format(info['id'])))
+        mask = get_mask(img,channel)
 
         # Return mask, and array of class IDs of each instance. Since we have
         # one class ID, we return an array of ones
