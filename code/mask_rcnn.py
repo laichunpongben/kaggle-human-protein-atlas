@@ -377,11 +377,9 @@ class NucleusDataset(utils.Dataset):
         mask_dir = info['path'].split(id_)[0].replace('dev', 'official').replace('rgb', 'official')
 
         # Read mask files from .png image
-<<<<<<< HEAD
         # Get mask for 0: Nucleoplasm
         img = skimage.io.imread(os.path.join(mask_dir, "{}_"+channel+".png".format(info['id'])))
         mask = get_mask(img,channel)
-=======
         color = "blue"  # TODO fix color for 4 channels
         img = skimage.io.imread(os.path.join(mask_dir, "{}_{}.png".format(id_, color)))
         mask = get_mask(img, color)
@@ -405,7 +403,6 @@ class NucleusDataset(utils.Dataset):
             # TODO fix no mask
             mask = get_empty_mask(img)
             class_ids = np.zeros([mask.shape[-1]], dtype=np.int32)
->>>>>>> 1ae629efd33e351cb8a4f4b378f483d81f4c2d76
 
         # Return mask, and array of class IDs of each instance. Since we have
         # one class ID, we return an array of ones
