@@ -228,7 +228,7 @@ CLASS_LABEL_MAP = {
 
 CHANNEL_CLASS_MAP = {
     "red": list(range(6, 28)),
-    "blue": list(range(5)),
+    "blue": list(range(6)),
     "green": list(range(28)),
     "yellow": list(range(28))
 }
