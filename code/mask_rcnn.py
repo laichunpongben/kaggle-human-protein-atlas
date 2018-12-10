@@ -353,10 +353,10 @@ class NucleusDataset(utils.Dataset):
         else:
             # Get image ids from directory names
             # image_ids = [f.split(".png")[0] for f in os.listdir(dataset_dir) if f.endswith(".png")]
-            image_ids = [f.split("_{}.png".format(color))[0] for f in os.listdir(dataset_dir) if f.endswith(".png")]
+            #image_ids = [f.split("_{}.png".format(color))[0] for f in os.listdir(dataset_dir) if f.endswith(".png")]
+            image_ids = list(set([f.split("_")[0] for f in os.listdir(dataset_dir) if f.endswith(".png")]))
             if subset == "train":
                 image_ids = list(set(image_ids) - set(VAL_IMAGE_IDS))
-
         # Add images
         for image_id in image_ids:
             self.add_image(
@@ -364,7 +364,7 @@ class NucleusDataset(utils.Dataset):
                 image_id=image_id,
                 path=os.path.join(dataset_dir, "{}_{}.png".format(image_id, color)))
 
-    def load_mask(self, image_id,channel='blue'):
+    def load_mask(self, image_id,color='blue'):
         """Generate instance masks for an image.
        Returns:
         masks: A bool array of shape [height, width, instance count] with
@@ -375,14 +375,11 @@ class NucleusDataset(utils.Dataset):
         # Get mask directory from image path
         id_ = info['id']
         mask_dir = info['path'].split(id_)[0].replace('dev', 'official').replace('rgb', 'official')
-
+        print(mask_dir)
         # Read mask files from .png image
         # Get mask for 0: Nucleoplasm
-        img = skimage.io.imread(os.path.join(mask_dir, "{}_"+channel+".png".format(info['id'])))
-        mask = get_mask(img,channel)
-        color = "blue"  # TODO fix color for 4 channels
-        img = skimage.io.imread(os.path.join(mask_dir, "{}_{}.png".format(id_, color)))
-        mask = get_mask(img, color)
+        img = skimage.io.imread(os.path.join(mask_dir, "{}_{}.png".format(info['id'],color)))
+        mask = get_mask(img,color)
 
         # Only train for class in known channels
         classes = ANNOTATIONS.get(id_, [0])
