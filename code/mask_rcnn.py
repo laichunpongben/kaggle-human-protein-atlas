@@ -43,6 +43,7 @@ import json
 import datetime
 import numpy as np
 import skimage.io
+import cv2
 from imgaug import augmenters as iaa
 
 # Root directory of the project
@@ -308,7 +309,7 @@ class NucleusConfig(Config):
 class NucleusInferenceConfig(NucleusConfig):
     # Set batch size to 1 to run one image at a time
     GPU_COUNT = 1
-    IMAGES_PER_GPU = 1
+    IMAGES_PER_GPU = 2
     # Don't resize imager for inferencing
     IMAGE_RESIZE_MODE = "pad64"
     # Non-max suppression threshold to filter RPN proposals.
@@ -378,7 +379,7 @@ class NucleusDataset(utils.Dataset):
         print(mask_dir)
         # Read mask files from .png image
         # Get mask for 0: Nucleoplasm
-        img = skimage.io.imread(os.path.join(mask_dir, "{}_{}.png".format(info['id'],color)))
+        img = cv2.imread(os.path.join(mask_dir, "{}_{}.png".format(info['id'],color)),0)
         mask = get_mask(img,color)
 
         # Only train for class in known channels
