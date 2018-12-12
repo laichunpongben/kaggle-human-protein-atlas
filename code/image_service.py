@@ -1,4 +1,5 @@
 import os
+import time
 import numpy as np
 import PIL
 from PIL import Image
@@ -9,6 +10,7 @@ from skimage.morphology import watershed, remove_small_objects
 from skimage.filters import sobel, gaussian
 from skimage.color import label2rgb
 from skimage.exposure import adjust_gamma
+import cv2
 import matplotlib.pyplot as plt
 
 CHANNELS = ['red', 'blue', 'green', 'yellow']
@@ -95,14 +97,45 @@ def official_to_mask_png(channel):
         img_mask = mask2img(mask)
         skimage.io.imsave(os.path.join(mask_dir, "{}_{}_mask.png".format(id_, channel)), img_mask)
 
+def test_imread(dataset_dir, size=0):
+    channel = "blue"
+    funcs = {
+        "OpenCV": (cv2.imread, (cv2.IMREAD_GRAYSCALE, ), {}),
+        "Scikit image": (skimage.io.imread, (), {"as_gray": True})
+    }
+
+    ids = get_ids(dataset_dir)
+
+    for k, v in funcs.items():
+        func, args, kwargs = v
+        start = time.time()
+        for index, id_ in enumerate(sorted(ids)):
+            if 0 < size <= index:
+                break
+            img = func(os.path.join(dataset_dir, "{}_{}.png".format(id_, channel)), *args, **kwargs)
+            mask = get_mask(img, channel)
+
+        end = time.time()
+        lapsed = end - start
+        print("{}: {:15f}".format(k, lapsed))
+
+def test_imread_collection(dataset_dir, size=0):
+    channel = "blue"
+    start = time.time()
+    collection = skimage.io.imread_collection(os.path.join(dataset_dir, "*_{}.png".format(channel)))
+    for index, img in enumerate(collection):
+        if 0 < size <= index:
+            break
+        mask = get_mask(img, channel)
+    end = time.time()
+    lapsed = end - start
+    print("Scikit image collection: {:15f}".format(lapsed))
+
+def test():
+    test_size = 1000
+    dataset_dir = "data/official/train"
+    test_imread(dataset_dir, size=test_size)
+    test_imread_collection(dataset_dir, size=test_size)
 
 if __name__ == '__main__':
-    import argparse
-    parser = argparse.ArgumentParser(description='valid arguments')
-    parser.add_argument('channel', type=str, help='color channel')
-
-    args = parser.parse_args()
-    channel = args.channel
-    assert channel in CHANNELS
-
-    official_to_mask_png(channel)
+    test()
