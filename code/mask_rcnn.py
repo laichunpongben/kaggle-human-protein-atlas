@@ -309,7 +309,7 @@ class NucleusConfig(Config):
 class NucleusInferenceConfig(NucleusConfig):
     # Set batch size to 1 to run one image at a time
     GPU_COUNT = 1
-    IMAGES_PER_GPU = 2
+    IMAGES_PER_GPU = 1
     # Don't resize imager for inferencing
     IMAGE_RESIZE_MODE = "pad64"
     # Non-max suppression threshold to filter RPN proposals.
@@ -376,11 +376,10 @@ class NucleusDataset(utils.Dataset):
         # Get mask directory from image path
         id_ = info['id']
         mask_dir = info['path'].split(id_)[0].replace('dev', 'official').replace('rgb', 'official')
-        print(mask_dir)
         # Read mask files from .png image
         # Get mask for 0: Nucleoplasm
-        img = cv2.imread(os.path.join(mask_dir, "{}_{}.png".format(info['id'],color)),0)
-        mask = get_mask(img,color)
+        img = cv2.imread(os.path.join(mask_dir, "{}_{}.png".format(info['id'], color)), cv2.IMREAD_GRAYSCALE)
+        mask = get_mask(img, color)
 
         # Only train for class in known channels
         classes = ANNOTATIONS.get(id_, [0])
@@ -413,6 +412,15 @@ class NucleusDataset(utils.Dataset):
             return info["id"]
         else:
             super(self.__class__, self).image_reference(image_id)
+
+    def load_image(self, image_id):
+        """Load the specified image in grayscale and return a [H,W,3] Numpy array.
+        """
+        # Load image
+        path = self.image_info[image_id]['path']
+        print(path)
+        image = cv2.imread(path)
+        return image
 
 
 ############################################################
@@ -544,26 +552,14 @@ def detect(model, dataset_dir, subset):
     # Load over images
     submission = []
 
-    # print(dataset.image_ids)
-
     for image_id in dataset.image_ids:
-        print(image_id)
         # Load image and run detection
         image = dataset.load_image(image_id)
         # Detect objects
         r = model.detect([image], verbose=0)[0]
-        # print("---ROIS---")
-        # print(r["rois"])
-        # print("---CLASS_IDS---")
-        # print(r["class_ids"])
-        # print("---SCORES---")
-        # print(r["scores"])
-        # print("---MASKS---")
-        # print(r["masks"])
         # Encode image to RLE. Returns a string of multiple lines
         source_id = dataset.image_info[image_id]["id"]
         rle = mask_to_rle(source_id, r["masks"], r["scores"])
-        print(rle)
         submission.append(rle)
         # Save image with masks
         visualize.display_instances(
