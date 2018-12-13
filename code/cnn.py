@@ -6,16 +6,16 @@ import numpy as np
 import pandas as pd
 from torch import nn
 from torch.optim import Adam
-from fastai.vision import ImageItemList
+from fastai.vision import ImageItemList, ImageDataBunch
 from fastai.vision.transform import get_transforms
 from fastai.vision.learner import create_cnn
 from fastai.vision.models import resnet18
 from fastai.metrics import accuracy
 
 num_class = 28
-path = "data/rgb"
+path = "data/rgb_32"
 arch = resnet18
-size = 128
+size = 32
 stats = ([0.08069, 0.05258, 0.05487], [0.13704, 0.10145, 0.15313])
 
 
@@ -47,12 +47,14 @@ def get_tfms():
     return get_transforms(flip_vert=True, max_lighting=0.1, max_zoom=1.05, max_warp=0.)
 
 def get_data(tfms):
-    return (ImageItemList.from_csv(path, 'train.csv', folder="train", suffix='.png')
-                         .random_split_by_pct()
-                         .label_from_df(sep=' ')
-                         .transform(tfms, size=size)
-                         .databunch()
-                         .normalize(stats))
+    return (ImageDataBunch.from_csv(path,
+                                    csv_labels='train.csv',
+                                    folder="train",
+                                    test="test",
+                                    suffix=".png",
+                                    sep=" ",
+                                    ds_tfms=tfms,
+                                    size=size))
 
 def get_learner(data):
     learner = create_cnn(data, arch, ps=0.5)
@@ -66,46 +68,42 @@ tfms = get_tfms()
 data = get_data(tfms)
 learner = get_learner(data)
 
+print(len(data.train_ds))
+print(len(data.test_ds))
+
 def sigmoid(x):
     return 1.0/(1.0+np.exp(-x))
 
 def fit():
     learner.fit_one_cycle(5,1e-2)
-    learner.save('mini_train_128')
-    print('model fitted and saved')
+    learner.save('mini_train_32')
 
 def predict():
-    if os.path.isfile('mini_train_128') :
-        learner.load('mini_train_128')
-        print('loaded model')
-    else:
-        # ValueError: padding_mode needs to be 'zeros' or 'border', but got reflection (fastai 1.0.31)
-        # fastai/vision/image.py line 92 and 503: padding_mode changed from 'reflection' to 'zeros' to avoid error
-        fit()
+    learner.load('mini_train_32')
     preds, y = learner.TTA()
-    print(preds)
-    print(y)
-    preds = np.stack(preds, axis=-1)
-    preds = sigmoid(preds)
-    print(preds)
-    pred = preds.max(axis=-1) #max works better for F1 macro score
-    return pred
+    return preds, y
 
-def save_pred(pred, th=0.5, fname='output.csv'):
-    pred_list = []
-    for line in pred:
-        s = ' '.join(list([str(i) for i in np.nonzero(line>th)[0]]))
-        pred_list.append(s)
+def save_y(y, th=0.5, fname='output.csv'):
+    n_class = len(y[0])
+    n_sample = len(y)
+
+    labels = []
+    for i in range(n_sample):
+        label = ' '.join([str(c) for c in range(n_class) if y[i][c]])
+        labels.append(label)
 
     sample_df = pd.read_csv(os.path.join(path, 'sample_submission.csv'))
     sample_list = list(sample_df.Id)
+
+    print(labels)
+    print(len(labels))
+
     pred_dic = dict((key, value) for (key, value)
-                in zip(learner.data.test_ds.fnames,pred_list))
+                in zip(learner.data.test_ds.fnames,labels))
     pred_list_cor = [pred_dic[id] for id in sample_list]
     df = pd.DataFrame({'Id':sample_list,'Predicted':pred_list_cor})
     df.to_csv(fname, header=True, index=False)
 
 if __name__ == '__main__':
-    pred = predict()
-    print(pred)
-    save_pred(pred)
+    preds, y = predict()
+    save_y(y)
