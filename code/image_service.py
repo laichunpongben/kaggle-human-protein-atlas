@@ -97,6 +97,16 @@ def official_to_mask_png(channel):
         img_mask = mask2img(mask)
         skimage.io.imsave(os.path.join(mask_dir, "{}_{}_mask.png".format(id_, channel)), img_mask)
 
+def resize_png(dataset_dir, output_dir, size):
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+
+    imgs = list(set(f.split('.png')[0] for f in os.listdir(dataset_dir) if f.endswith("png")))
+    for id_ in sorted(imgs):
+        img = skimage.io.imread(os.path.join(dataset_dir, "{}.png".format(id_)))
+        img = skimage.transform.resize(img, (size, size))
+        skimage.io.imsave(os.path.join(output_dir, "{}.png".format(id_)), img)
+
 def test_imread(dataset_dir, size=0):
     channel = "blue"
     funcs = {
@@ -138,4 +148,5 @@ def test():
     test_imread_collection(dataset_dir, size=test_size)
 
 if __name__ == '__main__':
-    test()
+    # test()
+    resize_png("data/rgb/train", "data/rgb_32/train", 32)
