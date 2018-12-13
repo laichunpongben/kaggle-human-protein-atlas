@@ -97,15 +97,22 @@ def official_to_mask_png(channel):
         img_mask = mask2img(mask)
         skimage.io.imsave(os.path.join(mask_dir, "{}_{}_mask.png".format(id_, channel)), img_mask)
 
-def resize_png(dataset_dir, output_dir, size):
+def resize_png(dataset_dir, output_dir, size, id_=None):
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
 
-    imgs = list(set(f.split('.png')[0] for f in os.listdir(dataset_dir) if f.endswith("png")))
+    if id_:
+        imgs = [id_]
+    else:
+        imgs = list(set(f.split('.png')[0] for f in os.listdir(dataset_dir) if f.endswith("png")))
+
     for id_ in sorted(imgs):
-        img = skimage.io.imread(os.path.join(dataset_dir, "{}.png".format(id_)))
-        img = skimage.transform.resize(img, (size, size))
-        skimage.io.imsave(os.path.join(output_dir, "{}.png".format(id_)), img)
+        try:
+            img = skimage.io.imread(os.path.join(dataset_dir, "{}.png".format(id_)))
+            img = skimage.transform.resize(img, (size, size))
+            skimage.io.imsave(os.path.join(output_dir, "{}.png".format(id_)), img)
+        except Exception as e:
+            print(e)
 
 def test_imread(dataset_dir, size=0):
     channel = "blue"
@@ -149,4 +156,5 @@ def test():
 
 if __name__ == '__main__':
     # test()
-    resize_png("data/rgb/train", "data/rgb_32/train", 32)
+    resize_png("data/rgb/test", "data/rgb_32/test", 32, id_="510f3694-bad5-11e8-b2b9-ac1f6b6435d0")
+    # merge_rgb("510f3694-bad5-11e8-b2b9-ac1f6b6435d0", "data/official/test", "data/rgb/test")
