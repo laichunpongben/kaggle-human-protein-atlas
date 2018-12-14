@@ -1,4 +1,4 @@
 import os
 
-TRAIN_PATH = os.getenv("TRAIN_PATH", "./data/official/train/")
-TEST_PATH = os.getenv("TEST_PATH", "./data/official/test/")
+DATASET_PATH = os.getenv("DATASET_PATH", "./data/official/")
+OUT_PATH = os.getenv("OUT_PATH", "./output/")

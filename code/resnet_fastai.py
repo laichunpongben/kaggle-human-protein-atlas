@@ -11,13 +11,14 @@ from fastai.vision import *
 
 from .utils import open_4_channel
 from .resnet import Resnet4Channel
+from config import DATASET_PATH, OUT_PATH
 
 bs = 64
 size = 224
 num_class = 28
 protein_stats = ([0.08069, 0.05258, 0.05487, 0.08282], [0.13704, 0.10145, 0.15313, 0.13814])
-src_path = Path('data/official/')
-out_path = Path('output/')
+src_path = Path(DATASET_PATH)
+out_path = Path(OUT_PATH)
 
 np.random.seed(42)
 src = (ImageItemList.from_csv(src_path, 'train.csv', folder='train', suffix='.png')
