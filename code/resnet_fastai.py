@@ -36,10 +36,11 @@ parser.add_argument("-s","--imagesize", help="image size", type=int, default=256
 parser.add_argument("-t","--thres", help="threshold", type=float, default=0.1)
 parser.add_argument("-v","--verbosity", help="set verbosity 0-3, 0 to turn off output (not yet implemented)", type=int, default=1)
 
+args = parser.parse_args()
+
 if args.gpuid>=0:
     torch.cuda.set_device(args.gpuid)
 
-args = parser.parse_args()
 device = torch.cuda.set_device(args.gpuid)
 bs     = args.batchsize
 th     = args.thres
