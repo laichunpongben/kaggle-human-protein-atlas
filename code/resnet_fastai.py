@@ -26,6 +26,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-i","--gpuid", help="GPU device id", type=int, choices=range(-1, 8), default=0)
 parser.add_argument("-s","--imagesize", help="image size", type=int, default=256)
 parser.add_argument("-a","--arch", help="Neural network architecture (only resnet for now)", type=str, choices=["resnet"], default="resnet")
+parser.add_argument("-l","--loss", help="Loss function", type=str, choices=["bce", "focal"], default="bce")
 parser.add_argument("-b","--batchsize", help="batch size (not in use yet)", type=int, default=64)
 parser.add_argument("-d","--encoderdepth", help="encoder depth of the network", type=int, choices=[34,50,101,152], default=152)
 parser.add_argument("-p","--dropout", help="dropout (float)", type=float, default=0.5)
@@ -43,9 +44,15 @@ imgsize = args.imagesize
 arch = args.arch
 enc_depth = args.encoderdepth
 th = args.thres
-loss_func = focal_loss # F.binary_cross_entropy_with_logits
+loss = args.loss
 
-runname = arch+str(args.encoderdepth)+'-'+str(imgsize)+'-drop'+str(dropout)+'-ep'+str(args.epochnum1)+'_'+str(args.epochnum2)
+runname = (arch +
+          str(args.encoderdepth) +
+          '-' + str(imgsize) +
+          '-' + str(loss) +
+          '-drop' + str(dropout) +
+          '-ep' + str(args.epochnum1) +
+          '_' + str(args.epochnum2))
 
 num_class = 28
 # mean and std in of each channel in the train set
@@ -71,6 +78,7 @@ conf_msg = '\n'.join([
                     'Device ID: ' + str(args.gpuid),
                     'Image size: ' + str(imgsize),
                     'Network architecture: ' + str(arch),
+                    'Loss function: ' + str(loss),
                     'Encoder depth: ' + str(enc_depth),
                     'Dropout: ' + str(dropout),
                     'Threshold: ' + str(th),
@@ -116,6 +124,12 @@ def _resnet_split(m): return (m[0][6],m[1])
 
 
 f1_score = partial(fbeta, thresh=0.2, beta=1)
+
+losses = {
+    "focal": focal_loss,
+    "bce": F.binary_cross_entropy_with_logits
+}
+loss_func = losses.get(loss, F.binary_cross_entropy_with_logits)
 
 learn = create_cnn(
     data,
