@@ -11,7 +11,7 @@ from fastai.vision import *
 
 from .utils import open_4_channel
 from .resnet import Resnet4Channel
-
+from .loss import focal_loss
 from config import DATASET_PATH, OUT_PATH
 import argparse
 import logging
@@ -43,6 +43,7 @@ imgsize = args.imagesize
 arch = args.arch
 enc_depth = args.encoderdepth
 th = args.thres
+loss_func = focal_loss # F.binary_cross_entropy_with_logits
 
 runname = arch+str(args.encoderdepth)+'-'+str(imgsize)+'-drop'+str(dropout)+'-ep'+str(args.epochnum1)+'_'+str(args.epochnum2)
 
@@ -122,11 +123,11 @@ learn = create_cnn(
     cut=-2,
     split_on=_resnet_split,
     ps=dropout,
-    loss_func=F.binary_cross_entropy_with_logits,
+    loss_func=loss_func,
     path=src_path,
     metrics=[f1_score],
 )
-
+logger.debug(learn)
 
 ###############################
 # Fit model
