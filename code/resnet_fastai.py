@@ -25,7 +25,7 @@ import datetime
 parser = argparse.ArgumentParser()
 parser.add_argument("-i","--gpuid", help="GPU device id", type=int, choices=range(8), default=0)
 parser.add_argument("-s","--imagesize", help="image size", type=int, default=256)
-parser.add_argument("-a","--arch", help="Neural network architecture (only resnet for now)", type=str, choice=["resnet"], default="resnet")
+parser.add_argument("-a","--arch", help="Neural network architecture (only resnet for now)", type=str, choices=["resnet"], default="resnet")
 parser.add_argument("-b","--batchsize", help="batch size (not in use yet)", type=int, default=64)
 parser.add_argument("-d","--encoderdepth", help="encoder depth of the network", type=int, choices=[34,50,101,152], default=152)
 parser.add_argument("-p","--dropout", help="dropout (float)", type=float, default=0.5)
@@ -42,7 +42,7 @@ dropout = args.dropout
 imgsize = args.imagesize
 arch = args.arch
 enc_depth = args.encoderdepth
-th = args.th
+th = args.thres
 
 runname = arch+str(args.encoderdepth)+'-'+str(imgsize)+'-drop'+str(dropout)+'-ep'+str(args.epochnum1)+'_'+str(args.epochnum2)
 
@@ -59,20 +59,22 @@ out_path = Path(OUT_PATH)
 # Set up logger
 ###############################
 
-_log_format = "%(relativeCreated)08d[ms] - %(name)s - %(levelname)s - %(processName)s - %(threadName)s -\n*** %(message)s"
+_log_format = "*** %(asctime)s - %(name)s - %(levelname)s - %(processName)s - %(threadName)s ***\n%(message)s\n******\n"
 logging.basicConfig(
                     format=_log_format,
                     level=logging.DEBUG,
                    )
-logger = logging.getLogger("code.resnet_fastai").setLevel(level=logging.DEBUG)
+logger = logging.getLogger("code.resnet_fastai")
+logger.setLevel(level=logging.DEBUG)
 conf_msg = '\n'.join([
-                    'Device ID: ' + str(gpuid),
+                    'Device ID: ' + str(args.gpuid),
                     'Image size: ' + str(imgsize),
                     'Network architecture: ' + str(arch),
                     'Encoder depth: ' + str(enc_depth),
                     'Dropout: ' + str(dropout),
-                    'Dataset directory: ' + src_path,
-                    'Output directory: ' + out_path
+                    'Threshold: ' + str(th),
+                    'Dataset directory: ' + str(src_path),
+                    'Output directory: ' + str(out_path)
                ])
 logger.info(conf_msg)
 
@@ -133,15 +135,24 @@ learn = create_cnn(
 # learn.lr_find()
 # learn.recorder.plot()
 lr = 3e-2
+logger.info('Start model fitting: Stage 1')
 learn.fit_one_cycle(args.epochnum1, slice(lr))
 learn.save('stage-1-'+runname)
+logger.info('Complete model fitting Stage 1. Model saved.')
 learn.unfreeze()
 # learn.lr_find()
 # learn.recorder.plot()
+logger.info('Start model fitting: Stage 2')
 learn.fit_one_cycle(args.epochnum2, slice(3e-5, lr/args.epochnum2))
 learn.save('stage-2-'+runname)
-preds,_ = learn.get_preds(DatasetType.Test)
+logger.info('Complete model fitting Stage 2. Model saved.')
 
+###############################
+# Predict
+###############################
+
+preds,_ = learn.get_preds(DatasetType.Test)
+logger.info('Complete model fitting.')
 
 ###############################
 # Output results
@@ -149,4 +160,5 @@ preds,_ = learn.get_preds(DatasetType.Test)
 
 pred_labels = [' '.join(list([str(i) for i in np.nonzero(row>th)[0]])) for row in np.array(preds)]
 df = pd.DataFrame({'Id':test_ids,'Predicted':pred_labels})
-df.to_csv(out_path+runname+'.csv', header=True, index=False)
+df.to_csv(out_path/runname+'.csv', header=True, index=False)
+logger.info('Results written to file. Finshed! :)')
