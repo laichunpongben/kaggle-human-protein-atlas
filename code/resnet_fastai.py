@@ -12,7 +12,7 @@ from fastai.vision import *
 from .utils import open_4_channel
 from .resnet import Resnet4Channel
 from .loss import focal_loss
-from config import DATASET_PATH, OUT_PATH
+from config import DATASET_PATH, OUT_PATH, formatter
 import argparse
 import logging
 import datetime
@@ -67,13 +67,12 @@ out_path = Path(OUT_PATH)
 # Set up logger
 ###############################
 
-_log_format = "*** %(asctime)s - %(name)s - %(levelname)s - %(processName)s - %(threadName)s ***\n%(message)s\n******\n"
-logging.basicConfig(
-                    format=_log_format,
-                    level=logging.DEBUG,
-                   )
 logger = logging.getLogger("code.resnet_fastai")
+file_handler = logging.FileHandler('logs/resnet_fastai.log')
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
 logger.setLevel(level=logging.DEBUG)
+
 conf_msg = '\n'.join([
                     'Device ID: ' + str(args.gpuid),
                     'Image size: ' + str(imgsize),
@@ -85,6 +84,7 @@ conf_msg = '\n'.join([
                     'Dataset directory: ' + str(src_path),
                     'Output directory: ' + str(out_path)
                ])
+logger.debug("Start a new training task")
 logger.info(conf_msg)
 
 ###############################
