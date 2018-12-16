@@ -556,11 +556,12 @@ def detect(model, dataset_dir, subset):
         # Load image and run detection
         image = dataset.load_image(image_id)
         # Detect objects
-        r = model.detect([image], verbose=0)[0]
+        r = model.detect([image], verbose=1)[0]
         # Encode image to RLE. Returns a string of multiple lines
         source_id = dataset.image_info[image_id]["id"]
         rle = mask_to_rle(source_id, r["masks"], r["scores"])
         submission.append(rle)
+        print(r['class_ids'], r['scores'])
         # Save image with masks
         visualize.display_instances(
             image, r['rois'], r['masks'], r['class_ids'],
