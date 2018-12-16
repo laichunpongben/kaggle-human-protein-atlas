@@ -23,29 +23,27 @@ import datetime
 ###############################
 
 parser = argparse.ArgumentParser()
-<<<<<<< HEAD
-=======
-parser.add_argument("-i","--gpuid", help="GPU device id", type=int, choices=range(-1, 8), default=0)
-parser.add_argument("-s","--imagesize", help="image size", type=int, default=256)
->>>>>>> 4cd4239390c23c4a87b184364cf916f915a0ff54
 parser.add_argument("-a","--arch", help="Neural network architecture (only resnet for now)", type=str, choices=["resnet"], default="resnet")
-parser.add_argument("-l","--loss", help="Loss function", type=str, choices=["bce", "focal"], default="bce")
 parser.add_argument("-b","--batchsize", help="batch size (not in use yet)", type=int, default=64)
 parser.add_argument("-d","--encoderdepth", help="encoder depth of the network", type=int, choices=[34,50,101,152], default=152)
 parser.add_argument("-e","--epochnum1", help="epoch number for stage 1", type=int, default=25)
 parser.add_argument("-E","--epochnum2", help="epoch number for stage 2", type=int, default=50)
 parser.add_argument("-i","--gpuid", help="GPU device id", type=int, choices=range(8), default=0)
+parser.add_argument("-l","--loss", help="Loss function", type=str, choices=["bce", "focal"], default="bce")
 parser.add_argument("-m","--model", help="Path to retrained model to load", type=str, default=None)
 parser.add_argument("-p","--dropout", help="dropout (float)", type=float, default=0.5)
 parser.add_argument("-s","--imagesize", help="image size", type=int, default=256)
 parser.add_argument("-t","--thres", help="threshold", type=float, default=0.1)
 parser.add_argument("-v","--verbosity", help="set verbosity 0-3, 0 to turn off output (not yet implemented)", type=int, default=1)
 
-<<<<<<< HEAD
+if args.gpuid>=0:
+    torch.cuda.set_device(args.gpuid)
+
 args = parser.parse_args()
 device = torch.cuda.set_device(args.gpuid)
 bs     = args.batchsize
 th     = args.thres
+loss   = args.loss
 
 if not args.model:
     dropout   = args.dropout
@@ -63,16 +61,6 @@ else:
     enc_depth = int(re.search('^stage-[12]-\D+(\d+)', runname).group(1))
     epochnum1 = int(re.search('-ep(\d+)_', runname).group(1))
     epochnum2 = int(re.search('-ep\d+_(\d+)', runname).group(1))
-=======
-if args.gpuid>=0:
-    torch.cuda.set_device(args.gpuid)
-bs = args.batchsize
-dropout = args.dropout
-imgsize = args.imagesize
-arch = args.arch
-enc_depth = args.encoderdepth
-th = args.thres
-loss = args.loss
 
 runname = (arch +
           str(args.encoderdepth) +
@@ -81,7 +69,6 @@ runname = (arch +
           '-drop' + str(dropout) +
           '-ep' + str(args.epochnum1) +
           '_' + str(args.epochnum2))
->>>>>>> 4cd4239390c23c4a87b184364cf916f915a0ff54
 
 num_class = 28
 # mean and std in of each channel in the train set
@@ -153,9 +140,14 @@ def resnet(pretrained):
 # copied from https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py
 def _resnet_split(m): return (m[0][6],m[1])
 
-<<<<<<< HEAD
 def _prep_model():
     logger.info('Initialising model.')
+    losses = {
+         "focal": focal_loss,
+        "bce": F.binary_cross_entropy_with_logits
+    }
+    loss_func = losses.get(loss, F.binary_cross_entropy_with_logits)
+
     f1_score = partial(fbeta, thresh=0.2, beta=1)
     learn = create_cnn(
                         data,
@@ -163,33 +155,12 @@ def _prep_model():
                         cut=-2,
                         split_on=_resnet_split,
                         ps=dropout,
-                        loss_func=F.binary_cross_entropy_with_logits,
+                        loss_func=loss_func,
                         path=src_path,
                         metrics=[f1_score],
                       )
     logger.info('Complete initialising model.')
     return learn
-=======
-
-f1_score = partial(fbeta, thresh=0.2, beta=1)
-
-losses = {
-    "focal": focal_loss,
-    "bce": F.binary_cross_entropy_with_logits
-}
-loss_func = losses.get(loss, F.binary_cross_entropy_with_logits)
-
-learn = create_cnn(
-    data,
-    resnet,
-    cut=-2,
-    split_on=_resnet_split,
-    ps=dropout,
-    loss_func=loss_func,
-    path=src_path,
-    metrics=[f1_score],
-)
->>>>>>> 4cd4239390c23c4a87b184364cf916f915a0ff54
 
 ###############################
 # Fit model
