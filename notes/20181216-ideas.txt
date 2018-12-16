@@ -1,0 +1,56 @@
+20181216 - Kaggle Human Protein Atlas Image Classification ideas
+==
+
+## 20181216
+- [x] check similar images between different channels as well, they can be immediate hints for simple localization
+- [x] check for outlines: for many cases, molecules may either fill a compartment, or localize on the membrane surfaces
+  - image segmentation: mask_rcnn
+- [ ] some marker channels got no signals, drop them from training and develop code to drop when encountered
+- [x] check out ImageJ scripts - no need now
+
+---
+
+## image segmentation
+- rcnn, faster-rcnn, mask-rcnn
+- u-net
+
+## On-going
+- Resnet training on 4 channels with pytorch fastai
+
+
+
+
+
+---
+
+## External data
+- Cell image library: http://www.cellimagelibrary.org/browse/cellcomponent
+- Broad Bioimage Benchmark Collection: https://data.broadinstitute.org/bbbc/image_sets.html
+
+## Literature
+
+
+
+---
+
+## 20181216
+
+### Dropout
+- increase dropout to reduce batch effects from same image stacks
+
+### Features
+- https://ieeexplore.ieee.org/document/5193229
+-- corr/overlap between protein & nuc/ microtubule /ER channels
+-- variance of # pixels per objects
+-- object size
+-- texture
+- SVM & RF
+
+###  Pretrained models
+- https://github.com/osmr/imgclsmob
+- `pip install pytorchcv torch>=0.4.0`
+
+### U-Net
+- https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/
+- Image segmentation model that handles touching & overlapping cells
+- [ ] Image augmentation: irrgular deform 
