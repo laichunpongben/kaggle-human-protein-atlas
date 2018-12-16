@@ -200,7 +200,7 @@ def _predict(learn):
 def _output_results(preds):
     pred_labels = [' '.join(list([str(i) for i in np.nonzero(row>th)[0]])) for row in np.array(preds)]
     df = pd.DataFrame({'Id':test_ids,'Predicted':pred_labels})
-    df.to_csv(out_path / runname+'.csv', header=True, index=False)
+    df.to_csv(OUT_PATH+runname+'.csv', header=True, index=False)
     logger.info('Results written to file. Finshed! :)')
     return
 
