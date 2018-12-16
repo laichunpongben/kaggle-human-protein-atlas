@@ -42,10 +42,12 @@ Training sample size: 124288
   27.  Rods & rings
 
 ## Quickstart
-Training single channel
+Resnet
+
+`python3 -m code.resnet_fastai --imagesize=256 --loss=focal --gpuid=0`
+
+Mask RCNN
 
 `python3 -m code.mask_rcnn train --dataset=data/official --subset=train --weights=coco`
-
-Prediction
 
 `python3 -m code.mask_rcnn detect --dataset=data/official --subset=test --weights=logs/nucleus20181212T0318/mask_rcnn_nucleus_0025.h5`

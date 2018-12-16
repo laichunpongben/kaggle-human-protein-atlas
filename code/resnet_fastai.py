@@ -11,8 +11,8 @@ from fastai.vision import *
 
 from .utils import open_4_channel
 from .resnet import Resnet4Channel
-
-from config import DATASET_PATH, OUT_PATH
+from .loss import focal_loss
+from config import DATASET_PATH, OUT_PATH, formatter
 import argparse
 import logging
 import datetime
@@ -23,7 +23,13 @@ import datetime
 ###############################
 
 parser = argparse.ArgumentParser()
+<<<<<<< HEAD
+=======
+parser.add_argument("-i","--gpuid", help="GPU device id", type=int, choices=range(-1, 8), default=0)
+parser.add_argument("-s","--imagesize", help="image size", type=int, default=256)
+>>>>>>> 4cd4239390c23c4a87b184364cf916f915a0ff54
 parser.add_argument("-a","--arch", help="Neural network architecture (only resnet for now)", type=str, choices=["resnet"], default="resnet")
+parser.add_argument("-l","--loss", help="Loss function", type=str, choices=["bce", "focal"], default="bce")
 parser.add_argument("-b","--batchsize", help="batch size (not in use yet)", type=int, default=64)
 parser.add_argument("-d","--encoderdepth", help="encoder depth of the network", type=int, choices=[34,50,101,152], default=152)
 parser.add_argument("-e","--epochnum1", help="epoch number for stage 1", type=int, default=25)
@@ -35,6 +41,7 @@ parser.add_argument("-s","--imagesize", help="image size", type=int, default=256
 parser.add_argument("-t","--thres", help="threshold", type=float, default=0.1)
 parser.add_argument("-v","--verbosity", help="set verbosity 0-3, 0 to turn off output (not yet implemented)", type=int, default=1)
 
+<<<<<<< HEAD
 args = parser.parse_args()
 device = torch.cuda.set_device(args.gpuid)
 bs     = args.batchsize
@@ -56,6 +63,25 @@ else:
     enc_depth = int(re.search('^stage-[12]-\D+(\d+)', runname).group(1))
     epochnum1 = int(re.search('-ep(\d+)_', runname).group(1))
     epochnum2 = int(re.search('-ep\d+_(\d+)', runname).group(1))
+=======
+if args.gpuid>=0:
+    torch.cuda.set_device(args.gpuid)
+bs = args.batchsize
+dropout = args.dropout
+imgsize = args.imagesize
+arch = args.arch
+enc_depth = args.encoderdepth
+th = args.thres
+loss = args.loss
+
+runname = (arch +
+          str(args.encoderdepth) +
+          '-' + str(imgsize) +
+          '-' + str(loss) +
+          '-drop' + str(dropout) +
+          '-ep' + str(args.epochnum1) +
+          '_' + str(args.epochnum2))
+>>>>>>> 4cd4239390c23c4a87b184364cf916f915a0ff54
 
 num_class = 28
 # mean and std in of each channel in the train set
@@ -70,17 +96,17 @@ out_path = Path(OUT_PATH)
 # Set up logger
 ###############################
 
-_log_format = "*** %(asctime)s - %(name)s - %(levelname)s - %(processName)s - %(threadName)s ***\n%(message)s\n******\n"
-logging.basicConfig(
-                    format=_log_format,
-                    level=logging.DEBUG,
-                   )
 logger = logging.getLogger("code.resnet_fastai")
+file_handler = logging.FileHandler('logs/resnet_fastai.log')
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
 logger.setLevel(level=logging.DEBUG)
+
 conf_msg = '\n'.join([
                     'Device ID: ' + str(args.gpuid),
                     'Image size: ' + str(imgsize),
                     'Network architecture: ' + str(arch),
+                    'Loss function: ' + str(loss),
                     'Encoder depth: ' + str(enc_depth),
                     'Dropout: ' + str(dropout),
                     'Threshold: ' + str(th),
@@ -89,6 +115,7 @@ conf_msg = '\n'.join([
                     'Dataset directory: ' + str(src_path),
                     'Output directory: ' + str(out_path)
                ])
+logger.debug("Start a new training task")
 logger.info(conf_msg)
 
 ###############################
@@ -126,6 +153,7 @@ def resnet(pretrained):
 # copied from https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py
 def _resnet_split(m): return (m[0][6],m[1])
 
+<<<<<<< HEAD
 def _prep_model():
     logger.info('Initialising model.')
     f1_score = partial(fbeta, thresh=0.2, beta=1)
@@ -141,6 +169,27 @@ def _prep_model():
                       )
     logger.info('Complete initialising model.')
     return learn
+=======
+
+f1_score = partial(fbeta, thresh=0.2, beta=1)
+
+losses = {
+    "focal": focal_loss,
+    "bce": F.binary_cross_entropy_with_logits
+}
+loss_func = losses.get(loss, F.binary_cross_entropy_with_logits)
+
+learn = create_cnn(
+    data,
+    resnet,
+    cut=-2,
+    split_on=_resnet_split,
+    ps=dropout,
+    loss_func=loss_func,
+    path=src_path,
+    metrics=[f1_score],
+)
+>>>>>>> 4cd4239390c23c4a87b184364cf916f915a0ff54
 
 ###############################
 # Fit model
