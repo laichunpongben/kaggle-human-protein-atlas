@@ -53,7 +53,7 @@ if not args.model:
     enc_depth = args.encoderdepth
     epochnum1 = args.epochnum1
     epochnum2 = args.epochnum2
-    runname   = arch+str(args.encoderdepth)+'-'+str(imgsize)+'-drop'+str(dropout)+'-ep'+str(args.epochnum1)+'_'+str(args.epochnum2)
+    runname   = arch+str(args.encoderdepth)+'-'+str(imgsize)+'-drop'+str(dropout)+'-th'+str(th)+'-ep'+str(args.epochnum1)+'_'+str(args.epochnum2)
 else:
     runname   = str(Path(args.model).stem)
     dropout   = float(re.search('-drop(0.\d+)',runname).group(1))
