@@ -49,4 +49,5 @@ Resnet
 Mask RCNN
 
 `python3 -m code.mask_rcnn train --dataset=data/official --subset=train --weights=coco`
+
 `python3 -m code.mask_rcnn detect --dataset=data/official --subset=test --weights=logs/nucleus20181212T0318/mask_rcnn_nucleus_0025.h5`
