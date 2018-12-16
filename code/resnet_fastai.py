@@ -23,7 +23,7 @@ import datetime
 ###############################
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-i","--gpuid", help="GPU device id", type=int, choices=range(8), default=0)
+parser.add_argument("-i","--gpuid", help="GPU device id", type=int, choices=range(-1, 8), default=0)
 parser.add_argument("-s","--imagesize", help="image size", type=int, default=256)
 parser.add_argument("-a","--arch", help="Neural network architecture (only resnet for now)", type=str, choices=["resnet"], default="resnet")
 parser.add_argument("-b","--batchsize", help="batch size (not in use yet)", type=int, default=64)
@@ -35,8 +35,8 @@ parser.add_argument("-t","--thres", help="threshold", type=float, default=0.1)
 parser.add_argument("-v","--verbosity", help="set verbosity 0-3, 0 to turn off output (not yet implemented)", type=int, default=1)
 args = parser.parse_args()
 
-
-torch.cuda.set_device(args.gpuid)
+if args.gpuid>=0:
+    torch.cuda.set_device(args.gpuid)
 bs = args.batchsize
 dropout = args.dropout
 imgsize = args.imagesize
@@ -127,7 +127,6 @@ learn = create_cnn(
     path=src_path,
     metrics=[f1_score],
 )
-logger.debug(learn)
 
 ###############################
 # Fit model
