@@ -9,7 +9,9 @@ Color filters for the fluorescent images
   * Red: Microtubules
   * Yellow: Endoplasmic reticulum
 
-Training sample size: 124288
+Train sample size: 31072
+
+Test sample size:  11702
 
 ## Labels
   0.   Nucleoplasm
@@ -42,11 +44,26 @@ Training sample size: 124288
   27.  Rods & rings
 
 ## Quickstart
-Resnet
+Resnet FastAI
 
 `python3 -m code.resnet_fastai --imagesize=256 --loss=focal --gpuid=0`
 
 `python3 -m code.resnet_fastai --model=stage-2-resnet50-224-drop0.5-ep5_15 --gpuid=0`
+
+  * -a, --arch         : Neural network architecture
+  * -b, --batchsize    : batch size
+  * -d, --encoderdepth : encoder depth of the network
+  * -e, --epochnum1    : epoch number for stage 1
+  * -E, --epochnum2    : epoch number for stage 2
+  * -i, --gpuid        : GPU device id
+  * -l, --loss         : loss function
+  * -m, --model        : trained model to load
+  * -p, --dropout      : dropout ratio
+  * -s, --size         : image size
+  * -S, --sampler      : sampler
+  * -t, --thres        : threshold
+  * -v, --verbose      : set verbosity 0-3, 0 to turn off output (not yet implemented)
+
 
 Mask RCNN
 

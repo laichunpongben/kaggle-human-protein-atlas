@@ -22,20 +22,19 @@ from config import DATASET_PATH, MODEL_PATH, OUT_PATH, WEIGHTS, formatter
 ###############################
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-a","--arch", help="Neural network architecture (only resnet for now)", type=str, choices=["resnet", "squeezenet"], default="resnet")
-parser.add_argument("-b","--batchsize", help="batch size (not in use yet)", type=int, default=64)
+parser.add_argument("-a","--arch", help="Neural network architecture", type=str, choices=["resnet", "squeezenet"], default="resnet")
+parser.add_argument("-b","--batchsize", help="batch size", type=int, default=64)
 parser.add_argument("-d","--encoderdepth", help="encoder depth of the network", type=int, choices=[34,50,101,152], default=152)
 parser.add_argument("-e","--epochnum1", help="epoch number for stage 1", type=int, default=25)
 parser.add_argument("-E","--epochnum2", help="epoch number for stage 2", type=int, default=50)
 parser.add_argument("-i","--gpuid", help="GPU device id", type=int, choices=range(-1, 8), default=0)
 parser.add_argument("-l","--loss", help="loss function", type=str, choices=["bce", "focal"], default="bce")
 parser.add_argument("-m","--model", help="trained model to load", type=str, default=None)
-parser.add_argument("-p","--dropout", help="dropout (float)", type=float, default=0.5)
+parser.add_argument("-p","--dropout", help="dropout ratio", type=float, default=0.5)
 parser.add_argument("-s","--imagesize", help="image size", type=int, default=256)
 parser.add_argument("-S","--sampler", help="sampler", type=str, choices=["random", "weighted"], default="random")
 parser.add_argument("-t","--thres", help="threshold", type=float, default=0.1)
-parser.add_argument("-v","--verbosity", help="set verbosity 0-3, 0 to turn off output (not yet implemented)", type=int, default=1)
-
+parser.add_argument("-v","--verbose", help="set verbosity 0-3, 0 to turn off output (not yet implemented)", type=int, default=1)
 
 
 args = parser.parse_args()
