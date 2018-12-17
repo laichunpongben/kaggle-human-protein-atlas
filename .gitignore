@@ -7,3 +7,5 @@ data/**/*.jpg
 data/**/*.tiff
 !.gitkeep
 *.pyc
+*.pth
+*.h5

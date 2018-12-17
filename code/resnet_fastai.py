@@ -2,10 +2,13 @@
 
 import os
 from pathlib import Path
+import argparse
+import logging
+import datetime
+
 import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
-
 from fastai import *
 from fastai.vision import *
 
@@ -13,8 +16,11 @@ from .utils import open_4_channel
 from .resnet import Resnet4Channel
 from .loss import focal_loss
 from config import DATASET_PATH, OUT_PATH, formatter
+<<<<<<< HEAD
 import argparse
 import logging
+=======
+>>>>>>> 015d35e0b8d17384857062d931785bbc5d94a7c9
 
 
 ###############################
@@ -27,7 +33,7 @@ parser.add_argument("-b","--batchsize", help="batch size (not in use yet)", type
 parser.add_argument("-d","--encoderdepth", help="encoder depth of the network", type=int, choices=[34,50,101,152], default=152)
 parser.add_argument("-e","--epochnum1", help="epoch number for stage 1", type=int, default=25)
 parser.add_argument("-E","--epochnum2", help="epoch number for stage 2", type=int, default=50)
-parser.add_argument("-i","--gpuid", help="GPU device id", type=int, choices=range(8), default=0)
+parser.add_argument("-i","--gpuid", help="GPU device id", type=int, choices=range(-1, 8), default=0)
 parser.add_argument("-l","--loss", help="Loss function", type=str, choices=["bce", "focal"], default="bce")
 parser.add_argument("-m","--model", help="Path to retrained model to load", type=str, default=None)
 parser.add_argument("-p","--dropout", help="dropout (float)", type=float, default=0.5)
@@ -35,12 +41,12 @@ parser.add_argument("-s","--imagesize", help="image size", type=int, default=256
 parser.add_argument("-t","--thres", help="threshold", type=float, default=0.1)
 parser.add_argument("-v","--verbosity", help="set verbosity 0-3, 0 to turn off output (not yet implemented)", type=int, default=1)
 
+
+
 args = parser.parse_args()
-
-if args.gpuid>=0:
-    torch.cuda.set_device(args.gpuid)
-
-device = torch.cuda.set_device(args.gpuid)
+device = None
+if args.gpuid >= 0:
+    device = torch.cuda.set_device(args.gpuid)
 bs     = args.batchsize
 th     = args.thres
 loss   = args.loss
@@ -53,14 +59,15 @@ if not args.model:
     epochnum1 = args.epochnum1
     epochnum2 = args.epochnum2
 else:
-    runname   = str(Path(args.model).stem)
+    runname   = re.sub('stage-[12]-', '', str(Path(args.model).name))
     dropout   = float(re.search('-drop(0.\d+)',runname).group(1))
-    imgsize   = int(re.search('-(\d+)', runname).group(1))
-    arch      = re.search('^stage-[12]-(\D+)', runname).group(1)
-    enc_depth = int(re.search('^stage-[12]-\D+(\d+)', runname).group(1))
+    imgsize   = int(re.search('(?<=resnet).+?-(\d+)', runname).group(1))
+    arch      = re.search('^(\D+)', runname).group(1)
+    enc_depth = int(re.search('^\D+(\d+)', runname).group(1))
     epochnum1 = int(re.search('-ep(\d+)_', runname).group(1))
     epochnum2 = int(re.search('-ep\d+_(\d+)', runname).group(1))
 
+<<<<<<< HEAD
 runname = (arch +
           str(args.encoderdepth) +
           '-' + str(imgsize) +
@@ -70,6 +77,8 @@ runname = (arch +
           '-ep' + str(args.epochnum1) +
           '_' + str(args.epochnum2))
 
+=======
+>>>>>>> 015d35e0b8d17384857062d931785bbc5d94a7c9
 num_class = 28
 # mean and std in of each channel in the train set
 # https://www.kaggle.com/iafoss/pretrained-resnet34-with-rgby-0-460-public-lb
@@ -143,8 +152,13 @@ def _resnet_split(m): return (m[0][6],m[1])
 def _prep_model():
     logger.info('Initialising model.')
     losses = {
+<<<<<<< HEAD
          "focal": focal_loss,
          "bce": F.binary_cross_entropy_with_logits
+=======
+        "focal": focal_loss,
+        "bce": F.binary_cross_entropy_with_logits
+>>>>>>> 015d35e0b8d17384857062d931785bbc5d94a7c9
     }
     loss_func = losses.get(loss, F.binary_cross_entropy_with_logits)
 
@@ -199,8 +213,9 @@ def _predict(learn):
 def _output_results(preds):
     pred_labels = [' '.join(list([str(i) for i in np.nonzero(row>th)[0]])) for row in np.array(preds)]
     df = pd.DataFrame({'Id':test_ids,'Predicted':pred_labels})
-    df.to_csv(OUT_PATH+runname+'.csv', header=True, index=False)
-    logger.info('Results written to file. Finshed! :)')
+    out_file = OUT_PATH+runname+'.csv'
+    df.to_csv(out_file, header=True, index=False)
+    logger.info('Results written to {}. Finished! :)'.format(out_file))
     return
 
 
@@ -211,11 +226,6 @@ if __name__=='__main__':
     else:
         logger.debug(runname)
         logger.info('Loading model: '+args.model)
-        #learn = learn.load_state_dict(torch.load(args.model))
-        #learn = learn.to(device)
-        state_dict = torch.load(args.model)
-        logger.debug(state_dict['model'].keys())
-        logger.debug('hello')
-        learn.model.load_state_dict(state_dict['model'])
+        learn.load(args.model)
     preds = _predict(learn)
     _output_results(preds)
