@@ -46,6 +46,8 @@ Resnet
 
 `python3 -m code.resnet_fastai --imagesize=256 --loss=focal --gpuid=0`
 
+`python3 -m code.resnet_fastai --model=stage-2-resnet50-224-drop0.5-ep5_15 --gpuid=0`
+
 Mask RCNN
 
 `python3 -m code.mask_rcnn train --dataset=data/official --subset=train --weights=coco`
