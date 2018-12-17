@@ -19,7 +19,7 @@ from config import DATASET_PATH, MODEL_PATH, OUT_PATH, formatter
 
 
 ###############################
-# Set training config
+# Set training hyperparameters
 ###############################
 
 parser = argparse.ArgumentParser()
@@ -226,7 +226,7 @@ def _fit_model(learn):
 
 def _predict(learn):
     preds,_ = learn.get_preds(DatasetType.Test)
-    logger.info('Complete model fitting.')
+    logger.info('Complete test prediction.')
     return preds
 
 ###############################
