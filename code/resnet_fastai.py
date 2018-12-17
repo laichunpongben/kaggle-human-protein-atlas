@@ -23,20 +23,20 @@ from config import DATASET_PATH, MODEL_PATH, OUT_PATH, WEIGHTS, formatter
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-a","--arch", help="Neural network architecture", type=str, choices=["resnet", "squeezenet"], default="resnet")
-parser.add_argument("-b","--batchsize", help="batch size", type=int, default=64)
-parser.add_argument("-d","--encoderdepth", help="encoder depth of the network", type=int, choices=[34,50,101,152], default=152)
-parser.add_argument("-e","--epochnum1", help="epoch number for stage 1", type=int, default=5)
-parser.add_argument("-E","--epochnum2", help="epoch number for stage 2", type=int, default=15)
+parser.add_argument("-b","--batchsize", help="Batch size", type=int, default=64)
+parser.add_argument("-d","--encoderdepth", help="Encoder depth of the network", type=int, choices=[34,50,101,152], default=152)
+parser.add_argument("-e","--epochnum1", help="Epoch number for stage 1", type=int, default=5)
+parser.add_argument("-E","--epochnum2", help="Epoch number for stage 2", type=int, default=15)
 parser.add_argument("-i","--gpuid", help="GPU device id", type=int, choices=range(-1, 8), default=0)
-parser.add_argument("-l","--loss", help="loss function", type=str, choices=["bce", "focal"], default="bce")
-parser.add_argument("-m","--model", help="trained model to load", type=str, default=None)
-parser.add_argument("-p","--dropout", help="dropout ratio", type=float, default=0.5)
-parser.add_argument("-r","--learningrate", help="learning rate", type=float, default=3e-2)
-parser.add_argument("-s","--imagesize", help="image size", type=int, default=256)
-parser.add_argument("-S","--sampler", help="sampler", type=str, choices=["random", "weighted"], default="random")
-parser.add_argument("-t","--thres", help="threshold", type=float, default=0.1)
-parser.add_argument("-v","--verbose", help="set verbosity 0-3, 0 to turn off output (not yet implemented)", type=int, default=1)
-
+parser.add_argument("-l","--loss", help="Loss function", type=str, choices=["bce", "focal"], default="bce")
+parser.add_argument("-m","--model", help="Trained model to load", type=str, default=None)
+parser.add_argument("-p","--dropout", help="Dropout ratio", type=float, default=0.5)
+parser.add_argument("-r","--learningrate", help="Learning rate", type=float, default=3e-2)
+parser.add_argument("-s","--imagesize", help="Image size", type=int, default=256)
+parser.add_argument("-S","--sampler", help="Sampler", type=str, choices=["random", "weighted"], default="random")
+parser.add_argument("-t","--thres", help="Threshold", type=float, default=0.1)
+parser.add_argument("-v","--verbose", help="Set verbosity 0-3, 0 to turn off output (not yet implemented)", type=int, default=1)
+parser.add_argument("-x","--auxpath", help="Path to extra dataset directory", action="store_true")
 
 args = parser.parse_args()
 if args.gpuid >= 0:
@@ -101,6 +101,10 @@ num_class = 28
 protein_stats = ([0.08069, 0.05258, 0.05487, 0.08282], [0.13704, 0.10145, 0.15313, 0.13814])
 
 src_path = Path(DATASET_PATH)
+if args.auxpath:
+    aux_path = Path(EXTRADATA_PATH)
+else:
+    aux_path = ''
 out_path = Path(OUT_PATH)
 
 
@@ -128,6 +132,7 @@ conf_msg = '\n'.join([
                     'Stage 2 #epoch: ' + str(epochnum2),
                     'Batch size: ' + str(bs),
                     'Dataset directory: ' + str(src_path),
+                    'Extra dataset directory: ' + str(aux_path),
                     'Output directory: ' + str(out_path)
                     ])
 logger.debug("Start a new training task")
@@ -137,10 +142,25 @@ logger.info(conf_msg)
 # Load & preprocess data
 ###############################
 
+# to change config to data/train
+# to change to data/train/official, data/train/{extra}, data/test
+
 np.random.seed(42)
-src = (ImageItemList.from_csv(src_path, 'train.csv', folder='train', suffix='.png')
-       .random_split_by_pct(0.2)
-       .label_from_df(sep=' ',  classes=[str(i) for i in range(num_class)]))
+if not args.auxpath:
+    src = (ImageItemList.from_csv(src_path, 'train.csv', folder='official', suffix='.png')
+           .random_split_by_pct(0.2)
+           .label_from_df(sep=' ',  classes=[str(i) for i in range(num_class)]))
+else:
+    src = (ImageItemList.from_folder(src_path, recurse=True, extensions=['.png'])
+           .random_split_by_pct(0.2)
+           .label_from_func(_get_labels(src_path/'train_all.csv'),  classes=[str(i) for i in range(num_class)]))
+
+def _get_labels(csv):
+    x = ItemList() # MultiCategoryList
+    y = ItemList() # MultiCategoryList
+    labels = LabelList(x,y) 
+    # constructing: to create class LabelList 
+    return labels
 
 src.train.x.create_func = open_4_channel
 src.train.x.open = open_4_channel
