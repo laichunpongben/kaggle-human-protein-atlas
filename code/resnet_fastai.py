@@ -55,9 +55,9 @@ if not args.model:
     epochnum2 = args.epochnum2
     runname   = arch+str(args.encoderdepth)+'-'+str(imgsize)+'-drop'+str(dropout)+'-th'+str(th)+'-ep'+str(args.epochnum1)+'_'+str(args.epochnum2)
 else:
-    runname   = str(Path(args.model).stem)
+    runname   = str(Path(args.model).name)
     dropout   = float(re.search('-drop(0.\d+)',runname).group(1))
-    imgsize   = int(re.search('-(\d+)', runname).group(1))
+    imgsize   = int(re.search('(?<=resnet).+?-(\d+)', runname).group(1))
     arch      = re.search('^stage-[12]-(\D+)', runname).group(1)
     enc_depth = int(re.search('^stage-[12]-\D+(\d+)', runname).group(1))
     epochnum1 = int(re.search('-ep(\d+)_', runname).group(1))
@@ -215,7 +215,6 @@ if __name__=='__main__':
         #learn = learn.load_state_dict(torch.load(args.model))
         #learn = learn.to(device)
         state_dict = torch.load(args.model)
-        print(state_dict.keys())
         logger.debug(state_dict['model'].keys())
         logger.debug('hello')
         learn.model.load_state_dict(state_dict['model'])
