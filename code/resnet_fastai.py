@@ -15,7 +15,7 @@ from .utils import open_4_channel
 from .resnet import Resnet4Channel
 from .squeezenet import SqueezeNet4Channel
 from .loss import focal_loss
-from config import DATASET_PATH, MODEL_PATH, OUT_PATH, formatter
+from config import DATASET_PATH, MODEL_PATH, OUT_PATH, WEIGHTS, formatter
 
 
 ###############################
@@ -33,6 +33,7 @@ parser.add_argument("-l","--loss", help="loss function", type=str, choices=["bce
 parser.add_argument("-m","--model", help="trained model to load", type=str, default=None)
 parser.add_argument("-p","--dropout", help="dropout (float)", type=float, default=0.5)
 parser.add_argument("-s","--imagesize", help="image size", type=int, default=256)
+parser.add_argument("-S","--sampler", help="sampler", type=str, choices=["random", "weighted"], default="random")
 parser.add_argument("-t","--thres", help="threshold", type=float, default=0.1)
 parser.add_argument("-v","--verbosity", help="set verbosity 0-3, 0 to turn off output (not yet implemented)", type=int, default=1)
 
@@ -52,12 +53,14 @@ if not args.model:
     arch      = args.arch
     enc_depth = args.encoderdepth
     loss      = args.loss
+    sampler   = args.sampler
     epochnum1 = args.epochnum1
     epochnum2 = args.epochnum2
     runname = (arch +
               str(args.encoderdepth) +
               '-' + str(imgsize) +
               '-' + str(loss) +
+              '-' + str(sampler) +
               '-drop' + str(dropout) +
               '-th' + str(th) +
               '-ep' + str(args.epochnum1) +
@@ -67,11 +70,16 @@ else:
         search = re.search('(bce|focal)', runname)
         return search.group(1) if search else 'bce'
 
+    def get_sampler(runname):
+        search = re.search('(random|weighted)', runname)
+        return search.group(1) if search else 'random'
+
     runname   = re.sub('stage-[12]-', '', str(Path(args.model).name))
     dropout   = float(re.search('-drop(0.\d+)',runname).group(1))
     imgsize   = int(re.search('(?<=resnet).+?-(\d+)', runname).group(1))
     arch      = re.search('^(\D+)', runname).group(1)
     loss      = get_loss(runname)
+    sampler   = get_sampler(runname)
     enc_depth = int(re.search('^\D+(\d+)', runname).group(1))
     epochnum1 = int(re.search('-ep(\d+)_', runname).group(1))
     epochnum2 = int(re.search('-ep\d+_(\d+)', runname).group(1))
@@ -100,6 +108,7 @@ conf_msg = '\n'.join([
                     'Image size: ' + str(imgsize),
                     'Network architecture: ' + str(arch),
                     'Loss function: ' + str(loss),
+                    'Sampler: ' + str(sampler),
                     'Encoder depth: ' + str(enc_depth),
                     'Dropout: ' + str(dropout),
                     'Threshold: ' + str(th),
@@ -135,7 +144,16 @@ src.test.x.open = open_4_channel
 trn_tfms,_ = get_transforms(do_flip=True, flip_vert=True, max_rotate=30., max_zoom=1,
                             max_lighting=0.05, max_warp=0.)
 data = (src.transform((trn_tfms, _), size=imgsize)
-        .databunch(bs=bs).normalize(protein_stats))
+        .databunch(bs=bs))
+
+if sampler == 'weighted':
+    weights = [1/w for w in WEIGHTS]  # invert the weights
+    assert len(weights) == num_class
+    weighted_sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, num_class)
+    data.train_dl.sampler = weighted_sampler
+    data.test_dl.sampler = weighted_sampler
+
+data = data.normalize(protein_stats)
 
 ###############################
 # Set up model
