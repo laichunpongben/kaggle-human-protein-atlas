@@ -14,7 +14,7 @@ from fastai.vision import *
 from .utils import open_4_channel
 from .resnet import Resnet4Channel
 from .loss import focal_loss
-from config import DATASET_PATH, OUT_PATH, formatter
+from config import DATASET_PATH, MODEL_PATH, OUT_PATH, formatter
 
 
 ###############################
@@ -38,9 +38,10 @@ parser.add_argument("-v","--verbosity", help="set verbosity 0-3, 0 to turn off o
 
 
 args = parser.parse_args()
-device = None
 if args.gpuid >= 0:
     device = torch.cuda.set_device(args.gpuid)
+else:
+    device = 'cpu'
 bs     = args.batchsize
 th     = args.thres
 
@@ -176,15 +177,21 @@ def _fit_model(learn):
     lr = 3e-2
     logger.info('Start model fitting: Stage 1')
     learn.fit_one_cycle(epochnum1, slice(lr))
-    learn.save('stage-1-'+runname)
+
+    stage1_model_path = os.path.join(MODEL_PATH, 'stage-1-'+runname+'.pth')
+    torch.save(learn.model.state_dict(), stage1_model_path)
     logger.info('Complete model fitting Stage 1. Model saved.')
+
     learn.unfreeze()
     # learn.lr_find()
     # learn.recorder.plot()
     logger.info('Start model fitting: Stage 2')
     learn.fit_one_cycle(epochnum2, slice(3e-5, lr/epochnum2))
-    learn.save('stage-2-'+runname)
+
+    stage2_model_path = os.path.join(MODEL_PATH, 'stage-2-'+runname+'.pth')
+    torch.save(learn.model.state_dict(), stage2_model_path)
     logger.info('Complete model fitting Stage 2. Model saved.')
+    
     return learn
 
 ###############################
@@ -216,6 +223,8 @@ if __name__=='__main__':
     else:
         logger.debug(runname)
         logger.info('Loading model: '+args.model)
-        learn.load(args.model)
+        learn.model.load_state_dict(torch.load(os.path.join(MODEL_PATH, args.model+".pth"),
+                                    map_location=device),
+                                    strict=False)
     preds = _predict(learn)
     _output_results(preds)
