@@ -43,32 +43,36 @@ if args.gpuid >= 0:
     device = torch.cuda.set_device(args.gpuid)
 bs     = args.batchsize
 th     = args.thres
-loss   = args.loss
 
 if not args.model:
     dropout   = args.dropout
     imgsize   = args.imagesize
     arch      = args.arch
     enc_depth = args.encoderdepth
+    loss      = args.loss
     epochnum1 = args.epochnum1
     epochnum2 = args.epochnum2
+    runname = (arch +
+              str(args.encoderdepth) +
+              '-' + str(imgsize) +
+              '-' + str(loss) +
+              '-drop' + str(dropout) +
+              '-th' + str(th) +
+              '-ep' + str(args.epochnum1) +
+              '_' + str(args.epochnum2))
 else:
+    def get_loss(runname):
+        search = re.search('(bce|focal)', runname)
+        return search.group(1) if search else 'bce'
+
     runname   = re.sub('stage-[12]-', '', str(Path(args.model).name))
     dropout   = float(re.search('-drop(0.\d+)',runname).group(1))
     imgsize   = int(re.search('(?<=resnet).+?-(\d+)', runname).group(1))
     arch      = re.search('^(\D+)', runname).group(1)
+    loss      = get_loss(runname)
     enc_depth = int(re.search('^\D+(\d+)', runname).group(1))
     epochnum1 = int(re.search('-ep(\d+)_', runname).group(1))
     epochnum2 = int(re.search('-ep\d+_(\d+)', runname).group(1))
-
-runname = (arch +
-          str(args.encoderdepth) +
-          '-' + str(imgsize) +
-          '-' + str(loss) +
-          '-drop' + str(dropout) +
-          '-th' + str(th) + 
-          '-ep' + str(args.epochnum1) +
-          '_' + str(args.epochnum2))
 
 num_class = 28
 # mean and std in of each channel in the train set
