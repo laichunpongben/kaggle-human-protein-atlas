@@ -13,6 +13,7 @@ from fastai.vision import *
 
 from .utils import open_4_channel
 from .resnet import Resnet4Channel
+from .squeezenet import SqueezeNet4Channel
 from .loss import focal_loss
 from config import DATASET_PATH, MODEL_PATH, OUT_PATH, formatter
 
@@ -22,7 +23,7 @@ from config import DATASET_PATH, MODEL_PATH, OUT_PATH, formatter
 ###############################
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-a","--arch", help="Neural network architecture (only resnet for now)", type=str, choices=["resnet"], default="resnet")
+parser.add_argument("-a","--arch", help="Neural network architecture (only resnet for now)", type=str, choices=["resnet", "squeezenet"], default="resnet")
 parser.add_argument("-b","--batchsize", help="batch size (not in use yet)", type=int, default=64)
 parser.add_argument("-d","--encoderdepth", help="encoder depth of the network", type=int, choices=[34,50,101,152], default=152)
 parser.add_argument("-e","--epochnum1", help="epoch number for stage 1", type=int, default=25)
@@ -142,23 +143,48 @@ data = (src.transform((trn_tfms, _), size=imgsize)
 def resnet(pretrained):
     return Resnet4Channel(encoder_depth=enc_depth)
 
+def squeezenet(pretrained):
+    return SqueezeNet4Channel()
+
+def get_arch_func(arch):
+    archs = {
+        "resnet": resnet,
+        "sequeezenet": squeezenet
+    }
+    return archs.get(arch, resnet)
+
 # copied from https://github.com/fastai/fastai/blob/master/fastai/vision/learner.py
 def _resnet_split(m): return (m[0][6],m[1])
 
+def _default_split(m): return (m[1],)
+
+def get_split(arch):
+    if arch in ['resnet']:
+        return _resnet_split
+    else:
+        return _default_split
+
+def get_loss_func(loss):
+    losses = {
+        "focal": focal_loss,
+        "bce": F.binary_cross_entropy_with_logits
+    }
+    return losses.get(loss, F.binary_cross_entropy_with_logits)
+
+
 def _prep_model():
     logger.info('Initialising model.')
-    losses = {
-                       "focal": focal_loss,
-                       "bce": F.binary_cross_entropy_with_logits
-    }
-    loss_func = losses.get(loss, F.binary_cross_entropy_with_logits)
+
+    arch_func = get_arch_func(arch)
+    loss_func = get_loss_func(loss)
+    split = get_split(arch)
 
     f1_score = partial(fbeta, thresh=0.2, beta=1)
     learn = create_cnn(
                         data,
-                        resnet,
+                        arch_func,
                         cut=-2,
-                        split_on=_resnet_split,
+                        split_on=split,
                         ps=dropout,
                         loss_func=loss_func,
                         path=src_path,
@@ -191,7 +217,7 @@ def _fit_model(learn):
     stage2_model_path = os.path.join(MODEL_PATH, 'stage-2-'+runname+'.pth')
     torch.save(learn.model.state_dict(), stage2_model_path)
     logger.info('Complete model fitting Stage 2. Model saved.')
-    
+
     return learn
 
 ###############################
