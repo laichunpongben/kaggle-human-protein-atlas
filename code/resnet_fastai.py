@@ -36,10 +36,11 @@ parser.add_argument("-s","--imagesize", help="image size", type=int, default=256
 parser.add_argument("-t","--thres", help="threshold", type=float, default=0.1)
 parser.add_argument("-v","--verbosity", help="set verbosity 0-3, 0 to turn off output (not yet implemented)", type=int, default=1)
 
+args = parser.parse_args()
+
 if args.gpuid>=0:
     torch.cuda.set_device(args.gpuid)
 
-args = parser.parse_args()
 device = torch.cuda.set_device(args.gpuid)
 bs     = args.batchsize
 th     = args.thres
@@ -52,7 +53,7 @@ if not args.model:
     enc_depth = args.encoderdepth
     epochnum1 = args.epochnum1
     epochnum2 = args.epochnum2
-    runname   = arch+str(args.encoderdepth)+'-'+str(imgsize)+'-drop'+str(dropout)+'-ep'+str(args.epochnum1)+'_'+str(args.epochnum2)
+    runname   = arch+str(args.encoderdepth)+'-'+str(imgsize)+'-drop'+str(dropout)+'-th'+str(th)+'-ep'+str(args.epochnum1)+'_'+str(args.epochnum2)
 else:
     runname   = str(Path(args.model).stem)
     dropout   = float(re.search('-drop(0.\d+)',runname).group(1))
@@ -199,7 +200,7 @@ def _predict(learn):
 def _output_results(preds):
     pred_labels = [' '.join(list([str(i) for i in np.nonzero(row>th)[0]])) for row in np.array(preds)]
     df = pd.DataFrame({'Id':test_ids,'Predicted':pred_labels})
-    df.to_csv(out_path / runname+'.csv', header=True, index=False)
+    df.to_csv(OUT_PATH+runname+'.csv', header=True, index=False)
     logger.info('Results written to file. Finshed! :)')
     return
 
