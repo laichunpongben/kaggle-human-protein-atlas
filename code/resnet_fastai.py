@@ -12,8 +12,7 @@ from fastai import *
 from fastai.vision import *
 
 from .utils import open_4_channel
-from .resnet import Resnet4Channel
-from .squeezenet import SqueezeNet4Channel
+from .arch import Resnet4Channel, SqueezeNet4Channel
 from .loss import focal_loss
 from config import DATASET_PATH, MODEL_PATH, OUT_PATH, WEIGHTS, formatter
 
