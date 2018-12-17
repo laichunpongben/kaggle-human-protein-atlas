@@ -15,7 +15,6 @@ from .loss import focal_loss
 from config import DATASET_PATH, OUT_PATH, formatter
 import argparse
 import logging
-import datetime
 
 
 ###############################
@@ -53,7 +52,6 @@ if not args.model:
     enc_depth = args.encoderdepth
     epochnum1 = args.epochnum1
     epochnum2 = args.epochnum2
-    runname   = arch+str(args.encoderdepth)+'-'+str(imgsize)+'-drop'+str(dropout)+'-th'+str(th)+'-ep'+str(args.epochnum1)+'_'+str(args.epochnum2)
 else:
     runname   = str(Path(args.model).stem)
     dropout   = float(re.search('-drop(0.\d+)',runname).group(1))
@@ -68,6 +66,7 @@ runname = (arch +
           '-' + str(imgsize) +
           '-' + str(loss) +
           '-drop' + str(dropout) +
+          '-th' + str(th) + 
           '-ep' + str(args.epochnum1) +
           '_' + str(args.epochnum2))
 
@@ -102,7 +101,7 @@ conf_msg = '\n'.join([
                     'Stage 2 #epoch: ' + str(epochnum2),
                     'Dataset directory: ' + str(src_path),
                     'Output directory: ' + str(out_path)
-               ])
+                    ])
 logger.debug("Start a new training task")
 logger.info(conf_msg)
 
@@ -145,7 +144,7 @@ def _prep_model():
     logger.info('Initialising model.')
     losses = {
          "focal": focal_loss,
-        "bce": F.binary_cross_entropy_with_logits
+         "bce": F.binary_cross_entropy_with_logits
     }
     loss_func = losses.get(loss, F.binary_cross_entropy_with_logits)
 
