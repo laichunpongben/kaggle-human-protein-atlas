@@ -119,6 +119,7 @@ conf_msg = '\n'.join([
                     'Image size: ' + str(imgsize),
                     'Network architecture: ' + str(arch),
                     'Loss function: ' + str(loss),
+                    'Learning rate: ' + str(lr), 
                     'Sampler: ' + str(sampler),
                     'Encoder depth: ' + str(enc_depth),
                     'Dropout: ' + str(dropout),
