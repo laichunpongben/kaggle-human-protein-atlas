@@ -4,7 +4,6 @@ import os
 from pathlib import Path
 import argparse
 import logging
-import datetime
 
 import numpy as np
 import torch.nn as nn
@@ -53,7 +52,6 @@ if not args.model:
     enc_depth = args.encoderdepth
     epochnum1 = args.epochnum1
     epochnum2 = args.epochnum2
-    runname   = arch+str(args.encoderdepth)+'-'+str(imgsize)+'-drop'+str(dropout)+'-th'+str(th)+'-ep'+str(args.epochnum1)+'_'+str(args.epochnum2)
 else:
     runname   = re.sub('stage-[12]-', '', str(Path(args.model).name))
     dropout   = float(re.search('-drop(0.\d+)',runname).group(1))
@@ -62,6 +60,15 @@ else:
     enc_depth = int(re.search('^\D+(\d+)', runname).group(1))
     epochnum1 = int(re.search('-ep(\d+)_', runname).group(1))
     epochnum2 = int(re.search('-ep\d+_(\d+)', runname).group(1))
+
+runname = (arch +
+          str(args.encoderdepth) +
+          '-' + str(imgsize) +
+          '-' + str(loss) +
+          '-drop' + str(dropout) +
+          '-th' + str(th) + 
+          '-ep' + str(args.epochnum1) +
+          '_' + str(args.epochnum2))
 
 num_class = 28
 # mean and std in of each channel in the train set
@@ -94,7 +101,7 @@ conf_msg = '\n'.join([
                     'Stage 2 #epoch: ' + str(epochnum2),
                     'Dataset directory: ' + str(src_path),
                     'Output directory: ' + str(out_path)
-               ])
+                    ])
 logger.debug("Start a new training task")
 logger.info(conf_msg)
 
@@ -136,8 +143,8 @@ def _resnet_split(m): return (m[0][6],m[1])
 def _prep_model():
     logger.info('Initialising model.')
     losses = {
-        "focal": focal_loss,
-        "bce": F.binary_cross_entropy_with_logits
+                       "focal": focal_loss,
+                       "bce": F.binary_cross_entropy_with_logits
     }
     loss_func = losses.get(loss, F.binary_cross_entropy_with_logits)
 
