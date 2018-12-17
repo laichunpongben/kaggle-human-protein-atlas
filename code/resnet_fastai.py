@@ -2,10 +2,13 @@
 
 import os
 from pathlib import Path
+import argparse
+import logging
+import datetime
+
 import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
-
 from fastai import *
 from fastai.vision import *
 
@@ -13,9 +16,6 @@ from .utils import open_4_channel
 from .resnet import Resnet4Channel
 from .loss import focal_loss
 from config import DATASET_PATH, OUT_PATH, formatter
-import argparse
-import logging
-import datetime
 
 
 ###############################
@@ -144,7 +144,7 @@ def _resnet_split(m): return (m[0][6],m[1])
 def _prep_model():
     logger.info('Initialising model.')
     losses = {
-         "focal": focal_loss,
+        "focal": focal_loss,
         "bce": F.binary_cross_entropy_with_logits
     }
     loss_func = losses.get(loss, F.binary_cross_entropy_with_logits)
@@ -201,7 +201,7 @@ def _output_results(preds):
     pred_labels = [' '.join(list([str(i) for i in np.nonzero(row>th)[0]])) for row in np.array(preds)]
     df = pd.DataFrame({'Id':test_ids,'Predicted':pred_labels})
     df.to_csv(OUT_PATH+runname+'.csv', header=True, index=False)
-    logger.info('Results written to file. Finshed! :)')
+    logger.info('Results written to file. Finished! :)')
     return
 
 
