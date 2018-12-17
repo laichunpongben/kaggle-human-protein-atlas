@@ -16,8 +16,8 @@
 
 ## On-going
 - Resnet training on 4 channels with pytorch fastai
-
-
+- Implement WeightedRandomSampler
+- Implement batch size
 
 
 
@@ -53,4 +53,4 @@
 ### U-Net
 - https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/
 - Image segmentation model that handles touching & overlapping cells
-- [ ] Image augmentation: irrgular deform 
+- [ ] Image augmentation: irrgular deform
