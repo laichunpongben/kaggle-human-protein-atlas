@@ -17,7 +17,7 @@
 ## On-going
 - Resnet training on 4 channels with pytorch fastai
 - Implement WeightedRandomSampler
-- Implement batch size
+
 
 
 

@@ -105,6 +105,7 @@ conf_msg = '\n'.join([
                     'Threshold: ' + str(th),
                     'Stage 1 #epoch: ' + str(epochnum1),
                     'Stage 2 #epoch: ' + str(epochnum2),
+                    'Batch size: ' + str(bs),
                     'Dataset directory: ' + str(src_path),
                     'Output directory: ' + str(out_path)
                     ])
@@ -134,7 +135,7 @@ src.test.x.open = open_4_channel
 trn_tfms,_ = get_transforms(do_flip=True, flip_vert=True, max_rotate=30., max_zoom=1,
                             max_lighting=0.05, max_warp=0.)
 data = (src.transform((trn_tfms, _), size=imgsize)
-        .databunch().normalize(protein_stats))
+        .databunch(bs=bs).normalize(protein_stats))
 
 ###############################
 # Set up model
