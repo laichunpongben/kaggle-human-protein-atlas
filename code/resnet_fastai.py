@@ -25,12 +25,13 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-a","--arch", help="Neural network architecture", type=str, choices=["resnet", "squeezenet"], default="resnet")
 parser.add_argument("-b","--batchsize", help="batch size", type=int, default=64)
 parser.add_argument("-d","--encoderdepth", help="encoder depth of the network", type=int, choices=[34,50,101,152], default=152)
-parser.add_argument("-e","--epochnum1", help="epoch number for stage 1", type=int, default=25)
-parser.add_argument("-E","--epochnum2", help="epoch number for stage 2", type=int, default=50)
+parser.add_argument("-e","--epochnum1", help="epoch number for stage 1", type=int, default=5)
+parser.add_argument("-E","--epochnum2", help="epoch number for stage 2", type=int, default=15)
 parser.add_argument("-i","--gpuid", help="GPU device id", type=int, choices=range(-1, 8), default=0)
 parser.add_argument("-l","--loss", help="loss function", type=str, choices=["bce", "focal"], default="bce")
 parser.add_argument("-m","--model", help="trained model to load", type=str, default=None)
 parser.add_argument("-p","--dropout", help="dropout ratio", type=float, default=0.5)
+parser.add_argument("-r","--learningrate", help="learning rate", type=float, default=3e-2)
 parser.add_argument("-s","--imagesize", help="image size", type=int, default=256)
 parser.add_argument("-S","--sampler", help="sampler", type=str, choices=["random", "weighted"], default="random")
 parser.add_argument("-t","--thres", help="threshold", type=float, default=0.1)
@@ -52,6 +53,7 @@ if not args.model:
     enc_depth = args.encoderdepth
     loss      = args.loss
     sampler   = args.sampler
+    lr        = args.learningrate
     epochnum1 = args.epochnum1
     epochnum2 = args.epochnum2
     runname = (arch +
@@ -61,6 +63,8 @@ if not args.model:
               '-' + str(sampler) +
               '-drop' + str(dropout) +
               '-th' + str(th) +
+              '-bs' + str(bs) + 
+              '-lr' + str(lr) +
               '-ep' + str(args.epochnum1) +
               '_' + str(args.epochnum2))
 else:
@@ -72,11 +76,20 @@ else:
         search = re.search('(random|weighted)', runname)
         return search.group(1) if search else 'random'
 
+    def get_lr(runname):
+        search = re.search('-lr(\S+)-', runname)
+        return search.group(1) if search else args.learningrate
+
+    def get_bs(runname):
+        search = re.search('-bs(\d+)-', runname)
+        return search.group(1) if search else bs
+
     runname   = re.sub('stage-[12]-', '', str(Path(args.model).name))
     dropout   = float(re.search('-drop(0.\d+)',runname).group(1))
     imgsize   = int(re.search('(?<=resnet).+?-(\d+)', runname).group(1))
     arch      = re.search('^(\D+)', runname).group(1)
     loss      = get_loss(runname)
+    lr        = get_lr(runname)
     sampler   = get_sampler(runname)
     enc_depth = int(re.search('^\D+(\d+)', runname).group(1))
     epochnum1 = int(re.search('-ep(\d+)_', runname).group(1))
@@ -217,7 +230,6 @@ def _prep_model():
 def _fit_model(learn):
     # learn.lr_find()
     # learn.recorder.plot()
-    lr = 3e-2
     logger.info('Start model fitting: Stage 1')
     learn.fit_one_cycle(epochnum1, slice(lr))
 
