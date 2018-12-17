@@ -55,21 +55,13 @@ if not args.model:
     epochnum2 = args.epochnum2
     runname   = arch+str(args.encoderdepth)+'-'+str(imgsize)+'-drop'+str(dropout)+'-th'+str(th)+'-ep'+str(args.epochnum1)+'_'+str(args.epochnum2)
 else:
-    runname   = str(Path(args.model).name)
+    runname   = re.sub('stage-[12]-', '', str(Path(args.model).name))
     dropout   = float(re.search('-drop(0.\d+)',runname).group(1))
     imgsize   = int(re.search('(?<=resnet).+?-(\d+)', runname).group(1))
-    arch      = re.search('^stage-[12]-(\D+)', runname).group(1)
-    enc_depth = int(re.search('^stage-[12]-\D+(\d+)', runname).group(1))
+    arch      = re.search('^(\D+)', runname).group(1)
+    enc_depth = int(re.search('^\D+(\d+)', runname).group(1))
     epochnum1 = int(re.search('-ep(\d+)_', runname).group(1))
     epochnum2 = int(re.search('-ep\d+_(\d+)', runname).group(1))
-
-runname = (arch +
-          str(args.encoderdepth) +
-          '-' + str(imgsize) +
-          '-' + str(loss) +
-          '-drop' + str(dropout) +
-          '-ep' + str(args.epochnum1) +
-          '_' + str(args.epochnum2))
 
 num_class = 28
 # mean and std in of each channel in the train set
@@ -200,8 +192,9 @@ def _predict(learn):
 def _output_results(preds):
     pred_labels = [' '.join(list([str(i) for i in np.nonzero(row>th)[0]])) for row in np.array(preds)]
     df = pd.DataFrame({'Id':test_ids,'Predicted':pred_labels})
-    df.to_csv(OUT_PATH+runname+'.csv', header=True, index=False)
-    logger.info('Results written to file. Finished! :)')
+    out_file = OUT_PATH+runname+'.csv'
+    df.to_csv(out_file, header=True, index=False)
+    logger.info('Results written to {}. Finished! :)'.format(out_file))
     return
 
 
@@ -212,11 +205,6 @@ if __name__=='__main__':
     else:
         logger.debug(runname)
         logger.info('Loading model: '+args.model)
-        #learn = learn.load_state_dict(torch.load(args.model))
-        #learn = learn.to(device)
-        state_dict = torch.load(args.model)
-        logger.debug(state_dict['model'].keys())
-        logger.debug('hello')
-        learn.model.load_state_dict(state_dict['model'])
+        learn.load(args.model)
     preds = _predict(learn)
     _output_results(preds)
