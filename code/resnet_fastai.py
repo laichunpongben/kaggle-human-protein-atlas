@@ -4,7 +4,6 @@ import os
 from pathlib import Path
 import argparse
 import logging
-import datetime
 
 import numpy as np
 import torch.nn as nn
@@ -16,11 +15,6 @@ from .utils import open_4_channel
 from .resnet import Resnet4Channel
 from .loss import focal_loss
 from config import DATASET_PATH, OUT_PATH, formatter
-<<<<<<< HEAD
-import argparse
-import logging
-=======
->>>>>>> 015d35e0b8d17384857062d931785bbc5d94a7c9
 
 
 ###############################
@@ -67,7 +61,6 @@ else:
     epochnum1 = int(re.search('-ep(\d+)_', runname).group(1))
     epochnum2 = int(re.search('-ep\d+_(\d+)', runname).group(1))
 
-<<<<<<< HEAD
 runname = (arch +
           str(args.encoderdepth) +
           '-' + str(imgsize) +
@@ -77,8 +70,6 @@ runname = (arch +
           '-ep' + str(args.epochnum1) +
           '_' + str(args.epochnum2))
 
-=======
->>>>>>> 015d35e0b8d17384857062d931785bbc5d94a7c9
 num_class = 28
 # mean and std in of each channel in the train set
 # https://www.kaggle.com/iafoss/pretrained-resnet34-with-rgby-0-460-public-lb
@@ -152,13 +143,8 @@ def _resnet_split(m): return (m[0][6],m[1])
 def _prep_model():
     logger.info('Initialising model.')
     losses = {
-<<<<<<< HEAD
-         "focal": focal_loss,
-         "bce": F.binary_cross_entropy_with_logits
-=======
-        "focal": focal_loss,
-        "bce": F.binary_cross_entropy_with_logits
->>>>>>> 015d35e0b8d17384857062d931785bbc5d94a7c9
+                       "focal": focal_loss,
+                       "bce": F.binary_cross_entropy_with_logits
     }
     loss_func = losses.get(loss, F.binary_cross_entropy_with_logits)
 
