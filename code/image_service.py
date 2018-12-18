@@ -1,4 +1,5 @@
 import os
+import re
 import time
 import numpy as np
 import PIL
@@ -154,7 +155,17 @@ def test():
     test_imread(dataset_dir, size=test_size)
     test_imread_collection(dataset_dir, size=test_size)
 
+def check_colors():
+    fs = sorted(os.listdir("data/HPAv18"))
+    ids = list(set([re.sub("(_red|_green|_blue|_yellow)", "", f.split(".png")[0]) for f in os.listdir("data/HPAv18")]))
+    for id_ in ids:
+        count = sum(1 for f in fs if f.startswith(id_))
+        if count < 4:
+            print(id_)
+
+
 if __name__ == '__main__':
     # test()
-    resize_png("data/rgb/test", "data/rgb_32/test", 32, id_="510f3694-bad5-11e8-b2b9-ac1f6b6435d0")
+    # resize_png("data/rgb/test", "data/rgb_32/test", 32, id_="510f3694-bad5-11e8-b2b9-ac1f6b6435d0")
     # merge_rgb("510f3694-bad5-11e8-b2b9-ac1f6b6435d0", "data/official/test", "data/rgb/test")
+    check_colors()
