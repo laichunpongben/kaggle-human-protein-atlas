@@ -163,9 +163,16 @@ def check_colors():
         if count < 4:
             print(id_)
 
+def convert_grayscale(f, in_, out):
+    img = Image.open(os.path.join(in_, f)).convert('L')
+    img.save(os.path.join(out, f))
 
 if __name__ == '__main__':
     # test()
     # resize_png("data/rgb/test", "data/rgb_32/test", 32, id_="510f3694-bad5-11e8-b2b9-ac1f6b6435d0")
     # merge_rgb("510f3694-bad5-11e8-b2b9-ac1f6b6435d0", "data/official/test", "data/rgb/test")
-    check_colors()
+    in_ = '/media/ben/LENOVO_USB_HDD/HPAv18_single'
+    out = '/media/ben/LENOVO_USB_HDD/HPAv18_grayscale'
+    fs = sorted([f for f in os.listdir(in_) if f.endswith(".png")])
+    for f in fs:
+        convert_grayscale(f, in_, out)
