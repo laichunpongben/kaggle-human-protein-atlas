@@ -13,35 +13,35 @@ Train sample size: 31072
 
 Test sample size:  11702
 
-## Labels
-  0.   Nucleoplasm
-  1.   Nuclear membrane
-  2.   Nucleoli
-  3.   Nucleoli fibrillar center
-  4.   Nuclear speckles
-  5.   Nuclear bodies
-  6.   Endoplasmic reticulum
-  7.   Golgi apparatus
-  8.   Peroxisomes
-  9.   Endosomes
-  10.  Lysosomes
-  11.  Intermediate filaments
-  12.  Actin filaments
-  13.  Focal adhesion sites
-  14.  Microtubules
-  15.  Microtubule ends
-  16.  Cytokinetic bridge
-  17.  Mitotic spindle
-  18.  Microtubule organizing center
-  19.  Centrosome
-  20.  Lipid droplets
-  21.  Plasma membrane
-  22.  Cell junctions
-  23.  Mitochondria
-  24.  Aggresome
-  25.  Cytosol
-  26.  Cytoplasmic bodies
-  27.  Rods & rings
+## Labels / Cell component / # images in train set
+  0.   Nucleoplasm			12885
+  1.   Nuclear membrane			1254
+  2.   Nucleoli				3621
+  3.   Nucleoli fibrillar center	1561
+  4.   Nuclear speckles			1858
+  5.   Nuclear bodies			2513
+  6.   Endoplasmic reticulum		1008
+  7.   Golgi apparatus			2822
+  8.   Peroxisomes			53
+  9.   Endosomes			45
+  10.  Lysosomes			28
+  11.  Intermediate filaments		1093
+  12.  Actin filaments			688
+  13.  Focal adhesion sites		537
+  14.  Microtubules			1066
+  15.  Microtubule ends			21
+  16.  Cytokinetic bridge		530
+  17.  Mitotic spindle			210
+  18.  Microtubule organizing center	902
+  19.  Centrosome			1482
+  20.  Lipid droplets			172
+  21.  Plasma membrane			3777
+  22.  Cell junctions			802
+  23.  Mitochondria			2965
+  24.  Aggresome			322
+  25.  Cytosol				8228
+  26.  Cytoplasmic bodies		828
+  27.  Rods & rings			11
 
 ## Quickstart
 Resnet FastAI
