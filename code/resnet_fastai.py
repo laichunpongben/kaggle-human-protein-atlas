@@ -10,6 +10,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from fastai import *
 from fastai.vision import *
+from fastai.callbacks.tracker import EarlyStoppingCallback
 
 from .utils import open_4_channel
 from .arch import Resnet4Channel, SqueezeNet4Channel
@@ -63,7 +64,7 @@ if not args.model:
               '-' + str(sampler) +
               '-drop' + str(dropout) +
               '-th' + str(th) +
-              '-bs' + str(bs) + 
+              '-bs' + str(bs) +
               '-lr' + str(lr) +
               '-ep' + str(args.epochnum1) +
               '_' + str(args.epochnum2))
@@ -219,6 +220,12 @@ def _prep_model():
                         loss_func=loss_func,
                         path=src_path,
                         metrics=[f1_score],
+                        callback_fns=[
+                            partial(EarlyStoppingCallback,
+                                    monitor='f1_score',
+                                    min_delta=0.01,
+                                    patience=3)
+                        ]
                       )
     logger.info('Complete initialising model.')
     return learn
