@@ -5,7 +5,7 @@ from pathlib import Path
 from PIL import Image
 from io import BytesIO
 
-df = pd.read_csv('HPAv18RBGY_wodpl.csv')
+df = pd.read_csv('data/HPAv18/HPAv18RBGY_wodpl.csv')
 colors = ['blue','red','green','yellow']
 
 def download(id_):
