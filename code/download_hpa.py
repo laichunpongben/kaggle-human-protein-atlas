@@ -5,7 +5,7 @@ from pathlib import Path
 from PIL import Image
 from io import BytesIO
 
-df = pd.read_csv('data/HPAv18/HPAv18RBGY_wodpl.csv')
+df = pd.read_csv('data/HPAv18RBGY_wodpl.csv')
 colors = ['blue','red','green','yellow']
 
 def download(id_):
@@ -17,7 +17,7 @@ def download(id_):
             url = f'http://v18.proteinatlas.org/images/{image_dir}/{image_id}_{color}.jpg'
             print(url)
             r = requests.get(url)
-            image = Image.open(BytesIO(r.content)).resize((512, 512), Image.LANCZOS)
+            image = Image.open(BytesIO(r.content)).resize((512, 512), Image.LANCZOS).convert('L')
             image.save(hpa_dir / f'{id_}_{color}.png', format='png')
         except:
             print(f'{id_}_{color} broke...')

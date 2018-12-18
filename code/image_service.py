@@ -1,4 +1,5 @@
 import os
+import re
 import time
 import numpy as np
 import PIL
@@ -154,7 +155,24 @@ def test():
     test_imread(dataset_dir, size=test_size)
     test_imread_collection(dataset_dir, size=test_size)
 
+def check_colors():
+    fs = sorted(os.listdir("data/HPAv18"))
+    ids = list(set([re.sub("(_red|_green|_blue|_yellow)", "", f.split(".png")[0]) for f in os.listdir("data/HPAv18")]))
+    for id_ in ids:
+        count = sum(1 for f in fs if f.startswith(id_))
+        if count < 4:
+            print(id_)
+
+def convert_grayscale(f, in_, out):
+    img = Image.open(os.path.join(in_, f)).convert('L')
+    img.save(os.path.join(out, f))
+
 if __name__ == '__main__':
     # test()
-    resize_png("data/rgb/test", "data/rgb_32/test", 32, id_="510f3694-bad5-11e8-b2b9-ac1f6b6435d0")
+    # resize_png("data/rgb/test", "data/rgb_32/test", 32, id_="510f3694-bad5-11e8-b2b9-ac1f6b6435d0")
     # merge_rgb("510f3694-bad5-11e8-b2b9-ac1f6b6435d0", "data/official/test", "data/rgb/test")
+    in_ = '/media/ben/LENOVO_USB_HDD/HPAv18_single'
+    out = '/media/ben/LENOVO_USB_HDD/HPAv18_grayscale'
+    fs = sorted([f for f in os.listdir(in_) if f.endswith(".png")])
+    for f in fs:
+        convert_grayscale(f, in_, out)
