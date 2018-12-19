@@ -27,6 +27,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-a","--arch", help="Neural network architecture", type=str, choices=["resnet", "squeezenet"], default="resnet")
 parser.add_argument("-b","--batchsize", help="batch size", type=int, default=64)
 parser.add_argument("-d","--encoderdepth", help="encoder depth of the network", type=int, choices=[34,50,101,152], default=152)
+parser.add_argument("-D","--dataset", help="Dataset", type=str, choices=["official", "hpav18", "official_hpav18"], default="official")
 parser.add_argument("-e","--epochnum1", help="epoch number for stage 1", type=int, default=5)
 parser.add_argument("-E","--epochnum2", help="epoch number for stage 2", type=int, default=15)
 parser.add_argument("-i","--gpuid", help="GPU device id", type=int, choices=range(-1, 8), default=0)
@@ -47,6 +48,7 @@ else:
     device = 'cpu'
 bs     = args.batchsize
 th     = args.thres
+ds     = args.dataset
 
 if not args.model:
     dropout   = args.dropout
@@ -61,6 +63,7 @@ if not args.model:
     runname = (arch +
               str(args.encoderdepth) +
               '-' + str(imgsize) +
+              '-' + str(ds) +
               '-' + str(loss) +
               '-' + str(sampler) +
               '-drop' + str(dropout) +
@@ -127,6 +130,7 @@ conf_msg = '\n'.join([
                     'Stage 1 #epoch: ' + str(epochnum1),
                     'Stage 2 #epoch: ' + str(epochnum2),
                     'Batch size: ' + str(bs),
+                    'Dataset: ' + str(ds),
                     'Dataset directory: ' + str(src_path),
                     'Output directory: ' + str(out_path)
                     ])
@@ -178,11 +182,12 @@ def get_stats(data):
     mean, std = mean.tolist(), std.tolist()
     return mean, std
 
-isCalcStats = False
-if isCalcStats:
-    protein_stats = get_stats(data)
+if (ds, imgsize) in STATS:
+    logger.debug("Using default stats...")
+    protein_stats = STATS[(ds, imgsize)]
 else:
-    protein_stats = STATS
+    logger.debug("Calculating stats...")
+    protein_stats = get_stats(data)
 logger.info("Protein stats: {}".format(protein_stats))
 data = data.normalize(protein_stats)
 
