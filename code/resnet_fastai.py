@@ -169,7 +169,7 @@ def get_stats(data):
     x_tot = np.zeros(4)
     x2_tot = np.zeros(4)
     for x,y in iter(data.train_dl):
-        x = to_np(x).reshape(-1,4)
+        x = np.moveaxis(to_np(x), 1, -1).reshape(-1,4)  # Shape is bs, channel, imgsize, imgsize. Move channel first to last
         x_tot += x.mean(axis=0)
         x2_tot += (x**2).mean(axis=0)
 
@@ -178,7 +178,7 @@ def get_stats(data):
     mean, std = mean.tolist(), std.tolist()
     return mean, std
 
-isCalcStats = False
+isCalcStats = True
 if isCalcStats:
     protein_stats = get_stats(data)
 else:
