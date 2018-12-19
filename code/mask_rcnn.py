@@ -55,8 +55,8 @@ from mrcnn.config import Config
 from mrcnn import utils
 from mrcnn import model as modellib
 from mrcnn import visualize
-from atlas.code.image_service import get_mask, get_empty_mask
-from atlas.code.csv_service import get_annotations
+from .image_service import get_mask, get_empty_mask
+from .csv_service import get_annotations
 
 # Path to trained weights file
 COCO_WEIGHTS_PATH = os.path.join(ROOT_DIR, "mask_rcnn_coco.h5")
