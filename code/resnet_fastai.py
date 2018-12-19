@@ -162,9 +162,35 @@ trn_tfms,_ = get_transforms(do_flip=True, flip_vert=True, max_rotate=30., max_zo
 data = (src.transform((trn_tfms, _), size=imgsize)
         .databunch(bs=bs))
 
+def sort_class_by_rarity(weights):
+    return [y for y,_ in sorted(list(zip(range(num_class), weights)), key=lambda x: x[1])]
+
+sorted_class = sort_class_by_rarity(WEIGHTS)
+
+def get_rarest_class_weight(y):
+    weights = []
+    for row in y:
+        hasLabel = False
+        for c in sorted_class:
+            if row[c]:
+                weights.append(1/WEIGHTS[c])  # invert the weights
+                hasLabel = True
+                break
+        if not hasLabel:
+            weights.append(1/WEIGHTS[-1])
+
+    return weights
+
+def get_multilabel_weights(data):
+    weights = []
+    for x,y in iter(data.train_dl):
+        weights.extend(get_rarest_class_weight(y))
+    return weights
+
 if sampler == 'weighted':
-    weights = [1/w for w in WEIGHTS]  # invert the weights
-    assert len(weights) == num_class
+    weights = get_multilabel_weights(data)
+    logger.debug("Initialising WeightedRandomSampler with {} weights.".format(len(weights)))
+    weights = torch.DoubleTensor(weights)
     weighted_sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, num_class)
     data.train_dl.sampler = weighted_sampler
     data.test_dl.sampler = weighted_sampler
