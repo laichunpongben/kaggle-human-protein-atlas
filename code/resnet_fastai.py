@@ -168,16 +168,25 @@ def sort_class_by_rarity(weights):
 sorted_class = sort_class_by_rarity(WEIGHTS)
 
 def get_rarest_class_weight(y):
+    max_w = 1e9
     weights = []
     for row in y:
         hasLabel = False
         for c in sorted_class:
             if row[c]:
-                weights.append(1/WEIGHTS[c])  # invert the weights
+                try:
+                    w = 1/WEIGHTS[c]  # invert the weights
+                except ZeroDivisionError:
+                    w = max_w
+                weights.append(w)
                 hasLabel = True
                 break
         if not hasLabel:
-            weights.append(1/WEIGHTS[-1])
+            try:
+                w = 1/WEIGHTS[sorted_class[-1]]
+            except ZeroDivisionError:
+                w = max_w
+            weights.append(w)
 
     return weights
 
