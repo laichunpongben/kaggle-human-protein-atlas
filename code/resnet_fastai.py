@@ -178,7 +178,7 @@ def get_stats(data):
     mean, std = mean.tolist(), std.tolist()
     return mean, std
 
-isCalcStats = True
+isCalcStats = False
 if isCalcStats:
     protein_stats = get_stats(data)
 else:
