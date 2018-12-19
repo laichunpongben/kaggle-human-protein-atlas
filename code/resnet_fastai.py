@@ -246,7 +246,7 @@ def _prep_model():
                         metrics=[f1_score],
                         callback_fns=[
                             partial(EarlyStoppingCallback,
-                                    monitor='f1_score',
+                                    monitor='fbeta',
                                     min_delta=0.01,
                                     patience=3)
                         ]
