@@ -200,7 +200,7 @@ if sampler == 'weighted':
     weights = get_multilabel_weights(data)
     logger.debug("Initialising WeightedRandomSampler with {} weights.".format(len(weights)))
     weights = torch.DoubleTensor(weights)
-    weighted_sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, num_class)
+    weighted_sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, len(weights))
     data.train_dl.sampler = weighted_sampler
     data.test_dl.sampler = weighted_sampler
 
