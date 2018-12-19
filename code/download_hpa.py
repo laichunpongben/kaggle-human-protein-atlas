@@ -8,14 +8,15 @@ from io import BytesIO
 
 df = pd.read_csv('data/HPAv18RBGY_wodpl.csv')
 colors = ['blue','red','green','yellow']
-hpa_dir = Path('/media/ben/LENOVO_USB_HDD/HPAv18_train')
+hpa_dir = Path('data/hpav18')
 hpa_dir.mkdir(parents=True, exist_ok=True)
 exist_ids = sorted([f.split('.png')[0] for f in os.listdir(hpa_dir) if f.endswith('.png')])
 
 def download(id_):
     for color in colors:
         if '_'.join([id_, color]) in exist_ids:
-            print('{}_{} Already exist'.format(id_, color))
+            # print('{}_{} Already exist'.format(id_, color))
+            pass
         else:
             try:
                 image_dir, _, image_id = id_.partition('_')
