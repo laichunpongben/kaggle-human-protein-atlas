@@ -167,12 +167,53 @@ def convert_grayscale(f, in_, out):
     img = Image.open(os.path.join(in_, f)).convert('L')
     img.save(os.path.join(out, f))
 
+def flann_match_images(dataset_dir0, dataset_dir1, channel=None):
+    if channel:
+        fs0 = [f for f in os.listdir(dataset_dir0) if f.endswith("_{}.png".format(channel))]
+        fs1 = [f for f in os.listdir(dataset_dir1) if f.endswith("_{}.png".format(channel))]
+    else:
+        fs0 = [f for f in os.listdir(dataset_dir0) if f.endswith(".png")]
+        fs1 = [f for f in os.listdir(dataset_dir1) if f.endswith(".png")]
+    imgs1 = [cv2.imread(f, cv2.IMREAD_GRAYSCALE) for f in fs1]
+
+    sift = cv2.xfeatures2d.SIFT_create()
+    details0 = []
+    for f in fs0:
+        img = cv2.imread(f, cv2.IMREAD_GRAYSCALE)
+        kp, des = sift.detectAndCompute(img, None)
+        details0.append((f, kp, des))
+
+    details1 = []
+    for f in fs1:
+        img = cv2.imread(f, cv2.IMREAD_GRAYSCALE)
+        kp, des = sift.detectAndCompute(img, None)
+        details1.append((f, kp, des))
+
+    details0.sort(key=lambda x: x[2])
+    details1.sort(key=lambda x: x[2])
+
+    print(details0)
+    print(details1)
+    print('Loaded all sift details')
+
+    # FLANN parameters
+    FLANN_INDEX_KDTREE = 1
+    index_params = dict(algorithm = FLANN_INDEX_KDTREE, trees = 5)
+    search_params = dict(checks=50)   # or pass empty dictionary
+    flann = cv.FlannBasedMatcher(index_params,search_params)
+    print('Flann')
+
 if __name__ == '__main__':
     # test()
     # resize_png("data/rgb/test", "data/rgb_32/test", 32, id_="510f3694-bad5-11e8-b2b9-ac1f6b6435d0")
     # merge_rgb("510f3694-bad5-11e8-b2b9-ac1f6b6435d0", "data/official/test", "data/rgb/test")
-    in_ = '/media/ben/LENOVO_USB_HDD/HPAv18_single'
-    out = '/media/ben/LENOVO_USB_HDD/HPAv18_grayscale'
-    fs = sorted([f for f in os.listdir(in_) if f.endswith(".png")])
-    for f in fs:
-        convert_grayscale(f, in_, out)
+    # in_ = '/media/ben/LENOVO_USB_HDD/HPAv18_single'
+    # out = '/media/ben/LENOVO_USB_HDD/HPAv18_grayscale'
+    # fs = sorted([f for f in os.listdir(in_) if f.endswith(".png")])
+    # for f in fs:
+    #     convert_grayscale(f, in_, out)
+
+    dir0 = 'data/official/train'
+    dir1 = '/media/ben/LENOVO_USB_HDD/HPAv18_train'
+    channel = 'green'
+    flann_match_images(dir0, dir1, channel)
