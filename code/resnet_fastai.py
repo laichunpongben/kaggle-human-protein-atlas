@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import argparse
 import logging
+import time
 
 import numpy as np
 import torch.nn as nn
@@ -15,7 +16,7 @@ from fastai.callbacks.tracker import EarlyStoppingCallback
 from .utils import open_4_channel
 from .arch import Resnet4Channel, SqueezeNet4Channel
 from .loss import focal_loss
-from config import DATASET_PATH, MODEL_PATH, OUT_PATH, WEIGHTS, formatter
+from config import DATASET_PATH, MODEL_PATH, OUT_PATH, STATS, WEIGHTS, formatter
 
 
 ###############################
@@ -99,7 +100,6 @@ else:
 num_class = 28
 # mean and std in of each channel in the train set
 # https://www.kaggle.com/iafoss/pretrained-resnet34-with-rgby-0-460-public-lb
-protein_stats = ([0.08069, 0.05258, 0.05487, 0.08282], [0.13704, 0.10145, 0.15313, 0.13814])
 
 src_path = Path(DATASET_PATH)
 out_path = Path(OUT_PATH)
@@ -165,6 +165,25 @@ if sampler == 'weighted':
     data.train_dl.sampler = weighted_sampler
     data.test_dl.sampler = weighted_sampler
 
+def get_stats(data):
+    x_tot = np.zeros(4)
+    x2_tot = np.zeros(4)
+    for x,y in iter(data.train_dl):
+        x = to_np(x).reshape(-1,4)
+        x_tot += x.mean(axis=0)
+        x2_tot += (x**2).mean(axis=0)
+
+    mean = x_tot/len(data.train_dl)
+    std = np.sqrt(x2_tot/len(data.train_dl) - mean**2)
+    mean, std = mean.tolist(), std.tolist()
+    return mean, std
+
+isCalcStats = False
+if isCalcStats:
+    protein_stats = get_stats(data)
+else:
+    protein_stats = STATS
+logger.info("Protein stats: {}".format(protein_stats))
 data = data.normalize(protein_stats)
 
 ###############################
