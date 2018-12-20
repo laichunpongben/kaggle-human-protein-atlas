@@ -11,7 +11,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from fastai import *
 from fastai.vision import *
-from fastai.callbacks.tracker import EarlyStoppingCallback
+from fastai.callbacks.tracker import EarlyStoppingCallback, SaveModelCallback
+from fastai.callbacks.csv_logger import CSVLogger
 
 from .utils import open_4_channel
 from .arch import Resnet4Channel, SqueezeNet4Channel
@@ -283,21 +284,23 @@ def _prep_model():
                             partial(EarlyStoppingCallback,
                                     monitor='fbeta',
                                     min_delta=0.01,
-                                    patience=3)
+                                    patience=3),
+                            SaveModelCallback
                         ]
                       )
+    csv_logger = CSVLogger(learn,'../../logs/'+runname+'.log')
     logger.info('Complete initialising model.')
-    return learn
+    return learn, csv_logger
 
 ###############################
 # Fit model
 ###############################
 
-def _fit_model(learn):
+def _fit_model(learn,csv_logger):
     # learn.lr_find()
     # learn.recorder.plot()
     logger.info('Start model fitting: Stage 1')
-    learn.fit_one_cycle(epochnum1, slice(lr))
+    learn.fit_one_cycle(epochnum1, slice(lr), callbacks=[csv_logger])
 
     stage1_model_path = os.path.join(MODEL_PATH, 'stage-1-'+runname+'.pth')
     logger.info('Complete model fitting Stage 1.')
@@ -308,7 +311,7 @@ def _fit_model(learn):
     # learn.lr_find()
     # learn.recorder.plot()
     logger.info('Start model fitting: Stage 2')
-    learn.fit_one_cycle(epochnum2, slice(3e-5, lr/epochnum2))
+    learn.fit_one_cycle(epochnum2, slice(3e-5, lr/epochnum2), callbacks=[csv_logger])
 
     stage2_model_path = os.path.join(MODEL_PATH, 'stage-2-'+runname+'.pth')
     logger.info('Complete model fitting Stage 2.')
@@ -340,9 +343,9 @@ def _output_results(preds):
 
 
 if __name__=='__main__':
-    learn = _prep_model()
+    learn,csv_logger = _prep_model()
     if not args.model:
-        learn = _fit_model(learn)
+        learn = _fit_model(learn,csv_logger)
     else:
         logger.debug(runname)
         logger.info('Loading model: '+args.model)
