@@ -16,6 +16,7 @@ from fastai.callbacks.tracker import EarlyStoppingCallback
 from .utils import open_4_channel
 from .arch import Resnet4Channel, SqueezeNet4Channel
 from .loss import focal_loss
+from .callback import SaveModelCustomPathCallback
 from config import DATASET_PATH, MODEL_PATH, OUT_PATH, STATS, WEIGHTS, formatter
 
 
@@ -274,6 +275,12 @@ def _prep_model():
                                       monitor='fbeta',
                                       min_delta=0.01,
                                       patience=3)
+    save_model_callback = partial(SaveModelCustomPathCallback,
+                                  monitor='fbeta',
+                                  mode='auto',
+                                  every='improvement',
+                                  name=runname+'-bestmodel',
+                                  device=device)
     learn = create_cnn(
                         data,
                         arch_func,
@@ -284,7 +291,8 @@ def _prep_model():
                         path=src_path,
                         metrics=[f1_score],
                         callback_fns=[
-                            early_stopping_callback
+                            early_stopping_callback,
+                            save_model_callback
                         ]
                       )
     logger.info('Complete initialising model.')
