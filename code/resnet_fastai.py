@@ -16,7 +16,7 @@ from fastai.callbacks.tracker import EarlyStoppingCallback
 from .utils import open_4_channel
 from .arch import Resnet4Channel, SqueezeNet4Channel
 from .loss import focal_loss
-from .callback import SaveModelCustomPathCallback
+from .callback import SaveModelCustomPathCallback, CSVCustomPathLogger
 from config import DATASET_PATH, MODEL_PATH, OUT_PATH, STATS, WEIGHTS, formatter
 
 
@@ -275,6 +275,9 @@ def _prep_model():
                                       monitor='fbeta',
                                       min_delta=0.01,
                                       patience=3)
+    csv_logger = partial(CSVCustomPathLogger,
+                         filename=runname)
+
     # TODO: Fix OSError: [Errno 12] Cannot allocate memory
     # save_model_callback = partial(SaveModelCustomPathCallback,
     #                               monitor='fbeta',
@@ -294,6 +297,7 @@ def _prep_model():
                         metrics=[f1_score],
                         callback_fns=[
                             early_stopping_callback,
+                            csv_logger,
                             # save_model_callback
                         ]
                       )
@@ -311,8 +315,9 @@ def _fit_model(learn):
     learn.fit_one_cycle(epochnum1, slice(lr))
 
     stage1_model_path = os.path.join(MODEL_PATH, 'stage-1-'+runname+'.pth')
+    logger.info('Complete model fitting Stage 1.')
     torch.save(learn.model.state_dict(), stage1_model_path)
-    logger.info('Complete model fitting Stage 1. Model saved.')
+    logger.info('Model saved.')
 
     learn.unfreeze()
     # learn.lr_find()
@@ -321,8 +326,9 @@ def _fit_model(learn):
     learn.fit_one_cycle(epochnum2, slice(3e-5, lr/epochnum2))
 
     stage2_model_path = os.path.join(MODEL_PATH, 'stage-2-'+runname+'.pth')
+    logger.info('Complete model fitting Stage 2.')
     torch.save(learn.model.state_dict(), stage2_model_path)
-    logger.info('Complete model fitting Stage 2. Model saved.')
+    logger.info('Model saved.')
 
     return learn
 

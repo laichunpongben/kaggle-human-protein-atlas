@@ -2,9 +2,10 @@ import os
 import logging
 
 APP_NAME = "kaggle-human-protein-atlas"
-DATASET_PATH = os.getenv("DATASET_PATH", "./data/hpav18/")
+DATASET_PATH = os.getenv("DATASET_PATH", "./data/official/")
 MODEL_PATH = os.getenv("MODEL_PATH", "./model/")
 OUT_PATH = os.getenv("OUT_PATH", "./output/")
+LOG_PATH = os.getenv("OUT_PATH", "./logs/")
 
 _log_format = "*** %(asctime)s - %(name)s - %(levelname)s ***\n%(message)s\n******\n"
 logging.basicConfig(
@@ -22,7 +23,7 @@ STATS = {
                               [0.14055994072081715, 0.10449831556398265, 0.15388817201507504, 0.1414106750084145]),
     ("hpav18", 32):          ([0.036928985010341434, 0.04130028252512823, 0.0075938375457115116, 0.0937920384196862],
                               [0.05419148261744557, 0.07329545732546368, 0.020430581830732493, 0.1444940434697745]),
-    ("official_hpav18", 32): ([0.04952424341381588, 0.044563889728912606, 0.021262363915341524, 0.09030440845350635], 
+    ("official_hpav18", 32): ([0.04952424341381588, 0.044563889728912606, 0.021262363915341524, 0.09030440845350635],
                               [0.09085177593717349, 0.08380707909661085, 0.08733944332031862, 0.1436538775485339])
 }
 
