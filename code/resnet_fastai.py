@@ -147,10 +147,16 @@ src = (ImageItemList.from_csv(src_path, 'train.csv', folder='train', suffix='.pn
        .random_split_by_pct(0.2)
        .label_from_df(sep=' ',  classes=[str(i) for i in range(num_class)]))
 
+if "official" in ds:
+    logger.info("Offical stats: {}".format(STATS["official"]))
+if "hpav18" in ds:
+    logger.info("HPAv18 stats: {}".format(STATS["hpav18"]))
+
 src.train.x.create_func = open_4_channel
 src.train.x.open = open_4_channel
 src.valid.x.create_func = open_4_channel
 src.valid.x.open = open_4_channel
+
 
 test_ids = list(sorted({fname.split('_')[0] for fname in os.listdir(src_path/'test') if fname.endswith('.png')}))
 test_fnames = [src_path/'test'/test_id for test_id in test_ids]
@@ -205,27 +211,6 @@ if sampler == 'weighted':
     data.train_dl.sampler = weighted_sampler
     data.test_dl.sampler = weighted_sampler
 
-def get_stats(data):
-    x_tot = np.zeros(4)
-    x2_tot = np.zeros(4)
-    for x,y in iter(data.train_dl):
-        x = np.moveaxis(to_np(x), 1, -1).reshape(-1,4)  # Shape is bs, channel, imgsize, imgsize. Move channel first to last
-        x_tot += x.mean(axis=0)
-        x2_tot += (x**2).mean(axis=0)
-
-    mean = x_tot/len(data.train_dl)
-    std = np.sqrt(x2_tot/len(data.train_dl) - mean**2)
-    mean, std = mean.tolist(), std.tolist()
-    return mean, std
-
-if (ds, imgsize) in STATS:
-    logger.debug("Using default stats...")
-    protein_stats = STATS[(ds, imgsize)]
-else:
-    logger.debug("Calculating stats...")
-    protein_stats = get_stats(data)
-logger.info("Protein stats: {}".format(protein_stats))
-data = data.normalize(protein_stats)
 
 ###############################
 # Set up model
