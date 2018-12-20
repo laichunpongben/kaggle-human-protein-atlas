@@ -5,7 +5,7 @@ APP_NAME = "kaggle-human-protein-atlas"
 DATASET_PATH = os.getenv("DATASET_PATH", "./data/official/")
 MODEL_PATH = os.getenv("MODEL_PATH", "./model/")
 OUT_PATH = os.getenv("OUT_PATH", "./output/")
-LOG_PATH = os.getenv("OUT_PATH", "./logs/")
+LOG_PATH = os.getenv("LOG_PATH", "./logs/")
 
 _log_format = "*** %(asctime)s - %(name)s - %(levelname)s ***\n%(message)s\n******\n"
 logging.basicConfig(
