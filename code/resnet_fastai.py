@@ -14,7 +14,7 @@ from fastai.vision import *
 from fastai.callbacks.tracker import EarlyStoppingCallback
 
 from .utils import open_4_channel
-from .arch import Resnet4Channel, SqueezeNet4Channel
+from .arch import Resnet4Channel, Inception4Channel, SqueezeNet4Channel
 from .loss import focal_loss
 from .callback import SaveModelCustomPathCallback, CSVCustomPathLogger
 from config import DATASET_PATH, MODEL_PATH, OUT_PATH, STATS, WEIGHTS, formatter
@@ -25,7 +25,7 @@ from config import DATASET_PATH, MODEL_PATH, OUT_PATH, STATS, WEIGHTS, formatter
 ###############################
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-a","--arch", help="Neural network architecture", type=str, choices=["resnet", "squeezenet"], default="resnet")
+parser.add_argument("-a","--arch", help="Neural network architecture", type=str, choices=["resnet", "inception", "squeezenet"], default="resnet")
 parser.add_argument("-b","--batchsize", help="batch size", type=int, default=64)
 parser.add_argument("-d","--encoderdepth", help="encoder depth of the network", type=int, choices=[34,50,101,152], default=152)
 parser.add_argument("-D","--dataset", help="Dataset", type=str, choices=["official", "hpav18", "official_hpav18"], default="official")
@@ -219,12 +219,16 @@ if sampler == 'weighted':
 def resnet(pretrained):
     return Resnet4Channel(encoder_depth=enc_depth)
 
+def inception(pretrained):
+    return Inception4Channel()
+
 def squeezenet(pretrained):
     return SqueezeNet4Channel()
 
 def get_arch_func(arch):
     archs = {
         "resnet": resnet,
+        "inception": inception,
         "sequeezenet": squeezenet
     }
     return archs.get(arch, resnet)
