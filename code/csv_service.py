@@ -9,7 +9,7 @@ def get_annotations(train_csv):
     return annotations
 
 
-def make_union(csv0, csv1, out):
+def make_union(csv0, csv1, out, mode="u"):
     df0 = pd.read_csv(csv0, index_col=0)
     df1 = pd.read_csv(csv1, index_col=0)
 
@@ -22,7 +22,11 @@ def make_union(csv0, csv1, out):
     labels1 = df1.to_dict(orient="index")
     labels1 = {k: [x for x in sorted(str(v[df1.columns[-1]]).split())] for k, v in labels1.items()}
 
-    labels = [' '.join(sorted(list(set(labels0[id_]).union(set(labels1[id_]))))) for id_ in ids]
+    if mode == "u":
+        labels = [' '.join(sorted(list(set(labels0[id_]).union(set(labels1[id_]))))) for id_ in ids]
+    else:
+        labels = [' '.join(sorted(list(set(labels0[id_]).intersection(set(labels1[id_]))))) for id_ in ids]
+
     df = pd.DataFrame({'Id':ids,'Predicted':labels})
     print(df)
     df.to_csv(out, header=True, index=False)
@@ -32,7 +36,7 @@ if __name__ == '__main__':
     # annotations = get_annotations(path)
     # print(annotations)
 
-    csv0 = "output/resnet50_224_ep5_15.csv"
-    csv1 = "output/resnet50_224_ep5_5.csv"
-    out = "output/resnet50_224_ep5_5_intersection_15.csv"
-    make_union(csv0, csv1, out)
+    csv0 = "output/resnet50-512-bce-random-drop0.5-th0.1-bs16-lr0.01-ep15_25.csv"
+    csv1 = "output/resnet50-512-official_hpav18-bce-weighted-drop0.5-th0.1-bs16-lr0.005-ep5_15.csv"
+    out = "output/0_intersection_1.csv"
+    make_union(csv0, csv1, out, "i")
