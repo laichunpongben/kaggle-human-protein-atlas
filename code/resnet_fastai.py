@@ -300,8 +300,9 @@ def _fit_model(learn):
     learn.fit_one_cycle(epochnum1, slice(lr))
 
     stage1_model_path = os.path.join(MODEL_PATH, 'stage-1-'+runname+'.pth')
+    logger.info('Complete model fitting Stage 1.')
     torch.save(learn.model.state_dict(), stage1_model_path)
-    logger.info('Complete model fitting Stage 1. Model saved.')
+    logger.info('Model saved.')
 
     learn.unfreeze()
     # learn.lr_find()
@@ -310,8 +311,9 @@ def _fit_model(learn):
     learn.fit_one_cycle(epochnum2, slice(3e-5, lr/epochnum2))
 
     stage2_model_path = os.path.join(MODEL_PATH, 'stage-2-'+runname+'.pth')
+    logger.info('Complete model fitting Stage 2.')
     torch.save(learn.model.state_dict(), stage2_model_path)
-    logger.info('Complete model fitting Stage 2. Model saved.')
+    logger.info('Model saved.')
 
     return learn
 
