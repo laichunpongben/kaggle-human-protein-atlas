@@ -21,19 +21,20 @@ class SaveModelCustomPathCallback(SaveModelCallback):
 
     def on_epoch_end(self, epoch, **kwargs:Any)->None:
         if self.every=="epoch":
-            model_path = os.path.join(MODEL_PATH, "{}-epoch{}.pth".format(self.name, epoch))
+            model_path = Path(MODEL_PATH)/f'{self.name}-epoch{epoch}.pth'
             torch.save(self.learn.model.state_dict(), model_path)
         else: #every="improvement"
             current = self.get_monitor_value()
             if current is not None and self.operator(current, self.best):
                 self.best = current
-                model_path = os.path.join(MODEL_PATH, "{}.pth".format(self.name))
+                model_path = Path(MODEL_PATH)/f'{self.name}.pth'
                 torch.save(self.learn.model.state_dict(), model_path)
 
     def on_train_end(self, **kwargs):
         if self.every=="improvement":
-            self.learn.model.load_state_dict(torch.load(os.path.join(MODEL_PATH, "{}.pth".format(self.name)),
-                                             map_location=self.device),
+            model_path = Path(MODEL_PATH)/f'{self.name}-epoch{epoch}.pth'
+            self.learn.model.load_state_dict(torch.load(model_path,
+                                                        map_location=self.device),
                                              strict=False)
 
 @dataclass

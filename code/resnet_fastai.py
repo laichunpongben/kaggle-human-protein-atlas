@@ -314,7 +314,7 @@ def _fit_model(learn):
     logger.info('Start model fitting: Stage 1')
     learn.fit_one_cycle(epochnum1, slice(lr))
 
-    stage1_model_path = os.path.join(MODEL_PATH, 'stage-1-'+runname+'.pth')
+    stage1_model_path = Path(MODEL_PATH)/f'stage-1-{runname}.pth'
     logger.info('Complete model fitting Stage 1.')
     torch.save(learn.model.state_dict(), stage1_model_path)
     logger.info('Model saved.')
@@ -325,7 +325,7 @@ def _fit_model(learn):
     logger.info('Start model fitting: Stage 2')
     learn.fit_one_cycle(epochnum2, slice(3e-5, lr/epochnum2))
 
-    stage2_model_path = os.path.join(MODEL_PATH, 'stage-2-'+runname+'.pth')
+    stage2_model_path = Path(MODEL_PATH)/f'stage-2-{runname}.pth'
     logger.info('Complete model fitting Stage 2.')
     torch.save(learn.model.state_dict(), stage2_model_path)
     logger.info('Model saved.')
@@ -361,8 +361,9 @@ if __name__=='__main__':
     else:
         logger.debug(runname)
         logger.info('Loading model: '+args.model)
-        learn.model.load_state_dict(torch.load(os.path.join(MODEL_PATH, args.model+".pth"),
-                                    map_location=device),
+        model_path = Path(MODEL_PATH)/f'{args.model}.pth'
+        learn.model.load_state_dict(torch.load(model_path,
+                                               map_location=device),
                                     strict=False)
     preds = _predict(learn)
     _output_results(preds)
