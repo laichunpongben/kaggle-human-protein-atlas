@@ -270,6 +270,10 @@ def _prep_model():
     split = get_split(arch)
 
     f1_score = partial(fbeta, thresh=0.2, beta=1)
+    early_stopping_callback = partial(EarlyStoppingCallback,
+                                      monitor='fbeta',
+                                      min_delta=0.01,
+                                      patience=3)
     learn = create_cnn(
                         data,
                         arch_func,
@@ -280,10 +284,7 @@ def _prep_model():
                         path=src_path,
                         metrics=[f1_score],
                         callback_fns=[
-                            partial(EarlyStoppingCallback,
-                                    monitor='fbeta',
-                                    min_delta=0.01,
-                                    patience=3)
+                            early_stopping_callback
                         ]
                       )
     logger.info('Complete initialising model.')
