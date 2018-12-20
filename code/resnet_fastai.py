@@ -147,10 +147,16 @@ src = (ImageItemList.from_csv(src_path, 'train.csv', folder='train', suffix='.pn
        .random_split_by_pct(0.2)
        .label_from_df(sep=' ',  classes=[str(i) for i in range(num_class)]))
 
+if "official" in ds:
+    logger.info("Offical stats: {}".format(STATS["official"]))
+if "hpav18" in ds:
+    logger.info("HPAv18 stats: {}".format(STATS["hpav18"]))
+
 src.train.x.create_func = open_4_channel
 src.train.x.open = open_4_channel
 src.valid.x.create_func = open_4_channel
 src.valid.x.open = open_4_channel
+
 
 test_ids = list(sorted({fname.split('_')[0] for fname in os.listdir(src_path/'test') if fname.endswith('.png')}))
 test_fnames = [src_path/'test'/test_id for test_id in test_ids]
@@ -205,27 +211,6 @@ if sampler == 'weighted':
     data.train_dl.sampler = weighted_sampler
     data.test_dl.sampler = weighted_sampler
 
-def get_stats(data):
-    x_tot = np.zeros(4)
-    x2_tot = np.zeros(4)
-    for x,y in iter(data.train_dl):
-        x = np.moveaxis(to_np(x), 1, -1).reshape(-1,4)  # Shape is bs, channel, imgsize, imgsize. Move channel first to last
-        x_tot += x.mean(axis=0)
-        x2_tot += (x**2).mean(axis=0)
-
-    mean = x_tot/len(data.train_dl)
-    std = np.sqrt(x2_tot/len(data.train_dl) - mean**2)
-    mean, std = mean.tolist(), std.tolist()
-    return mean, std
-
-if (ds, imgsize) in STATS:
-    logger.debug("Using default stats...")
-    protein_stats = STATS[(ds, imgsize)]
-else:
-    logger.debug("Calculating stats...")
-    protein_stats = get_stats(data)
-logger.info("Protein stats: {}".format(protein_stats))
-data = data.normalize(protein_stats)
 
 ###############################
 # Set up model
@@ -314,7 +299,7 @@ def _fit_model(learn):
     logger.info('Start model fitting: Stage 1')
     learn.fit_one_cycle(epochnum1, slice(lr))
 
-    stage1_model_path = os.path.join(MODEL_PATH, 'stage-1-'+runname+'.pth')
+    stage1_model_path = Path(MODEL_PATH)/f'stage-1-{runname}.pth'
     logger.info('Complete model fitting Stage 1.')
     torch.save(learn.model.state_dict(), stage1_model_path)
     logger.info('Model saved.')
@@ -325,7 +310,7 @@ def _fit_model(learn):
     logger.info('Start model fitting: Stage 2')
     learn.fit_one_cycle(epochnum2, slice(3e-5, lr/epochnum2))
 
-    stage2_model_path = os.path.join(MODEL_PATH, 'stage-2-'+runname+'.pth')
+    stage2_model_path = Path(MODEL_PATH)/f'stage-2-{runname}.pth'
     logger.info('Complete model fitting Stage 2.')
     torch.save(learn.model.state_dict(), stage2_model_path)
     logger.info('Model saved.')
@@ -361,8 +346,9 @@ if __name__=='__main__':
     else:
         logger.debug(runname)
         logger.info('Loading model: '+args.model)
-        learn.model.load_state_dict(torch.load(os.path.join(MODEL_PATH, args.model+".pth"),
-                                    map_location=device),
+        model_path = Path(MODEL_PATH)/f'{args.model}.pth'
+        learn.model.load_state_dict(torch.load(model_path,
+                                               map_location=device),
                                     strict=False)
     preds = _predict(learn)
     _output_results(preds)
