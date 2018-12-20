@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.init as init
+import torch.nn.functional as F
 import torchvision
 
 
@@ -64,10 +65,7 @@ class Inception4Channel(nn.Module):
         self.aux_logits = aux_logits
         self.transform_input = transform_input
 
-        w = encoder.Conv2d_1a_3x3.weight
         self.Conv2d_1a_3x3 = BasicConv2d(4, 32, kernel_size=3, stride=2)
-        self.Conv2d_1a_3x3.weight = nn.Parameter(torch.cat((w,torch.zeros(32,1,3,3)),dim=1))
-
         self.Conv2d_2a_3x3 = encoder.Conv2d_2a_3x3
         self.Conv2d_2b_3x3 = encoder.Conv2d_2b_3x3
         self.Conv2d_3b_1x1 = encoder.Conv2d_3b_1x1
@@ -81,7 +79,8 @@ class Inception4Channel(nn.Module):
         self.Mixed_6d = encoder.Mixed_6d
         self.Mixed_6e = encoder.Mixed_6e
         if aux_logits:
-            self.AuxLogits = InceptionAux(768, num_classes)
+            # self.AuxLogits = InceptionAux(768, num_classes)
+            self.AuxLogits = encoder.AuxLogits
         self.Mixed_7a = encoder.Mixed_7a
         self.Mixed_7b = encoder.Mixed_7b
         self.Mixed_7c = encoder.Mixed_7c
@@ -156,6 +155,19 @@ class Inception4Channel(nn.Module):
         if self.training and self.aux_logits:
             return x, aux
         return x
+
+
+class BasicConv2d(nn.Module):
+
+    def __init__(self, in_channels, out_channels, **kwargs):
+        super(BasicConv2d, self).__init__()
+        self.conv = nn.Conv2d(in_channels, out_channels, bias=False, **kwargs)
+        self.bn = nn.BatchNorm2d(out_channels, eps=0.001)
+
+    def forward(self, x):
+        x = self.conv(x)
+        x = self.bn(x)
+        return F.relu(x, inplace=True)
 
 
 class SqueezeNet4Channel(nn.Module):
