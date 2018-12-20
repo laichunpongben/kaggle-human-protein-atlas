@@ -285,15 +285,8 @@ def _prep_model():
                         path=src_path,
                         metrics=[f1_score],
                         callback_fns=[
-<<<<<<< HEAD
-                            partial(EarlyStoppingCallback,
-                                    monitor='fbeta',
-                                    min_delta=0.01,
-                                    patience=3),
+                            early_stopping_callback,
                             SaveModelCallback
-=======
-                            early_stopping_callback
->>>>>>> 334c50b80ab8cba8ccc8b001edc796242840ad47
                         ]
                       )
     csv_logger = CSVLogger(learn,'../../logs/'+runname+'.log')
