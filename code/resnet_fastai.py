@@ -11,7 +11,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from fastai import *
 from fastai.vision import *
-from fastai.callbacks.tracker import EarlyStoppingCallback, SaveModelCallback
+from fastai.callbacks.tracker import EarlyStoppingCallback
 
 from .utils import open_4_channel
 from .arch import Resnet4Channel, SqueezeNet4Channel
@@ -270,16 +270,6 @@ def _prep_model():
     split = get_split(arch)
 
     f1_score = partial(fbeta, thresh=0.2, beta=1)
-    early_stopping_callback = partial(EarlyStoppingCallback,
-                                      monitor='fbeta',
-                                      min_delta=0.01,
-                                      patience=3)
-    save_model_callback = partial(SaveModelCallback,
-                                  monitor='fbeta',
-                                  mode='auto',
-                                  every='improvement',
-                                  name=runname+'-bestmodel')
-
     learn = create_cnn(
                         data,
                         arch_func,
@@ -290,8 +280,10 @@ def _prep_model():
                         path=src_path,
                         metrics=[f1_score],
                         callback_fns=[
-                            early_stopping_callback,
-                            save_model_callback
+                            partial(EarlyStoppingCallback,
+                                    monitor='fbeta',
+                                    min_delta=0.01,
+                                    patience=3)
                         ]
                       )
     logger.info('Complete initialising model.')
