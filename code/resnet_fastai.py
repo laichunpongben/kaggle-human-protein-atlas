@@ -275,12 +275,14 @@ def _prep_model():
                                       monitor='fbeta',
                                       min_delta=0.01,
                                       patience=3)
-    save_model_callback = partial(SaveModelCustomPathCallback,
-                                  monitor='fbeta',
-                                  mode='auto',
-                                  every='improvement',
-                                  name=runname+'-bestmodel',
-                                  device=device)
+    # TODO: Fix OSError: [Errno 12] Cannot allocate memory
+    # save_model_callback = partial(SaveModelCustomPathCallback,
+    #                               monitor='fbeta',
+    #                               mode='auto',
+    #                               every='improvement',
+    #                               name=runname+'-bestmodel',
+    #                               device=device)
+
     learn = create_cnn(
                         data,
                         arch_func,
@@ -292,7 +294,7 @@ def _prep_model():
                         metrics=[f1_score],
                         callback_fns=[
                             early_stopping_callback,
-                            save_model_callback
+                            # save_model_callback
                         ]
                       )
     logger.info('Complete initialising model.')
