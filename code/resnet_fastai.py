@@ -262,7 +262,7 @@ def _prep_model():
     f1_score = partial(fbeta, thresh=0.2, beta=1)
     early_stopping_callback = partial(EarlyStoppingCallback,
                                       monitor='fbeta',
-                                      min_delta=0.01,
+                                      min_delta=0.005,
                                       patience=3)
     csv_logger = partial(CSVCustomPathLogger,
                          filename=runname)
