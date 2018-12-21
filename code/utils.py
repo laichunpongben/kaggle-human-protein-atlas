@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 from fastai.vision.image import *
 
-from config import STATS, MEAN_NUCLEI_COUNT, MEAN_NUCLEI_DENSITY
+from config import STATS, BASE_NUCLEI_COUNT, BASE_NUCLEI_DENSITY
 from .csv_service import get_nuclei_count_density
 from .image_service import clipped_zoom
 
@@ -34,9 +34,10 @@ def open_4_channel(fname):
 
     # TODO: implement
     # zoom
-    nuclei_count, nuclei_density = nuclei_count_density.get(fname, (MEAN_NUCLEI_COUNT, MEAN_NUCLEI_DENSITY))
+    nuclei_count, nuclei_density = nuclei_count_density.get(fname, (BASE_NUCLEI_COUNT, BASE_NUCLEI_DENSITY))
     zoom_scale = get_zoom_scale(nuclei_count, nuclei_density)
     if zoom_scale != 1.0:
+        # if zoom out, padding is handled
         x = clipped_zoom(x, zoom_scale)
 
     return Image(pil2tensor(x, np.float32).float())
@@ -46,7 +47,7 @@ def normalize(x, mean, std):
 
 def get_zoom_scale(nuclei_count, nuclei_density):
     try:
-        return math.sqrt((nuclei_count/MEAN_NUCLEI_COUNT)*(MEAN_NUCLEI_DENSITY/nuclei_density))
+        return math.sqrt((nuclei_count/BASE_NUCLEI_COUNT)*(BASE_NUCLEI_DENSITY/nuclei_density))
     except ZeroDivisionError:
         return 1.0
 

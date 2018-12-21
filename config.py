@@ -25,8 +25,9 @@ STATS = {
                         [0.09085177593717349, 0.08380707909661085, 0.08733944332031862, 0.1436538775485339])
 }
 
-MEAN_NUCLEI_COUNT = 10  # arbitrary
-MEAN_NUCLEI_DENSITY = 0.5  # arbitrary
+# Reference of nuclei count and density is from the same image
+BASE_NUCLEI_COUNT = 10  # arbitrary
+BASE_NUCLEI_DENSITY = 0.5  # arbitrary
 
 WEIGHTS = [
     0.41468202883,
