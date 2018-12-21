@@ -1,15 +1,16 @@
+import math
+
 import cv2
 import numpy as np
-
 from fastai.vision.image import *
 
-from config import STATS, MEAN_NUCLEI_COUNT
-from .csv_service import get_nuclei_counts
+from config import STATS, MEAN_NUCLEI_COUNT, MEAN_NUCLEI_DENSITY
+from .csv_service import get_nuclei_count_density
 from .image_service import clipped_zoom
 
 # TODO: implement
-# nuclei_counts = get_nuclei_counts()
-nuclei_counts = {}
+# nuclei_count_density = get_nuclei_count_density()
+nuclei_count_density = {}
 
 # adapted from https://www.kaggle.com/iafoss/pretrained-resnet34-with-rgby-0-460-public-lb
 def open_4_channel(fname):
@@ -33,8 +34,8 @@ def open_4_channel(fname):
 
     # TODO: implement
     # zoom
-    nuclei_count = nuclei_counts.get(fname, MEAN_NUCLEI_COUNT)
-    zoom_scale = get_zoom_scale(nuclei_count)
+    nuclei_count, nuclei_density = nuclei_count_density.get(fname, (MEAN_NUCLEI_COUNT, MEAN_NUCLEI_DENSITY))
+    zoom_scale = get_zoom_scale(nuclei_count, nuclei_density)
     if zoom_scale != 1.0:
         x = clipped_zoom(x, zoom_scale)
 
@@ -43,9 +44,9 @@ def open_4_channel(fname):
 def normalize(x, mean, std):
     return (x-mean)/std
 
-def get_zoom_scale(nuclei_count):
+def get_zoom_scale(nuclei_count, nuclei_density):
     try:
-        return sqrt(nuclei_count/MEAN_NUCLEI_COUNT)
+        return math.sqrt((nuclei_count/MEAN_NUCLEI_COUNT)*(MEAN_NUCLEI_DENSITY/nuclei_density))
     except ZeroDivisionError:
         return 1.0
 

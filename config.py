@@ -26,6 +26,7 @@ STATS = {
 }
 
 MEAN_NUCLEI_COUNT = 10  # arbitrary
+MEAN_NUCLEI_DENSITY = 0.5  # arbitrary
 
 WEIGHTS = [
     0.41468202883,
