@@ -36,7 +36,7 @@ def open_4_channel(fname):
     # zoom
     nuclei_count, nuclei_density = nuclei_count_density.get(fname, (BASE_NUCLEI_COUNT, BASE_NUCLEI_DENSITY))
     zoom_scale = get_zoom_scale(nuclei_count, nuclei_density)
-    if zoom_scale != 1.0:
+    if not math.isclose(zoom_scale, 1.0):
         # if zoom out, padding is handled
         x = clipped_zoom(x, zoom_scale)
 
