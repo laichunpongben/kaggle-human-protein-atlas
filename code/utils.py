@@ -44,8 +44,10 @@ def normalize(x, mean, std):
     return (x-mean)/std
 
 def get_zoom_scale(nuclei_count):
-    # TODO: implement
-    return 1.0
+    try:
+        return sqrt(nuclei_count/MEAN_NUCLEI_COUNT)
+    except ZeroDivisionError:
+        return 1.0
 
 def get_stats(data):
     x_tot = np.zeros(4)
