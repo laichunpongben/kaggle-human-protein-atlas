@@ -40,10 +40,7 @@ def open_4_channel(fname):
     return Image(pil2tensor(x, np.float32).float())
 
 def normalize(x, mean, std):
-    if not math.isclose(std, 0.0, abs_tol=1e-15):
-        return (x-mean)/std
-    else:
-        return x
+    return (x-mean)/std
 
 def get_zoom_scale(nuclei_count, nuclei_density):
     try:
