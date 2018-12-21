@@ -8,9 +8,7 @@ from config import STATS, BASE_NUCLEI_COUNT, BASE_NUCLEI_DENSITY
 from .csv_service import get_nuclei_count_density
 from .image_service import clipped_zoom
 
-# TODO: implement
-# nuclei_count_density = get_nuclei_count_density()
-nuclei_count_density = {}
+nuclei_count_density = get_nuclei_count_density()
 
 # adapted from https://www.kaggle.com/iafoss/pretrained-resnet34-with-rgby-0-460-public-lb
 def open_4_channel(fname):
@@ -32,7 +30,6 @@ def open_4_channel(fname):
         mean, std = STATS["hpav18"]
     x = normalize(x, mean, std)
 
-    # TODO: implement
     # zoom
     nuclei_count, nuclei_density = nuclei_count_density.get(fname, (BASE_NUCLEI_COUNT, BASE_NUCLEI_DENSITY))
     zoom_scale = get_zoom_scale(nuclei_count, nuclei_density)

@@ -12,11 +12,13 @@ def get_nuclei_count_density():
     '''
     fname: (count, density)
     '''
-    df = pd.read_csv("nuclei.csv", index_col=0)
-    columns = df.columns
-    nuclei_count_density = df.to_dict(orient="index")
-    nuclei_count_density = {k: (int(v[columns[1]]), int(v[columns[2]])) for k, v in nuclei_count_density.items()}
-    return nuclei_count_density
+    # TODO: implement
+    return {}
+    # df = pd.read_csv("nuclei.csv", index_col=0)
+    # columns = df.columns
+    # nuclei_count_density = df.to_dict(orient="index")
+    # nuclei_count_density = {k: (int(v[columns[1]]), int(v[columns[2]])) for k, v in nuclei_count_density.items()}
+    # return nuclei_count_density
 
 
 def make_union(csv0, csv1, out, mode="u"):
