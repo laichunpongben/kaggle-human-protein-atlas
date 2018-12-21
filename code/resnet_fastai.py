@@ -12,11 +12,13 @@ import torch.nn.functional as F
 from fastai import *
 from fastai.vision import *
 from fastai.callbacks.tracker import EarlyStoppingCallback
+from sklearn.preprocessing import MultiLabelBinarizer
 
 from .utils import open_4_channel
 from .arch import Resnet4Channel, Inception4Channel, SqueezeNet4Channel
 from .loss import focal_loss
 from .callback import SaveModelCustomPathCallback, CSVCustomPathLogger
+from .ml_stratifiers import MultilabelStratifiedShuffleSplit
 from config import DATASET_PATH, MODEL_PATH, OUT_PATH, STATS, WEIGHTS, formatter
 
 
@@ -107,7 +109,7 @@ num_class = 28
 
 src_path = Path(DATASET_PATH)
 out_path = Path(OUT_PATH)
-
+train_csv = src_path/f'train.csv'
 
 ###############################
 # Set up logger
@@ -143,6 +145,17 @@ logger.info(conf_msg)
 ###############################
 
 np.random.seed(42)
+
+def generate_train_valid_split(train_csv, n_splits=10, valid_size=0.2):
+    df = pd.read_csv(train_csv)
+    X, y = df.Id, df.Target
+    y = MultiLabelBinarizer().fit_transform(y)
+    msss = MultilabelStratifiedShuffleSplit(n_splits=n_splits, test_size=valid_size, random_state=42)
+    return msss.split(X, y)
+
+train_valid_split = generate_train_valid_split(train_csv, n_splits=10, valid_size=0.2)
+
+
 src = (ImageItemList.from_csv(src_path, 'train.csv', folder='train', suffix='.png')
        .random_split_by_pct(0.2)
        .label_from_df(sep=' ',  classes=[str(i) for i in range(num_class)]))
