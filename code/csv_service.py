@@ -1,3 +1,4 @@
+from collections import defaultdict
 import pandas as pd
 
 
@@ -43,12 +44,45 @@ def make_union(csv0, csv1, out, mode="u"):
     print(df)
     df.to_csv(out, header=True, index=False)
 
-if __name__ == '__main__':
-    # path = "data/official/train.csv"
-    # annotations = get_annotations(path)
-    # print(annotations)
+def ensemble(csvs, out, min_vote):
+    dfs = [pd.read_csv(csv_, index_col=0) for csv_ in csvs]
+    all_label_lists = defaultdict(list)
+    all_labels = defaultdict(str)
 
-    csv0 = "output/resnet50-512-bce-random-drop0.5-th0.1-bs16-lr0.01-ep15_25.csv"
-    csv1 = "output/resnet50-512-official_hpav18-bce-weighted-drop0.5-th0.1-bs16-lr0.005-ep5_15.csv"
-    out = "output/0_intersection_1.csv"
-    make_union(csv0, csv1, out, "i")
+    for i, df in enumerate(dfs):
+        labels = df.to_dict(orient="index")
+        for k, v in labels.items():
+            all_label_lists[k].append([x for x in sorted(str(v[df.columns[-1]]).split())])
+
+    for k, v in all_label_lists.items():
+        all_labels[k] = vote(v, min_vote)
+
+    print(all_labels)
+    ids = list(all_labels.keys())
+    labels = list(all_labels.values())
+
+    out_df = pd.DataFrame({'Id':ids,'Predicted':labels})
+    out_df.to_csv(out, header=True, index=False)
+
+def vote(list_, min_vote):
+    # [['21', '25'], ['11', '21', '25'], ['21', '23', '25'], ['21', '25'], ['21', '23', '25']]
+    d = defaultdict(int)
+    for x in list_:
+        for c in x:
+            d[c] += 1
+
+    labels = sorted([k for k, v in d.items() if v>=min_vote])
+    return ' '.join(labels)
+
+if __name__ == '__main__':
+
+    csvs = [
+        "output/resnet50-512-bce-random-drop0.5-th0.1-bs16-lr0.01-ep15_25.csv",  # 0.465
+        "output/resnet50-512-official_hpav18-bce-weighted-drop0.5-th0.1-bs16-lr0.005-ep5_15.csv",  # 0.465
+        "output/resnet50-512-official-bce-weighted-drop0.5-th0.1-bs16-lr0.005-ep5_15.csv",  # 0.460
+        "output/resnet50-512-bce-random-drop0.5-th0.1-bs16-lr0.01-ep5_15.csv",  # 0.458
+        "output/resnet50-512-bce-weighted-drop0.5-th0.1-bs16-lr0.01-ep5_15.csv"  # 0.455
+    ]
+    out = "output/ensemble_0_1_2_3_4_vote5.csv"
+    min_vote = 5
+    ensemble(csvs, out, min_vote)
