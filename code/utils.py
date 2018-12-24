@@ -1,4 +1,5 @@
 import math
+from pathlib import Path
 
 import cv2
 import numpy as np
@@ -22,20 +23,21 @@ def open_4_channel(fname):
            for color in colors]
 
     x = np.stack(img, axis=-1)
+    # np.savez_compressed(Path("data/npz/train")/f'{fname}.npz', x)
 
     # normalize
-    if "ac1f6b6435d0" in fname:
-        mean, std = STATS["official"]
-    else:
-        mean, std = STATS["hpav18"]
-    x = normalize(x, mean, std)
+    # if "ac1f6b6435d0" in fname:
+    #     mean, std = STATS["official"]
+    # else:
+    #     mean, std = STATS["hpav18"]
+    # x = normalize(x, mean, std)
 
     # zoom
-    nuclei_count, nuclei_density = nuclei_count_density.get(fname, (BASE_NUCLEI_COUNT, BASE_NUCLEI_DENSITY))
-    zoom_scale = get_zoom_scale(nuclei_count, nuclei_density)
-    if not math.isclose(zoom_scale, 1.0):
-        # if zoom out, padding is handled
-        x = clipped_zoom(x, zoom_scale)
+    # nuclei_count, nuclei_density = nuclei_count_density.get(fname, (BASE_NUCLEI_COUNT, BASE_NUCLEI_DENSITY))
+    # zoom_scale = get_zoom_scale(nuclei_count, nuclei_density)
+    # if not math.isclose(zoom_scale, 1.0):
+    #     # if zoom out, padding is handled
+    #     x = clipped_zoom(x, zoom_scale)
 
     return Image(pil2tensor(x, np.float32).float())
 

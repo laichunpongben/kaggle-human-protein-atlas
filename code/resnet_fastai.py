@@ -160,10 +160,8 @@ src = (ImageItemList.from_csv(src_path, 'train.csv', folder='train', suffix='.pn
        .random_split_by_pct(0.2)
        .label_from_df(sep=' ',  classes=[str(i) for i in range(num_class)]))
 
-if "official" in ds:
-    logger.info("Offical stats: {}".format(STATS["official"]))
-if "hpav18" in ds:
-    logger.info("HPAv18 stats: {}".format(STATS["hpav18"]))
+protein_stats = STATS[ds]
+logger.info("Protein stats: {}".format(protein_stats))
 
 src.train.x.create_func = open_4_channel
 src.train.x.open = open_4_channel
@@ -184,7 +182,7 @@ src.test.x.open = open_4_channel
 trn_tfms,_ = get_transforms(do_flip=True, flip_vert=True, max_rotate=30., max_zoom=1,
                             max_lighting=0.05, max_warp=0.)
 data = (src.transform((trn_tfms, _), size=imgsize)
-        .databunch(bs=bs))
+        .databunch(bs=bs)).normalize(protein_stats)
 
 logger.debug("Databunch created")
 
