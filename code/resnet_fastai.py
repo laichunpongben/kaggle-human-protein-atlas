@@ -359,17 +359,18 @@ def _output_results(preds):
     return
 
 
-logger.debug('%%1')
-learn = _prep_model()
-logger.debug('%%2')
-if not args.model:
-    learn = _fit_model(learn)
-else:
-    logger.debug(runname)
-    logger.info('Loading model: '+args.model)
-    model_path = Path(MODEL_PATH)/f'{args.model}.pth'
-    learn.model.load_state_dict(torch.load(model_path,
-                                           map_location=device),
-                                strict=False)
-preds = _predict(learn)
-_output_results(preds)
+if __name__=='__main__':
+    logger.debug('%%1')
+    learn = _prep_model()
+    logger.debug('%%2')
+    if not args.model:
+        learn = _fit_model(learn)
+    else:
+        logger.debug(runname)
+        logger.info('Loading model: '+args.model)
+        model_path = Path(MODEL_PATH)/f'{args.model}.pth'
+        learn.model.load_state_dict(torch.load(model_path,
+                                               map_location=device),
+                                    strict=False)
+    preds = _predict(learn)
+    _output_results(preds)
