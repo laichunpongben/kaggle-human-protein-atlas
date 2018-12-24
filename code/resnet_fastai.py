@@ -179,9 +179,9 @@ src.add_test(test_fnames, label='0')
 src.test.x.create_func = open_4_channel
 src.test.x.open = open_4_channel
 
-# trn_tfms,_ = get_transforms(do_flip=True, flip_vert=True, max_rotate=30., max_zoom=1,
-#                             max_lighting=0.05, max_warp=0.)
-data = (src.transform((None, None), size=imgsize)
+trn_tfms,_ = get_transforms(do_flip=True, flip_vert=True, max_rotate=30., max_zoom=1,
+                            max_lighting=0.05, max_warp=0.)
+data = (src.transform((trn_tfms, _), size=imgsize)
         .databunch(bs=bs)).normalize(protein_stats)
 
 logger.debug("Databunch created")
