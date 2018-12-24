@@ -218,8 +218,12 @@ def get_rarest_class_weight(y):
 
 def get_multilabel_weights(data):
     weights = []
-    for x,y in iter(data.train_dl):
-        logger.debug(time.time())
+    start = time.time()
+    for index, (x,y) in enumerate(data.train_dl):
+        if index % 10 == 0:
+            check_point = time.time()
+            logger.debug(check_point - start)
+            start = check_point
         weights.extend(get_rarest_class_weight(y))
     return weights
 
