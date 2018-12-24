@@ -170,6 +170,9 @@ src.train.x.open = open_4_channel
 src.valid.x.create_func = open_4_channel
 src.valid.x.open = open_4_channel
 
+logger.debug(src.train)
+logger.debug(src.valid)
+
 
 test_ids = list(sorted({fname.split('_')[0] for fname in os.listdir(src_path/'test') if fname.endswith('.png')}))
 logger.debug("# Test ids: ".format(len(test_ids)))
