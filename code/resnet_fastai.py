@@ -360,7 +360,9 @@ def _output_results(preds):
 
 
 if __name__=='__main__':
+    logger.debug('%%1')
     learn = _prep_model()
+    logger.debug('%%2')
     if not args.model:
         learn = _fit_model(learn)
     else:
