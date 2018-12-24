@@ -219,6 +219,7 @@ def get_rarest_class_weight(y):
 def get_multilabel_weights(data):
     weights = []
     for x,y in iter(data.train_dl):
+        logger.debug(time.time())
         weights.extend(get_rarest_class_weight(y))
     return weights
 
@@ -363,9 +364,7 @@ def _output_results(preds):
 
 
 if __name__=='__main__':
-    logger.debug('%%1')
     learn = _prep_model()
-    logger.debug('%%2')
     if not args.model:
         learn = _fit_model(learn)
     else:
