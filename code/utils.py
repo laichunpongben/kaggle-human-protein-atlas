@@ -1,6 +1,7 @@
 import math
 from pathlib import Path
 import time
+import threading
 
 import cv2
 import numpy as np
@@ -11,14 +12,14 @@ from .csv_service import get_nuclei_count_density
 from .image_service import clipped_zoom
 
 nuclei_count_density = get_nuclei_count_density()
-debug_counter = 0
-debug_time = time.time()
-open_time = 0.0
+# debug_counter = 0
+# debug_time = time.time()
+# open_time = 0.0
 
 # adapted from https://www.kaggle.com/iafoss/pretrained-resnet34-with-rgby-0-460-public-lb
 def open_4_channel(fname):
-    global debug_counter, debug_time, open_time
-    start = time.time()
+    # global debug_counter, debug_time, open_time
+    # start = time.time()
     fname = str(fname)
     # strip extension before adding color
     if fname.endswith('.png'):
@@ -45,13 +46,15 @@ def open_4_channel(fname):
     #     # if zoom out, padding is handled
     #     x = clipped_zoom(x, zoom_scale)
     img = Image(pil2tensor(x, np.float32).float())
-    now = time.time()
-    open_time += now - start
-    if debug_counter % 100 == 0:
-        print(now - debug_time, open_time, open_time/(now - debug_time))
-        debug_time = now
-        open_time = 0.0
-    debug_counter += 1
+    # now = time.time()
+    #
+    # with threading.Lock():
+    #     open_time += now - start
+    #     if debug_counter % 100 == 0:
+    #         print(now - debug_time, open_time, open_time/(now - debug_time))
+    #         debug_time = now
+    #         open_time = 0.0
+    #     debug_counter += 1
 
     return img
 
