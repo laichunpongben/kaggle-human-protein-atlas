@@ -172,6 +172,7 @@ src.valid.x.open = open_4_channel
 
 
 test_ids = list(sorted({fname.split('_')[0] for fname in os.listdir(src_path/'test') if fname.endswith('.png')}))
+logger.debug("# Test ids: ".format(len(test_ids)))
 test_fnames = [src_path/'test'/test_id for test_id in test_ids]
 src.add_test(test_fnames, label='0')
 src.test.x.create_func = open_4_channel
@@ -181,6 +182,8 @@ trn_tfms,_ = get_transforms(do_flip=True, flip_vert=True, max_rotate=30., max_zo
                             max_lighting=0.05, max_warp=0.)
 data = (src.transform((trn_tfms, _), size=imgsize)
         .databunch(bs=bs))
+
+logger.debug("Databunch created")
 
 def sort_class_by_rarity(weights):
     return [y for y,_ in sorted(list(zip(range(num_class), weights)), key=lambda x: x[1])]
