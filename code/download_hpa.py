@@ -8,7 +8,7 @@ from io import BytesIO
 
 df = pd.read_csv('data/HPAv18RBGY_wodpl.csv')
 colors = ['blue','red','green','yellow']
-hpa_dir = Path('data/hpav18')
+hpa_dir = Path('data/hpav18/train')
 hpa_dir.mkdir(parents=True, exist_ok=True)
 exist_ids = sorted([f.split('.png')[0] for f in os.listdir(hpa_dir) if f.endswith('.png')])
 
