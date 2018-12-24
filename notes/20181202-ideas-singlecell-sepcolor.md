@@ -1,5 +1,6 @@
-Segmenting single cell image instances
-==
+    ---
+
+## Ideas
 
 - segment into single cells (randomize single cell images from different sources?)
 - separate color channels
@@ -23,6 +24,8 @@ Segmenting single cell image instances
         - retrain from Pascal VOC dataset
         - use imageJ
         - parse with faster r-cnn `keras_frcnn` (`git clone https://github.com/yhenon/keras-frcnn/`)
+        - mask R-CNN
+        - watershed algorithm
     
 2. Randomize and split single cell images into training batches
 
@@ -47,15 +50,16 @@ Segmenting single cell image instances
     - https://link.springer.com/chapter/10.1007/978-3-319-67558-9_2
     - Auxiliary classifiers were only used as regularizers to improve network convergence during training in original Inception.
     - Caffe toolbox
+    - http://nerone.diem.unisa.it/hep2-benchmarking/dbtools/
 
-- R-CNN, Fast R-CNN, Faster R-CNN for object detection
+- R-CNN, Fast R-CNN, Faster R-CNN, Mask R-CNN for object detection
     - https://www.pyimagesearch.com/2018/11/19/mask-r-cnn-with-opencv/    
     - https://www.analyticsvidhya.com/blog/2018/11/implementation-faster-r-cnn-python-object-detection/
     - https://www.analyticsvidhya.com/blog/2018/10/a-step-by-step-introduction-to-the-basic-object-detection-algorithms-part-1/
     
 - Automated Analysis and Reannotation of Subcellular Locations in Confocal Images from the Human Protein Atlas
     - https://www.ncbi.nlm.nih.gov/pubmed/23226299
-    
+    - https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005746
     
 - A deep convolutional neural network for classification of red blood cells in sickle cell anemia
     - https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005746
