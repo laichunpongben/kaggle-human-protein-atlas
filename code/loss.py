@@ -1,6 +1,7 @@
 from torch import nn
 import torch.nn.functional as F
 
+# input = pred value, target = true value
 
 def focal_loss(input, target, gamma=2):
     '''
@@ -21,3 +22,43 @@ def focal_loss(input, target, gamma=2):
     loss = (invprobs * gamma).exp() * loss
 
     return loss.sum(dim=1).mean()
+
+
+def f1_loss(input, target, threshold=0.5):
+    epsilon = 1e-9
+    # true_positive = input * target
+    # false_positive = (1 - target) * input
+    # false_negative = target * (1 - input)
+    # precision = true_positive / (true_positive + false_positive + epsilon)
+    # recall = true_positive / (true_positive + false_negative + epsilon)
+    # f1 = 2 * precision * recall/(precision + recall + epsilon)
+    # return f1.mean()
+
+    # smooth = 0.1
+    # epsilon = 1e-4
+    # beta = 2
+    # beta2 = beta ** 2
+    #
+    # y_pred = K.clip(y_pred, epsilon, 1.0 - epsilon)
+    # y_true = K.clip(y_true, epsilon, 1.0 - epsilon)
+    #
+    # true_and_pred = y_true * y_pred
+    # ttp_sum = K.sum(true_and_pred, axis=1)
+    # tpred_sum = K.sum(y_pred, axis=1)
+    # ttrue_sum = K.sum(y_true, axis=1)
+    #
+    # tprecision = ttp_sum / tpred_sum
+    # trecall = ttp_sum / ttrue_sum
+    #
+    # tf_score = ((1 + beta2) * tprecision * trecall + smooth) / (beta2 * tprecision + trecall + smooth)
+    #
+    # return -K.mean(tf_score)
+
+    beta = 1
+    input = torch.ge(input.float(), threshold).float()
+    target = target.float()
+    true_positive = (input * target).sum(dim=1)
+    precision = true_positive.div(input.sum(dim=1).add(epsilon))
+    recall = true_positive.div(target.sum(dim=1).add(epsilon))
+    f1 = torch.mean((precision*recall).div(precision.mul(beta2) + recall + eps).mul(1 + beta))
+    return f1
