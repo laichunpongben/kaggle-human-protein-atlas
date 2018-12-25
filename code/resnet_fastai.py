@@ -155,7 +155,7 @@ if "hpav18" in ds:
     logger.info("HPAv18 stats: {}".format(STATS["hpav18"]))
 
 test_ids = list(sorted({fname.split('_')[0] for fname in os.listdir(src_path/'test') if fname.endswith('.png')}))
-logger.debug("# Test ids: ".format(len(test_ids)))
+logger.debug("# Test ids: {}".format(len(test_ids)))
 test_fnames = [src_path/'test'/test_id for test_id in test_ids]
 
 def generate_train_valid_split(train_csv, n_splits=3, valid_size=0.2):
