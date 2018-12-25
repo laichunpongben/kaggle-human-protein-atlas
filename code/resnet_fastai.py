@@ -154,6 +154,10 @@ if "official" in ds:
 if "hpav18" in ds:
     logger.info("HPAv18 stats: {}".format(STATS["hpav18"]))
 
+test_ids = list(sorted({fname.split('_')[0] for fname in os.listdir(src_path/'test') if fname.endswith('.png')}))
+logger.debug("# Test ids: ".format(len(test_ids)))
+test_fnames = [src_path/'test'/test_id for test_id in test_ids]
+
 def generate_train_valid_split(train_csv, n_splits=3, valid_size=0.2):
     df = pd.read_csv(train_csv)
     X, y = df.Id, df.Target
@@ -177,9 +181,6 @@ def get_data(src):
     logger.debug(src.train)
     logger.debug(src.valid)
 
-    test_ids = list(sorted({fname.split('_')[0] for fname in os.listdir(src_path/'test') if fname.endswith('.png')}))
-    logger.debug("# Test ids: ".format(len(test_ids)))
-    test_fnames = [src_path/'test'/test_id for test_id in test_ids]
     src.add_test(test_fnames, label='0')
     src.test.x.create_func = open_4_channel
     src.test.x.open = open_4_channel
@@ -390,7 +391,8 @@ if __name__=='__main__':
                                                    map_location=device),
                                         strict=False)
         preds = _predict(learn)
-        logger.debug(preds.shape)
         all_preds.append(preds)
-        avg_preds = np.mean(all_preds, axis=0)
+        all_preds = torch.stack(all_preds)
+        avg_preds = torch.mean(all_preds, dim=0)
+        logger.debug(avg_preds.shape)
     _output_results(avg_preds)
