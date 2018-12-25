@@ -16,7 +16,7 @@ from sklearn.preprocessing import MultiLabelBinarizer
 
 from .utils import open_4_channel
 from .arch import Resnet4Channel, Inception4Channel, SqueezeNet4Channel
-from .loss import focal_loss
+from .loss import focal_loss, f1_loss
 from .callback import SaveModelCustomPathCallback, CSVCustomPathLogger
 from .ml_stratifiers import MultilabelStratifiedShuffleSplit
 from config import DATASET_PATH, MODEL_PATH, OUT_PATH, STATS, WEIGHTS, formatter
@@ -34,7 +34,7 @@ parser.add_argument("-D","--dataset", help="Dataset", type=str, choices=["offici
 parser.add_argument("-e","--epochnum1", help="epoch number for stage 1", type=int, default=5)
 parser.add_argument("-E","--epochnum2", help="epoch number for stage 2", type=int, default=15)
 parser.add_argument("-i","--gpuid", help="GPU device id", type=int, choices=range(-1, 8), default=0)
-parser.add_argument("-l","--loss", help="loss function", type=str, choices=["bce", "focal"], default="bce")
+parser.add_argument("-l","--loss", help="loss function", type=str, choices=["bce", "focal", "f1"], default="bce")
 parser.add_argument("-m","--model", help="trained model to load", type=str, default=None)
 parser.add_argument("-p","--dropout", help="dropout ratio", type=float, default=0.5)
 parser.add_argument("-r","--learningrate", help="learning rate", type=float, default=3e-2)
@@ -77,7 +77,7 @@ if not args.model:
               '_' + str(args.epochnum2))
 else:
     def get_loss(runname):
-        search = re.search('(bce|focal)', runname)
+        search = re.search('(bce|focal|f1)', runname)
         return search.group(1) if search else 'bce'
 
     def get_sampler(runname):
@@ -272,6 +272,7 @@ def get_split(arch):
 def get_loss_func(loss):
     losses = {
         "focal": focal_loss,
+        "f1": f1_loss,
         "bce": F.binary_cross_entropy_with_logits
     }
     return losses.get(loss, F.binary_cross_entropy_with_logits)
