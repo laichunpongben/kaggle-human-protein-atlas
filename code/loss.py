@@ -36,7 +36,7 @@ def focal_loss(input, target, gamma=2):
     class_mask = input.data.new(N, C).fill_(0)
     class_mask = Variable(class_mask)
     ids = target.view(-1, 1)
-    class_mask.scatter_(1, ids.data, 1)
+    class_mask.scatter_(1, ids.data, 1.)
 
     alpha = Variable(torch.ones(num_class, 1))
     if input.is_cuda and not alpha.is_cuda:
