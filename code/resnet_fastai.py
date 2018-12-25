@@ -29,7 +29,7 @@ from config import DATASET_PATH, MODEL_PATH, OUT_PATH, STATS, WEIGHTS, formatter
 parser = argparse.ArgumentParser()
 parser.add_argument("-a","--arch", help="Neural network architecture", type=str, choices=["resnet", "inception", "squeezenet"], default="resnet")
 parser.add_argument("-b","--batchsize", help="batch size", type=int, default=64)
-parser.add_argument("-d","--encoderdepth", help="encoder depth of the network", type=int, choices=[34,50,101,152], default=152)
+parser.add_argument("-d","--encoderdepth", help="encoder depth of the network", type=int, choices=[34,50,101,152], default=50)
 parser.add_argument("-D","--dataset", help="Dataset", type=str, choices=["official", "hpav18", "official_hpav18"], default="official")
 parser.add_argument("-e","--epochnum1", help="epoch number for stage 1", type=int, default=5)
 parser.add_argument("-E","--epochnum2", help="epoch number for stage 2", type=int, default=15)
