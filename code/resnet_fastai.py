@@ -147,47 +147,49 @@ logger.info(conf_msg)
 
 np.random.seed(42)
 
-def generate_train_valid_split(train_csv, n_splits=10, valid_size=0.2):
+if "official" in ds:
+    logger.info("Offical stats: {}".format(STATS["official"]))
+if "hpav18" in ds:
+    logger.info("HPAv18 stats: {}".format(STATS["hpav18"]))
+
+def generate_train_valid_split(train_csv, n_splits=3, valid_size=0.2):
     df = pd.read_csv(train_csv)
     X, y = df.Id, df.Target
     y = MultiLabelBinarizer().fit_transform(y)
     msss = MultilabelStratifiedShuffleSplit(n_splits=n_splits, test_size=valid_size, random_state=42)
     return msss.split(X, y)
 
-train_valid_split = generate_train_valid_split(train_csv, n_splits=10, valid_size=0.2)
+def get_src(valid_idx):
+    src = (ImageItemList.from_csv(src_path, 'train.csv', folder='train', suffix='.png')
+           # .random_split_by_pct(0.2)
+           .split_by_idx(valid_idx)
+           .label_from_df(sep=' ',  classes=[str(i) for i in range(num_class)]))
+    return src
 
+def get_data(src):
+    src.train.x.create_func = open_4_channel
+    src.train.x.open = open_4_channel
+    src.valid.x.create_func = open_4_channel
+    src.valid.x.open = open_4_channel
 
-src = (ImageItemList.from_csv(src_path, 'train.csv', folder='train', suffix='.png')
-       .random_split_by_pct(0.2)
-       .label_from_df(sep=' ',  classes=[str(i) for i in range(num_class)]))
+    logger.debug(src.train)
+    logger.debug(src.valid)
 
-if "official" in ds:
-    logger.info("Offical stats: {}".format(STATS["official"]))
-if "hpav18" in ds:
-    logger.info("HPAv18 stats: {}".format(STATS["hpav18"]))
+    test_ids = list(sorted({fname.split('_')[0] for fname in os.listdir(src_path/'test') if fname.endswith('.png')}))
+    logger.debug("# Test ids: ".format(len(test_ids)))
+    test_fnames = [src_path/'test'/test_id for test_id in test_ids]
+    src.add_test(test_fnames, label='0')
+    src.test.x.create_func = open_4_channel
+    src.test.x.open = open_4_channel
 
-src.train.x.create_func = open_4_channel
-src.train.x.open = open_4_channel
-src.valid.x.create_func = open_4_channel
-src.valid.x.open = open_4_channel
+    trn_tfms,_ = get_transforms(do_flip=True, flip_vert=True, max_rotate=30., max_zoom=1,
+                                max_lighting=0.05, max_warp=0.)
+    data = (src.transform((trn_tfms, _), size=imgsize)
+            .databunch(bs=bs))
 
-logger.debug(src.train)
-logger.debug(src.valid)
+    logger.debug("Databunch created")
 
-
-test_ids = list(sorted({fname.split('_')[0] for fname in os.listdir(src_path/'test') if fname.endswith('.png')}))
-logger.debug("# Test ids: ".format(len(test_ids)))
-test_fnames = [src_path/'test'/test_id for test_id in test_ids]
-src.add_test(test_fnames, label='0')
-src.test.x.create_func = open_4_channel
-src.test.x.open = open_4_channel
-
-trn_tfms,_ = get_transforms(do_flip=True, flip_vert=True, max_rotate=30., max_zoom=1,
-                            max_lighting=0.05, max_warp=0.)
-data = (src.transform((trn_tfms, _), size=imgsize)
-        .databunch(bs=bs))
-
-logger.debug("Databunch created")
+    return data
 
 def sort_class_by_rarity(weights):
     return [y for y,_ in sorted(list(zip(range(num_class), weights)), key=lambda x: x[1])]
@@ -278,7 +280,7 @@ def get_loss_func(loss):
     return losses.get(loss, F.binary_cross_entropy_with_logits)
 
 
-def _prep_model():
+def _prep_model(data):
     logger.info('Initialising model.')
 
     arch_func = get_arch_func(arch)
@@ -323,13 +325,13 @@ def _prep_model():
 # Fit model
 ###############################
 
-def _fit_model(learn):
+def _fit_model(learn, fold=0):
     # learn.lr_find()
     # learn.recorder.plot()
     logger.info('Start model fitting: Stage 1')
     learn.fit_one_cycle(epochnum1, slice(lr))
 
-    stage1_model_path = Path(MODEL_PATH)/f'stage-1-{runname}.pth'
+    stage1_model_path = Path(MODEL_PATH)/f'stage-1-{runname}-{fold}.pth'
     logger.info('Complete model fitting Stage 1.')
     torch.save(learn.model.state_dict(), stage1_model_path)
     logger.info('Model saved.')
@@ -340,7 +342,7 @@ def _fit_model(learn):
     logger.info('Start model fitting: Stage 2')
     learn.fit_one_cycle(epochnum2, slice(3e-5, lr/epochnum2))
 
-    stage2_model_path = Path(MODEL_PATH)/f'stage-2-{runname}.pth'
+    stage2_model_path = Path(MODEL_PATH)/f'stage-2-{runname}-{fold}.pth'
     logger.info('Complete model fitting Stage 2.')
     torch.save(learn.model.state_dict(), stage2_model_path)
     logger.info('Model saved.')
@@ -370,15 +372,23 @@ def _output_results(preds):
 
 
 if __name__=='__main__':
-    learn = _prep_model()
-    if not args.model:
-        learn = _fit_model(learn)
-    else:
-        logger.debug(runname)
-        logger.info('Loading model: '+args.model)
-        model_path = Path(MODEL_PATH)/f'{args.model}.pth'
-        learn.model.load_state_dict(torch.load(model_path,
-                                               map_location=device),
-                                    strict=False)
-    preds = _predict(learn)
-    _output_results(preds)
+    all_preds = []
+    train_valid_split = generate_train_valid_split(train_csv, n_splits=3, valid_size=0.2)
+    for fold, (train_idx, valid_idx) in enumerate(train_valid_split):
+        src = get_src(valid_idx)
+        data = get_data(src)
+        learn = _prep_model(data)
+        if not args.model:
+            learn = _fit_model(learn, fold)
+        else:
+            logger.debug(runname)
+            logger.info('Loading model: '+args.model)
+            model_path = Path(MODEL_PATH)/f'{args.model}.pth'
+            learn.model.load_state_dict(torch.load(model_path,
+                                                   map_location=device),
+                                        strict=False)
+        preds = _predict(learn)
+        logger.debug(preds.shape)
+        all_preds.append(preds)
+        avg_preds = np.mean(all_preds, axis=0)
+    _output_results(avg_preds)
