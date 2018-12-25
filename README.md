@@ -53,12 +53,15 @@ Resnet FastAI
   * -a, --arch         : Neural network architecture
   * -b, --batchsize    : batch size
   * -d, --encoderdepth : encoder depth of the network
+  * -D, --dataset      : Dataset
   * -e, --epochnum1    : epoch number for stage 1
   * -E, --epochnum2    : epoch number for stage 2
+  * -f, --fold         : K fold cross validation
   * -i, --gpuid        : GPU device id
   * -l, --loss         : loss function
   * -m, --model        : trained model to load
   * -p, --dropout      : dropout ratio
+  * -r, --learningrate : learning rate
   * -s, --size         : image size
   * -S, --sampler      : sampler
   * -t, --thres        : threshold
