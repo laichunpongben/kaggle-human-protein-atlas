@@ -1,3 +1,4 @@
+import torch
 from torch import nn
 import torch.nn.functional as F
 
@@ -60,5 +61,5 @@ def f1_loss(input, target, threshold=0.5):
     true_positive = (input * target).sum(dim=1)
     precision = true_positive.div(input.sum(dim=1).add(epsilon))
     recall = true_positive.div(target.sum(dim=1).add(epsilon))
-    f1 = torch.mean((precision*recall).div(precision.mul(beta2) + recall + eps).mul(1 + beta))
+    f1 = torch.mean((precision*recall).div(precision.mul(beta) + recall + epsilon).mul(1 + beta))
     return f1
