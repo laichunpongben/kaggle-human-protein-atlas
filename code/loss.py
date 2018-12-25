@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 import torch.nn.functional as F
+from torch.autograd import Variable
 
 # input = pred value, target = true value
 
@@ -62,4 +63,5 @@ def f1_loss(input, target, threshold=0.5):
     precision = true_positive.div(input.sum(dim=1).add(epsilon))
     recall = true_positive.div(target.sum(dim=1).add(epsilon))
     f1 = torch.mean((precision*recall).div(precision.mul(beta) + recall + epsilon).mul(1 + beta))
+    f1 = Variable(f1, requires_grad=True)
     return f1
