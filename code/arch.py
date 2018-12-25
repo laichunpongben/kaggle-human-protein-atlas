@@ -6,6 +6,7 @@ import torchvision
 
 
 RESNET_ENCODERS = {
+    18: torchvision.models.resnet18,
     34: torchvision.models.resnet34,
     50: torchvision.models.resnet50,
     101: torchvision.models.resnet101,
