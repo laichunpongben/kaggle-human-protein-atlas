@@ -29,17 +29,17 @@ def focal_loss(input, target, gamma=2):
     size_average = True
     gamma = 2.0
 
-    N = inputs.size(0)
-    C = inputs.size(1)
-    P = F.sigmoid(inputs)
+    N = input.size(0)
+    C = input.size(1)
+    P = F.sigmoid(input)
 
-    class_mask = inputs.data.new(N, C).fill_(0)
+    class_mask = input.data.new(N, C).fill_(0)
     class_mask = Variable(class_mask)
-    ids = targets.view(-1, 1)
+    ids = target.view(-1, 1)
     class_mask.scatter_(1, ids.data, 1.)
 
     alpha = Variable(torch.ones(num_class, 1))
-    if inputs.is_cuda and not alpha.is_cuda:
+    if input.is_cuda and not alpha.is_cuda:
         alpha = alpha.cuda()
     alpha = alpha[ids.data.view(-1)]
 
