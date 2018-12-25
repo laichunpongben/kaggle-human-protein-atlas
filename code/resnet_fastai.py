@@ -132,6 +132,7 @@ conf_msg = '\n'.join([
                     'Threshold: ' + str(th),
                     'Stage 1 #epoch: ' + str(epochnum1),
                     'Stage 2 #epoch: ' + str(epochnum2),
+                    'Learning rate #1: ' + str(lr),
                     'Batch size: ' + str(bs),
                     'Dataset: ' + str(ds),
                     'Dataset directory: ' + str(src_path),
