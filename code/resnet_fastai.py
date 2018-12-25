@@ -87,7 +87,7 @@ else:
         return search.group(1) if search else 'random'
 
     def get_lr(runname):
-        search = re.search('-lr(\S+)-', runname)
+        search = re.search('-lr(\S+?)-', runname)
         return search.group(1) if search else args.learningrate
 
     def get_bs(runname):
@@ -392,6 +392,7 @@ if __name__=='__main__':
                                         strict=False)
         preds = _predict(learn)
         all_preds.append(preds)
+
     all_preds = torch.stack(all_preds)
     avg_preds = torch.mean(all_preds, dim=0)
     logger.debug(avg_preds.shape)
