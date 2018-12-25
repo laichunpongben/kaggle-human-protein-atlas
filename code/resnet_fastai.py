@@ -33,6 +33,7 @@ parser.add_argument("-d","--encoderdepth", help="encoder depth of the network", 
 parser.add_argument("-D","--dataset", help="Dataset", type=str, choices=["official", "hpav18", "official_hpav18"], default="official")
 parser.add_argument("-e","--epochnum1", help="epoch number for stage 1", type=int, default=5)
 parser.add_argument("-E","--epochnum2", help="epoch number for stage 2", type=int, default=15)
+parser.add_argument("-f","--fold", help="K fold cross validation", type=int, default=1)
 parser.add_argument("-i","--gpuid", help="GPU device id", type=int, choices=range(-1, 8), default=0)
 parser.add_argument("-l","--loss", help="loss function", type=str, choices=["bce", "focal", "f1"], default="bce")
 parser.add_argument("-m","--model", help="trained model to load", type=str, default=None)
@@ -52,6 +53,7 @@ else:
 bs     = args.batchsize
 th     = args.thres
 ds     = args.dataset
+fold   = args.fold
 
 if not args.model:
     dropout   = args.dropout
@@ -373,13 +375,13 @@ def _output_results(preds):
 
 if __name__=='__main__':
     all_preds = []
-    train_valid_split = generate_train_valid_split(train_csv, n_splits=3, valid_size=0.2)
-    for fold, (train_idx, valid_idx) in enumerate(train_valid_split):
+    train_valid_split = generate_train_valid_split(train_csv, n_splits=fold, valid_size=0.2)
+    for index, (train_idx, valid_idx) in enumerate(train_valid_split):
         src = get_src(valid_idx)
         data = get_data(src)
         learn = _prep_model(data)
         if not args.model:
-            learn = _fit_model(learn, fold)
+            learn = _fit_model(learn, index)
         else:
             logger.debug(runname)
             logger.info('Loading model: '+args.model)
