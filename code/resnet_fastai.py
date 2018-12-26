@@ -28,22 +28,23 @@ from config import DATASET_PATH, MODEL_PATH, OUT_PATH, STATS, WEIGHTS, formatter
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-a","--arch", help="Neural network architecture", type=str, choices=["resnet", "inception", "squeezenet"], default="resnet")
-parser.add_argument("-b","--batchsize", help="batch size", type=int, default=64)
-parser.add_argument("-d","--encoderdepth", help="encoder depth of the network", type=int, choices=[18,34,50,101,152], default=50)
+parser.add_argument("-b","--batchsize", help="Batch size", type=int, default=64)
+parser.add_argument("-d","--encoderdepth", help="Encoder depth of the network", type=int, choices=[18,34,50,101,152], default=50)
 parser.add_argument("-D","--dataset", help="Dataset", type=str, choices=["official", "hpav18", "official_hpav18"], default="official")
-parser.add_argument("-e","--epochnum1", help="epoch number for stage 1", type=int, default=5)
-parser.add_argument("-E","--epochnum2", help="epoch number for stage 2", type=int, default=15)
+parser.add_argument("-e","--epochnum1", help="Epoch number for stage 1", type=int, default=5)
+parser.add_argument("-E","--epochnum2", help="Epoch number for stage 2", type=int, default=15)
 parser.add_argument("-f","--fold", help="K fold cross validation", type=int, default=1)
 parser.add_argument("-i","--gpuid", help="GPU device id", type=int, choices=range(-1, 8), default=0)
-parser.add_argument("-l","--loss", help="loss function", type=str, choices=["bce", "focal", "f1"], default="bce")
-parser.add_argument("-m","--model1", help="trained model to load to stage 1", type=str, default=None)
-parser.add_argument("-M","--model2", help="trained model to load to stage 2", type=str, default=None)
-parser.add_argument("-p","--dropout", help="dropout ratio", type=float, default=0.5)
-parser.add_argument("-r","--learningrate", help="learning rate", type=float, default=3e-2)
-parser.add_argument("-s","--imagesize", help="image size", type=int, default=256)
-parser.add_argument("-S","--sampler", help="sampler", type=str, choices=["random", "weighted"], default="random")
-parser.add_argument("-t","--thres", help="threshold", type=float, default=0.1)
-parser.add_argument("-v","--verbose", help="set verbosity 0-3, 0 to turn off output (not yet implemented)", type=int, default=1)
+parser.add_argument("-l","--loss", help="Loss function", type=str, choices=["bce", "focal", "f1"], default="bce")
+parser.add_argument("-m","--model1", help="Trained model to load to stage 1", type=str, default=None)
+parser.add_argument("-M","--model2", help="Trained model to load to stage 2", type=str, default=None)
+parser.add_argument("-p","--dropout", help="Dropout ratio", type=float, default=0.5)
+parser.add_argument("-r","--learningrate", help="Learning rate", type=float, default=3e-2)
+parser.add_argument("-s","--imagesize", help="Image size", type=int, default=256)
+parser.add_argument("-S","--sampler", help="Sampler", type=str, choices=["random", "weighted"], default="random")
+parser.add_argument("-t","--thres", help="Threshold", type=float, default=0.1)
+parser.add_argument("-u","--unfreezeto", help="Number of layers to unfreeze", type=int, default=0)
+parser.add_argument("-v","--verbose", help="Set verbosity 0-3, 0 to turn off output (not yet implemented)", type=int, default=1)
 
 
 args = parser.parse_args()
@@ -55,6 +56,7 @@ bs     = args.batchsize
 th     = args.thres
 ds     = args.dataset
 fold   = args.fold
+uf     = args.unfreezeto
 
 if not args.model2:
     dropout   = args.dropout
@@ -342,7 +344,7 @@ def _fit_model(learn, fold=0, model1=args.model1):
         torch.save(learn.model.state_dict(), stage1_model_path)
         logger.info('Model saved.')
  
-    learn.unfreeze()
+    learn.freeze_to(-uf)
     # learn.lr_find()
     # learn.recorder.plot()
     logger.info('Start model fitting: Stage 2')
