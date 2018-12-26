@@ -168,12 +168,13 @@ def generate_train_valid_split(train_csv, n_splits=3, valid_size=0.2):
     msss = MultilabelStratifiedShuffleSplit(n_splits=n_splits, test_size=valid_size, random_state=42)
     return msss.split(X, y)
 
-# def get_src(valid_idx):
-def get_src():
-    src = (ImageItemList.from_csv(src_path, 'train.csv', folder='train', suffix='.png')
-           .random_split_by_pct(0.2)
-           # .split_by_idx(valid_idx)
-           .label_from_df(sep=' ',  classes=[str(i) for i in range(num_class)]))
+def get_src(valid_idx=None, split_pct=0.2):
+    src = ImageItemList.from_csv(src_path, 'train.csv', folder='train', suffix='.png')
+    if valid_idx:
+        src = src.split_by_idx(valid_idx)
+    else:
+        src = src.random_split_by_pct(split_pct)
+    src = src.label_from_df(sep=' ',  classes=[str(i) for i in range(num_class)]))
     return src
 
 def get_data(src):
@@ -343,7 +344,7 @@ def _fit_model(learn, fold=0, model1=args.model1):
         logger.info('Complete model fitting Stage 1.')
         torch.save(learn.model.state_dict(), stage1_model_path)
         logger.info('Model saved.')
- 
+
     learn.freeze_to(-uf)
     # learn.lr_find()
     # learn.recorder.plot()
