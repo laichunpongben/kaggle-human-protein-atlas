@@ -168,44 +168,24 @@ def generate_train_valid_split(train_csv, n_splits=3, valid_size=0.2):
     msss = MultilabelStratifiedShuffleSplit(n_splits=n_splits, test_size=valid_size, random_state=42)
     return msss.split(X, y)
 
-# def get_src(valid_idx):
-def get_src():
-    src = (ImageItemList.from_csv(src_path, 'train.csv', folder='train', suffix='.png')
-           .random_split_by_pct(0.2)
-           # .split_by_idx(valid_idx)
-           .label_from_df(sep=' ',  classes=[str(i) for i in range(num_class)]))
+def get_src(valid_idx=None, split_pct=0.2):
+    src = ImageItemList.from_csv(src_path, 'train.csv', folder='train', suffix='.png')
+    if valid_idx is not None:
+        src = src.split_by_idx(valid_idx)
+    else:
+        src = src.random_split_by_pct(split_pct)
+    src = src.label_from_df(sep=' ',  classes=[str(i) for i in range(num_class)])
     return src
-
-def get_data(src):
-    src.train.x.create_func = open_4_channel
-    src.train.x.open = open_4_channel
-    src.valid.x.create_func = open_4_channel
-    src.valid.x.open = open_4_channel
-
-    logger.debug(src.train)
-    logger.debug(src.valid)
-
-    src.add_test(test_fnames, label='0')
-    src.test.x.create_func = open_4_channel
-    src.test.x.open = open_4_channel
-
-    trn_tfms,_ = get_transforms(do_flip=True, flip_vert=True, max_rotate=30., max_zoom=1,
-                                max_lighting=0.05, max_warp=0.)
-    data = (src.transform((trn_tfms, _), size=imgsize)
-            .databunch(bs=bs))
-
-    logger.debug("Databunch created")
-
-    return data
 
 def sort_class_by_rarity(weights):
     return [y for y,_ in sorted(list(zip(range(num_class), weights)), key=lambda x: x[1])]
 
-sorted_class = sort_class_by_rarity(WEIGHTS)
-
 def get_rarest_class_weight(y):
     max_w = 1e9
     weights = []
+
+    sorted_class = sort_class_by_rarity(WEIGHTS)
+
     for row in y:
         hasLabel = False
         for c in sorted_class:
@@ -237,13 +217,36 @@ def get_multilabel_weights(data):
         weights.extend(get_rarest_class_weight(y))
     return weights
 
-if sampler == 'weighted':
-    weights = get_multilabel_weights(data)
-    logger.debug("Initialising WeightedRandomSampler with {} weights.".format(len(weights)))
-    weights = torch.DoubleTensor(weights)
-    weighted_sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, len(weights))
-    data.train_dl.sampler = weighted_sampler
-    data.test_dl.sampler = weighted_sampler
+def get_data(src):
+    src.train.x.create_func = open_4_channel
+    src.train.x.open = open_4_channel
+    src.valid.x.create_func = open_4_channel
+    src.valid.x.open = open_4_channel
+
+    logger.debug(src.train)
+    logger.debug(src.valid)
+
+    src.add_test(test_fnames, label='0')
+    src.test.x.create_func = open_4_channel
+    src.test.x.open = open_4_channel
+
+    trn_tfms,_ = get_transforms(do_flip=True, flip_vert=True, max_rotate=30., max_zoom=1,
+                                max_lighting=0.05, max_warp=0.)
+    data = (src.transform((trn_tfms, _), size=imgsize)
+            .databunch(bs=bs))
+
+    logger.debug("Databunch created")
+
+    if sampler == 'weighted':
+        weights = get_multilabel_weights(data)
+        logger.debug("Initialising WeightedRandomSampler with {} weights.".format(len(weights)))
+        weights = torch.DoubleTensor(weights)
+        weighted_sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, len(weights))
+        data.train_dl.sampler = weighted_sampler
+        data.test_dl.sampler = weighted_sampler
+        logger.debug("Use weighted random sampler")
+
+    return data
 
 
 ###############################
@@ -342,8 +345,10 @@ def _fit_model(learn, fold=0, model1=args.model1):
         stage1_model_path = Path(MODEL_PATH)/f'stage-1-{runname}-{fold}.pth'
         logger.info('Complete model fitting Stage 1.')
         torch.save(learn.model.state_dict(), stage1_model_path)
-        logger.info('Model saved.')
- 
+        logger.info('Stage 1 model saved.')
+    else:
+        logger.info('Loaded model for Stage 1: '+args.model1)
+
     learn.freeze_to(-uf)
     # learn.lr_find()
     # learn.recorder.plot()
@@ -353,7 +358,7 @@ def _fit_model(learn, fold=0, model1=args.model1):
     stage2_model_path = Path(MODEL_PATH)/f'stage-2-{runname}-{fold}.pth'
     logger.info('Complete model fitting Stage 2.')
     torch.save(learn.model.state_dict(), stage2_model_path)
-    logger.info('Model saved.')
+    logger.info('Stage 2 model saved.')
 
     return learn
 
@@ -381,31 +386,34 @@ def _output_results(preds):
 
 if __name__=='__main__':
     all_preds = []
-    # train_valid_split = generate_train_valid_split(train_csv, n_splits=fold, valid_size=0.2)
-    # for index, (train_idx, valid_idx) in enumerate(train_valid_split):
-        # src = get_src(valid_idx)
-    index = 0
-    src = get_src()
-    data = get_data(src)
-    learn = _prep_model(data, index)
-    if not args.model2:
-        learn = _fit_model(learn, index)
-    elif not args.model1:
-        logger.debug(runname)
-        logger.info('Loading stage 2 model: '+args.model2)
-        model_path = Path(MODEL_PATH)/f'{args.model2}.pth'
-        learn.model.load_state_dict(torch.load(model_path,
-                                               map_location=device),
-                                    strict=False)
-        logger.info('Finish loading stage 2 model')
-    else:
-        logger.info('Loading stage 1 model: '+args.model1)
-        model_path = Path(MODEL_PATH)/f'{args.model1}.pth'
-        learn.model.load_state_dict(torch.load(model_path,map_location=device,strict=False))
-        learn = _fit_model(learn, index)
-        logger.info('Finish loading stage 2 model')
-    preds = _predict(learn)
-    all_preds.append(preds)
+    train_valid_split = generate_train_valid_split(train_csv, n_splits=fold, valid_size=0.2)
+    for index, (train_idx, valid_idx) in enumerate(train_valid_split):
+        # index = 0
+        # src = get_src()
+        logger.debug(valid_idx.shape)
+        src = get_src(valid_idx)
+        data = get_data(src)
+        learn = _prep_model(data, index)
+        if not args.model2:
+            learn = _fit_model(learn, index)
+        elif not args.model1:
+            logger.debug(runname)
+            logger.info('Loading stage 2 model: '+args.model2)
+            model_path = Path(MODEL_PATH)/f'{args.model2}.pth'
+            learn.model.load_state_dict(torch.load(model_path,
+                                                   map_location=device),
+                                        strict=False)
+            logger.info('Finish loading stage 2 model')
+        else:
+            logger.info('Loading stage 1 model: '+args.model1)
+            model_path = Path(MODEL_PATH)/f'{args.model1}.pth'
+            learn.model.load_state_dict(torch.load(model_path,
+                                                   map_location=device),
+                                        strict=False)
+            learn = _fit_model(learn, index)
+            logger.info('Finish loading stage 2 model')
+        preds = _predict(learn)
+        all_preds.append(preds)
 
     all_preds = torch.stack(all_preds)
     avg_preds = torch.mean(all_preds, dim=0)
