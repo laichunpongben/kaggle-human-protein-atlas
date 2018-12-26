@@ -170,7 +170,7 @@ def generate_train_valid_split(train_csv, n_splits=3, valid_size=0.2):
 
 def get_src(valid_idx=None, split_pct=0.2):
     src = ImageItemList.from_csv(src_path, 'train.csv', folder='train', suffix='.png')
-    if valid_idx:
+    if valid_idx is not None:
         src = src.split_by_idx(valid_idx)
     else:
         src = src.random_split_by_pct(split_pct)
@@ -384,33 +384,34 @@ def _output_results(preds):
 
 if __name__=='__main__':
     all_preds = []
-    # train_valid_split = generate_train_valid_split(train_csv, n_splits=fold, valid_size=0.2)
-    # for index, (train_idx, valid_idx) in enumerate(train_valid_split):
-        # src = get_src(valid_idx)
-    index = 0
-    src = get_src()
-    data = get_data(src)
-    learn = _prep_model(data, index)
-    if not args.model2:
-        learn = _fit_model(learn, index)
-    elif not args.model1:
-        logger.debug(runname)
-        logger.info('Loading stage 2 model: '+args.model2)
-        model_path = Path(MODEL_PATH)/f'{args.model2}.pth'
-        learn.model.load_state_dict(torch.load(model_path,
-                                               map_location=device),
-                                    strict=False)
-        logger.info('Finish loading stage 2 model')
-    else:
-        logger.info('Loading stage 1 model: '+args.model1)
-        model_path = Path(MODEL_PATH)/f'{args.model1}.pth'
-        learn.model.load_state_dict(torch.load(model_path,
-                                               map_location=device),
-                                    strict=False)
-        learn = _fit_model(learn, index)
-        logger.info('Finish loading stage 2 model')
-    preds = _predict(learn)
-    all_preds.append(preds)
+    train_valid_split = generate_train_valid_split(train_csv, n_splits=fold, valid_size=0.2)
+    for index, (train_idx, valid_idx) in enumerate(train_valid_split):
+        # index = 0
+        # src = get_src()
+        logger.debug(valid_idx.shape)
+        src = get_src(valid_idx)
+        data = get_data(src)
+        learn = _prep_model(data, index)
+        if not args.model2:
+            learn = _fit_model(learn, index)
+        elif not args.model1:
+            logger.debug(runname)
+            logger.info('Loading stage 2 model: '+args.model2)
+            model_path = Path(MODEL_PATH)/f'{args.model2}.pth'
+            learn.model.load_state_dict(torch.load(model_path,
+                                                   map_location=device),
+                                        strict=False)
+            logger.info('Finish loading stage 2 model')
+        else:
+            logger.info('Loading stage 1 model: '+args.model1)
+            model_path = Path(MODEL_PATH)/f'{args.model1}.pth'
+            learn.model.load_state_dict(torch.load(model_path,
+                                                   map_location=device),
+                                        strict=False)
+            learn = _fit_model(learn, index)
+            logger.info('Finish loading stage 2 model')
+        preds = _predict(learn)
+        all_preds.append(preds)
 
     all_preds = torch.stack(all_preds)
     avg_preds = torch.mean(all_preds, dim=0)
