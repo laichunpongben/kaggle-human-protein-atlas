@@ -283,7 +283,7 @@ def get_loss_func(loss):
     return losses.get(loss, F.binary_cross_entropy_with_logits)
 
 
-def _prep_model(data):
+def _prep_model(data, fold=0):
     logger.info('Initialising model.')
 
     arch_func = get_arch_func(arch)
@@ -296,7 +296,7 @@ def _prep_model(data):
                                       min_delta=0.005,
                                       patience=3)
     csv_logger = partial(CSVCustomPathLogger,
-                         filename=runname)
+                         filename="{}-{}".format(runname, fold))
 
     # TODO: Fix OSError: [Errno 12] Cannot allocate memory
     # save_model_callback = partial(SaveModelCustomPathCallback,
@@ -380,7 +380,7 @@ if __name__=='__main__':
     for index, (train_idx, valid_idx) in enumerate(train_valid_split):
         src = get_src(valid_idx)
         data = get_data(src)
-        learn = _prep_model(data)
+        learn = _prep_model(data, index)
         if not args.model:
             learn = _fit_model(learn, index)
         else:
