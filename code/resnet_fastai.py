@@ -56,7 +56,7 @@ th     = args.thres
 ds     = args.dataset
 fold   = args.fold
 
-if not args.model:
+if not args.model2:
     dropout   = args.dropout
     imgsize   = args.imagesize
     arch      = args.arch
@@ -95,7 +95,7 @@ else:
         search = re.search('-bs(\d+)-', runname)
         return search.group(1) if search else bs
 
-    runname   = re.sub('stage-[12]-', '', str(Path(args.model).name))
+    runname   = re.sub('stage-[12]-', '', str(Path(args.model2).name))
     dropout   = float(re.search('-drop(0.\d+)',runname).group(1))
     imgsize   = int(re.search('(?<=resnet).+?-(\d+)', runname).group(1))
     arch      = re.search('^(\D+)', runname).group(1)
@@ -346,7 +346,7 @@ def _fit_model(learn, fold=0, model1=args.model1):
     # learn.lr_find()
     # learn.recorder.plot()
     logger.info('Start model fitting: Stage 2')
-    learn.fit_one_cycle(epochnum2, slice(lr*e-3, lr/epochnum2))
+    learn.fit_one_cycle(epochnum2, slice(lr*1e-3, lr/epochnum2))
 
     stage2_model_path = Path(MODEL_PATH)/f'stage-2-{runname}-{fold}.pth'
     logger.info('Complete model fitting Stage 2.')
@@ -399,7 +399,7 @@ if __name__=='__main__':
     else:
         logger.info('Loading stage 1 model: '+args.model1)
         model_path = Path(MODEL_PATH)/f'{args.model1}.pth'
-        learn.model.load_state_dict(torch.load(model_path,map_location=device,strict=False)
+        learn.model.load_state_dict(torch.load(model_path,map_location=device,strict=False))
         learn = _fit_model(learn, index)
         logger.info('Finish loading stage 2 model')
     preds = _predict(learn)
