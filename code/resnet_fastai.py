@@ -177,36 +177,15 @@ def get_src(valid_idx=None, split_pct=0.2):
     src = src.label_from_df(sep=' ',  classes=[str(i) for i in range(num_class)]))
     return src
 
-def get_data(src):
-    src.train.x.create_func = open_4_channel
-    src.train.x.open = open_4_channel
-    src.valid.x.create_func = open_4_channel
-    src.valid.x.open = open_4_channel
-
-    logger.debug(src.train)
-    logger.debug(src.valid)
-
-    src.add_test(test_fnames, label='0')
-    src.test.x.create_func = open_4_channel
-    src.test.x.open = open_4_channel
-
-    trn_tfms,_ = get_transforms(do_flip=True, flip_vert=True, max_rotate=30., max_zoom=1,
-                                max_lighting=0.05, max_warp=0.)
-    data = (src.transform((trn_tfms, _), size=imgsize)
-            .databunch(bs=bs))
-
-    logger.debug("Databunch created")
-
-    return data
-
 def sort_class_by_rarity(weights):
     return [y for y,_ in sorted(list(zip(range(num_class), weights)), key=lambda x: x[1])]
-
-sorted_class = sort_class_by_rarity(WEIGHTS)
 
 def get_rarest_class_weight(y):
     max_w = 1e9
     weights = []
+
+    sorted_class = sort_class_by_rarity(WEIGHTS)
+
     for row in y:
         hasLabel = False
         for c in sorted_class:
@@ -238,13 +217,36 @@ def get_multilabel_weights(data):
         weights.extend(get_rarest_class_weight(y))
     return weights
 
-if sampler == 'weighted':
-    weights = get_multilabel_weights(data)
-    logger.debug("Initialising WeightedRandomSampler with {} weights.".format(len(weights)))
-    weights = torch.DoubleTensor(weights)
-    weighted_sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, len(weights))
-    data.train_dl.sampler = weighted_sampler
-    data.test_dl.sampler = weighted_sampler
+def get_data(src):
+    src.train.x.create_func = open_4_channel
+    src.train.x.open = open_4_channel
+    src.valid.x.create_func = open_4_channel
+    src.valid.x.open = open_4_channel
+
+    logger.debug(src.train)
+    logger.debug(src.valid)
+
+    src.add_test(test_fnames, label='0')
+    src.test.x.create_func = open_4_channel
+    src.test.x.open = open_4_channel
+
+    trn_tfms,_ = get_transforms(do_flip=True, flip_vert=True, max_rotate=30., max_zoom=1,
+                                max_lighting=0.05, max_warp=0.)
+    data = (src.transform((trn_tfms, _), size=imgsize)
+            .databunch(bs=bs))
+
+    logger.debug("Databunch created")
+
+    if sampler == 'weighted':
+        weights = get_multilabel_weights(data)
+        logger.debug("Initialising WeightedRandomSampler with {} weights.".format(len(weights)))
+        weights = torch.DoubleTensor(weights)
+        weighted_sampler = torch.utils.data.sampler.WeightedRandomSampler(weights, len(weights))
+        data.train_dl.sampler = weighted_sampler
+        data.test_dl.sampler = weighted_sampler
+        logger.debug("Use weighted random sampler")
+
+    return data
 
 
 ###############################
