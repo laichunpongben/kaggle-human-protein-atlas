@@ -81,9 +81,11 @@ if __name__ == '__main__':
         "output/resnet50-512-official_hpav18-bce-weighted-drop0.5-th0.1-bs16-lr0.005-ep5_15.csv",  # 0.465
         "output/resnet50-512-official-bce-weighted-drop0.5-th0.1-bs16-lr0.005-ep5_15.csv",  # 0.460
         "output/resnet50-512-bce-random-drop0.5-th0.1-bs16-lr0.01-ep5_15.csv",  # 0.458
-        "output/resnet50-512-bce-weighted-drop0.5-th0.1-bs16-lr0.01-ep5_15.csv"  # 0.455
+        "output/resnet50-512-bce-weighted-drop0.5-th0.1-bs16-lr0.01-ep5_15.csv",  # 0.455
+        "output/resnet50-512-bce-random-drop0.5-th0.1-bs16-lr0.01-ep25_50.csv",  # 0.443
+        "output/resnet50-256-official_hpav18-bce-random-drop0.5-th0.1-bs64-lr0.01-ep5_15.csv"  # 0.415
     ]
-    out = "output/ensemble_0_1_2_3_4_vote4_best2.csv"
+    out = "output/ensemble_0_1_2_3_4_5_6_vote4.csv"
     min_vote = 4
-    first_n = 2
+    first_n = 99
     ensemble(csvs, out, min_vote, first_n)
