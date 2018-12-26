@@ -402,7 +402,9 @@ if __name__=='__main__':
     else:
         logger.info('Loading stage 1 model: '+args.model1)
         model_path = Path(MODEL_PATH)/f'{args.model1}.pth'
-        learn.model.load_state_dict(torch.load(model_path,map_location=device,strict=False))
+        learn.model.load_state_dict(torch.load(model_path,
+                                               map_location=device),
+                                    strict=False)
         learn = _fit_model(learn, index)
         logger.info('Finish loading stage 2 model')
     preds = _predict(learn)
