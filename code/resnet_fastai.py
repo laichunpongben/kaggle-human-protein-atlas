@@ -390,6 +390,7 @@ if __name__=='__main__':
     for index, (train_idx, valid_idx) in enumerate(train_valid_split):
         # index = 0
         # src = get_src()
+        logger.debug("Start of fold {}".format(index))
         logger.debug(valid_idx.shape)
         src = get_src(valid_idx)
         data = get_data(src)
