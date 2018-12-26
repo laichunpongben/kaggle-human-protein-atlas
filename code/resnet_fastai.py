@@ -338,7 +338,7 @@ def _fit_model(learn):
     # learn.lr_find()
     # learn.recorder.plot()
     logger.info('Start model fitting: Stage 2')
-    learn.fit_one_cycle(epochnum2, slice(3e-5, lr/epochnum2))
+    learn.fit_one_cycle(epochnum2, slice(lr*e-3, lr/epochnum2))
 
     stage2_model_path = Path(MODEL_PATH)/f'stage-2-{runname}.pth'
     logger.info('Complete model fitting Stage 2.')
