@@ -165,10 +165,11 @@ def generate_train_valid_split(train_csv, n_splits=3, valid_size=0.2):
     msss = MultilabelStratifiedShuffleSplit(n_splits=n_splits, test_size=valid_size, random_state=42)
     return msss.split(X, y)
 
-def get_src(valid_idx):
+# def get_src(valid_idx):
+def get_src():
     src = (ImageItemList.from_csv(src_path, 'train.csv', folder='train', suffix='.png')
-           # .random_split_by_pct(0.2)
-           .split_by_idx(valid_idx)
+           .random_split_by_pct(0.2)
+           # .split_by_idx(valid_idx)
            .label_from_df(sep=' ',  classes=[str(i) for i in range(num_class)]))
     return src
 
@@ -376,22 +377,24 @@ def _output_results(preds):
 
 if __name__=='__main__':
     all_preds = []
-    train_valid_split = generate_train_valid_split(train_csv, n_splits=fold, valid_size=0.2)
-    for index, (train_idx, valid_idx) in enumerate(train_valid_split):
-        src = get_src(valid_idx)
-        data = get_data(src)
-        learn = _prep_model(data, index)
-        if not args.model:
-            learn = _fit_model(learn, index)
-        else:
-            logger.debug(runname)
-            logger.info('Loading model: '+args.model)
-            model_path = Path(MODEL_PATH)/f'{args.model}.pth'
-            learn.model.load_state_dict(torch.load(model_path,
-                                                   map_location=device),
-                                        strict=False)
-        preds = _predict(learn)
-        all_preds.append(preds)
+    # train_valid_split = generate_train_valid_split(train_csv, n_splits=fold, valid_size=0.2)
+    # for index, (train_idx, valid_idx) in enumerate(train_valid_split):
+        # src = get_src(valid_idx)
+    index = 0
+    src = get_src()
+    data = get_data(src)
+    learn = _prep_model(data, index)
+    if not args.model:
+        learn = _fit_model(learn, index)
+    else:
+        logger.debug(runname)
+        logger.info('Loading model: '+args.model)
+        model_path = Path(MODEL_PATH)/f'{args.model}.pth'
+        learn.model.load_state_dict(torch.load(model_path,
+                                               map_location=device),
+                                    strict=False)
+    preds = _predict(learn)
+    all_preds.append(preds)
 
     all_preds = torch.stack(all_preds)
     avg_preds = torch.mean(all_preds, dim=0)
