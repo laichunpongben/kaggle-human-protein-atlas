@@ -345,7 +345,9 @@ def _fit_model(learn, fold=0, model1=args.model1):
         stage1_model_path = Path(MODEL_PATH)/f'stage-1-{runname}-{fold}.pth'
         logger.info('Complete model fitting Stage 1.')
         torch.save(learn.model.state_dict(), stage1_model_path)
-        logger.info('Model saved.')
+        logger.info('Stage 1 model saved.')
+    else:
+        logger.info('Loaded model for Stage 1: '+args.model1)
 
     learn.freeze_to(-uf)
     # learn.lr_find()
@@ -356,7 +358,7 @@ def _fit_model(learn, fold=0, model1=args.model1):
     stage2_model_path = Path(MODEL_PATH)/f'stage-2-{runname}-{fold}.pth'
     logger.info('Complete model fitting Stage 2.')
     torch.save(learn.model.state_dict(), stage2_model_path)
-    logger.info('Model saved.')
+    logger.info('Stage 2 model saved.')
 
     return learn
 
