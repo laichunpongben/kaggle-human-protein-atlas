@@ -174,7 +174,7 @@ def get_src(valid_idx=None, split_pct=0.2):
         src = src.split_by_idx(valid_idx)
     else:
         src = src.random_split_by_pct(split_pct)
-    src = src.label_from_df(sep=' ',  classes=[str(i) for i in range(num_class)]))
+    src = src.label_from_df(sep=' ',  classes=[str(i) for i in range(num_class)])
     return src
 
 def sort_class_by_rarity(weights):
