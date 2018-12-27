@@ -419,10 +419,13 @@ if __name__=='__main__':
         else:
             logger.info('No pretrained model.')
 
-        if epochnum1 > 0:
-            learn = fit_model(learn, stage=1, fold=index)
-        if epochnum2 > 0:
-            learn = fit_model(learn, stage=2, fold=index)
+        if epochnum1 + epochnum2 > 0:
+            if epochnum1 > 0:
+                learn = fit_model(learn, stage=1, fold=index)
+            if epochnum2 > 0:
+                learn = fit_model(learn, stage=2, fold=index)
+        else:
+            assert args.model is not None
 
         preds = _predict(learn, fold=index)
         all_preds.append(preds)
