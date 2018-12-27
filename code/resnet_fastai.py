@@ -51,7 +51,7 @@ if args.gpuid >= 0:
     device = torch.cuda.set_device(args.gpuid)
 else:
     device = 'cpu'
-    
+
 bs     = args.batchsize
 th     = args.thres
 ds     = args.dataset
@@ -328,7 +328,7 @@ def _prep_model(data, fold=0):
                                             monitor='fbeta',
                                             min_delta=0.005,
                                             factor=0.2,
-                                            patience=3)
+                                            patience=2)
     csv_logger = partial(CSVCustomPathLogger,
                          filename="{}-{}".format(runname, fold))
 
