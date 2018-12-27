@@ -59,6 +59,8 @@ fold   = args.fold
 uf     = args.unfreezeto
 epochnum1 = args.epochnum1
 epochnum2 = args.epochnum2
+lr        = args.learningrate
+
 
 if not args.model:
     dropout   = args.dropout
@@ -67,7 +69,6 @@ if not args.model:
     enc_depth = args.encoderdepth
     loss      = args.loss
     sampler   = args.sampler
-    lr        = args.learningrate
     old_ep1   = 0
     old_ep2   = 0
     runname = (arch +
@@ -112,7 +113,6 @@ else:
     imgsize   = int(re.search('(?<=resnet).+?-(\d+)', runname).group(1))
     arch      = re.search('^(\D+)', runname).group(1)
     loss      = get_loss(runname)
-    lr        = get_lr(runname)
     sampler   = get_sampler(runname)
     enc_depth = int(re.search('^\D+(\d+)', runname).group(1))
     old_ep1   = get_old_ep1(runname)
