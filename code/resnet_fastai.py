@@ -19,7 +19,7 @@ from .arch import Resnet4Channel, Inception4Channel, SqueezeNet4Channel
 from .loss import focal_loss, f1_loss
 from .callback import SaveModelCustomPathCallback, CSVCustomPathLogger
 from .ml_stratifiers import MultilabelStratifiedShuffleSplit
-from config import DATASET_PATH, MODEL_PATH, OUT_PATH, STATS, WEIGHTS, formatter
+from config import DATASET_PATH, MODEL_PATH, PRED_PATH, OUT_PATH, STATS, WEIGHTS, formatter
 
 
 ###############################
@@ -110,7 +110,17 @@ num_class = 28
 # https://www.kaggle.com/iafoss/pretrained-resnet34-with-rgby-0-460-public-lb
 
 src_path = Path(DATASET_PATH)
+src_path.mkdir(parents=True, exist_ok=True)
+
 out_path = Path(OUT_PATH)
+out_path.mkdir(parents=True, exist_ok=True)
+
+model_path = Path(MODEL_PATH)
+model_path.mkdir(parents=True, exist_ok=True)
+
+pred_path = Path(PRED_PATH)
+pred_path.mkdir(parents=True, exist_ok=True)
+
 train_csv = src_path/f'train.csv'
 
 ###############################
@@ -352,8 +362,8 @@ def fit_model(learn, stage=1, fold=0):
     learn.fit_one_cycle(cyc_len, max_lr)
     logger.info('Complete model fitting: Stage {}'.format(stage))
 
-    model_path = Path(MODEL_PATH)/f'stage-{stage}-{runname}-{fold}.pth'
-    torch.save(learn.model.state_dict(), model_path)
+    path = model_path/f'stage-{stage}-{runname}-{fold}.pth'
+    torch.save(learn.model.state_dict(), path)
     logger.info('Stage {} model saved.'.format(stage))
 
     return learn
@@ -362,10 +372,15 @@ def fit_model(learn, stage=1, fold=0):
 # Predict
 ###############################
 
-def _predict(learn):
+def _predict(learn, fold=0):
     logger.info('Start predicting test set')
     preds,_ = learn.get_preds(DatasetType.Test)
     logger.info('Complete test prediction.')
+
+    path = pred_path/f'{runname}-{fold}.pth'
+    torch.save(preds, path)
+    logger.info('Prediction saved.')
+
     return preds
 
 ###############################
@@ -396,8 +411,8 @@ if __name__=='__main__':
         if args.model:
             logger.debug(runname)
             logger.info('Loading model: '+args.model)
-            model_path = Path(MODEL_PATH)/f'{args.model}.pth'
-            learn.model.load_state_dict(torch.load(model_path,
+            path = model_path/f'{args.model}.pth'
+            learn.model.load_state_dict(torch.load(path,
                                                    map_location=device),
                                         strict=False)
             logger.info('Finish loading model.')
@@ -409,11 +424,14 @@ if __name__=='__main__':
         if epochnum2 > 0:
             learn = fit_model(learn, stage=2, fold=index)
 
-        preds = _predict(learn)
+        preds = _predict(learn, fold=index)
         all_preds.append(preds)
         _output_results(preds, suffix="-{}".format(index))
 
     all_preds = torch.stack(all_preds)
+
+    # TODO: implement ensemble here
+
     avg_preds = torch.mean(all_preds, dim=0)
     logger.debug(avg_preds.shape)
 
