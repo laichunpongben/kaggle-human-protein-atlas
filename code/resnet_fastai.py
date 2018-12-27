@@ -67,6 +67,8 @@ if not args.model:
     loss      = args.loss
     sampler   = args.sampler
     lr        = args.learningrate
+    old_ep1   = 0
+    old_ep2   = 0
     runname = (arch +
               str(args.encoderdepth) +
               '-' + str(imgsize) +
@@ -96,6 +98,14 @@ else:
         search = re.search('-bs(\d+)-', runname)
         return int(search.group(1)) if search else bs
 
+    def get_old_ep1(runname):
+        search = re.search('-ep(\d+)_', runname)
+        return int(search.group(1)) if search else 0
+
+    def get_old_ep2(runname):
+        search = re.search('-ep\d+_(\d+)', runname)
+        return int(search.group(1)) if search else 0
+
     runname   = re.sub('stage-[12]-', '', str(Path(args.model).name))
     dropout   = float(re.search('-drop(0.\d+)',runname).group(1))
     imgsize   = int(re.search('(?<=resnet).+?-(\d+)', runname).group(1))
@@ -104,6 +114,9 @@ else:
     lr        = get_lr(runname)
     sampler   = get_sampler(runname)
     enc_depth = int(re.search('^\D+(\d+)', runname).group(1))
+    old_ep1   = get_old_ep1(runname)
+    old_ep2   = get_old_ep2(runname)
+
 
 num_class = 28
 # mean and std in of each channel in the train set
