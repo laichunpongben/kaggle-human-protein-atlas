@@ -1,0 +1,98 @@
+*** 2018-12-23 18:44:53,534 - code.resnet_fastai - DEBUG ***
+Start a new training task
+******
+
+*** 2018-12-23 18:44:53,534 - code.resnet_fastai - INFO ***
+Device ID: 0
+Image size: 512
+Network architecture: resnet
+Loss function: bce
+Sampler: weighted
+Encoder depth: 50
+Dropout: 0.5
+Threshold: 0.1
+Stage 1 #epoch: 15
+Stage 2 #epoch: 25
+Batch size: 32
+Dataset: official_hpav18
+Dataset directory: data/official
+Output directory: output
+******
+
+*** 2018-12-23 18:44:53,791 - code.resnet_fastai - INFO ***
+Offical stats: ([0.07986162506177984, 0.05217604947235713, 0.054227752481757215, 0.08201468927464939], [0.1403192215484648, 0.1041239635111223, 0.1532386688507187, 0.14099509309392533])
+******
+
+*** 2018-12-23 18:44:53,792 - code.resnet_fastai - INFO ***
+HPAv18 stats: ([0.036928985010341434, 0.04130028252512823, 0.0075938375457115116, 0.0937920384196862], [0.05419148261744557, 0.07329545732546368, 0.020430581830732493, 0.1444940434697745])
+******
+
+*** 2018-12-23 18:59:35,745 - code.resnet_fastai - DEBUG ***
+Initialising WeightedRandomSampler with 24832 weights.
+******
+
+*** 2018-12-23 18:59:35,746 - code.resnet_fastai - INFO ***
+Initialising model.
+******
+
+Downloading: "https://download.pytorch.org/models/resnet50-19c8e357.pth" to /home/ubuntu/.torch/models/resnet50-19c8e357.pth
+*** 2018-12-23 18:59:36,274 - urllib3.connectionpool - DEBUG ***
+Starting new HTTPS connection (1): download.pytorch.org
+******
+
+*** 2018-12-23 18:59:36,477 - urllib3.connectionpool - DEBUG ***
+https://download.pytorch.org:443 "GET /models/resnet50-19c8e357.pth HTTP/1.1" 200 102502400
+******
+
+  0%|          | 0/102502400 [00:00<?, ?it/s]  7%|▋         | 7528448/102502400 [00:00<00:01, 75280603.17it/s] 19%|█▊        | 19013632/102502400 [00:00<00:00, 83948099.71it/s] 30%|██▉       | 30572544/102502400 [00:00<00:00, 91447535.43it/s] 41%|████      | 42254336/102502400 [00:00<00:00, 97811284.35it/s] 53%|█████▎    | 54050816/102502400 [00:00<00:00, 103088230.08it/s] 64%|██████▍   | 65863680/102502400 [00:00<00:00, 107107818.79it/s] 76%|███████▌  | 77676544/102502400 [00:00<00:00, 110173507.26it/s] 87%|████████▋ | 89456640/102502400 [00:00<00:00, 112355470.61it/s] 99%|█████████▊| 101146624/102502400 [00:00<00:00, 113670840.51it/s]100%|██████████| 102502400/102502400 [00:00<00:00, 112412738.06it/s]
+*** 2018-12-23 18:59:37,788 - code.resnet_fastai - INFO ***
+Complete initialising model.
+******
+
+*** 2018-12-23 18:59:37,788 - code.resnet_fastai - INFO ***
+Start model fitting: Stage 1
+******
+
+epoch     train_loss  valid_loss  fbeta   
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/usr/lib/python3.6/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/home/ubuntu/atlas/code/resnet_fastai.py", line 362, in <module>
+    learn = _fit_model(learn)
+  File "/home/ubuntu/atlas/code/resnet_fastai.py", line 317, in _fit_model
+    learn.fit_one_cycle(epochnum1, slice(lr))
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/fastai/train.py", line 21, in fit_one_cycle
+    learn.fit(cyc_len, max_lr, wd=wd, callbacks=callbacks)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/fastai/basic_train.py", line 166, in fit
+    callbacks=self.callbacks+callbacks)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/fastai/basic_train.py", line 94, in fit
+    raise e
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/fastai/basic_train.py", line 84, in fit
+    loss = loss_batch(model, xb, yb, loss_func, opt, cb_handler)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/fastai/basic_train.py", line 18, in loss_batch
+    out = model(*xb)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/torch/nn/modules/module.py", line 477, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/torch/nn/modules/container.py", line 91, in forward
+    input = module(input)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/torch/nn/modules/module.py", line 477, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/torch/nn/modules/container.py", line 91, in forward
+    input = module(input)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/torch/nn/modules/module.py", line 477, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/torch/nn/modules/container.py", line 91, in forward
+    input = module(input)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/torch/nn/modules/module.py", line 477, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/torchvision/models/resnet.py", line 85, in forward
+    out = self.bn3(out)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/torch/nn/modules/module.py", line 477, in __call__
+    result = self.forward(*input, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/torch/nn/modules/batchnorm.py", line 66, in forward
+    exponential_average_factor, self.eps)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/torch/nn/functional.py", line 1254, in batch_norm
+    training, momentum, eps, torch.backends.cudnn.enabled
+RuntimeError: CUDA error: out of memory
