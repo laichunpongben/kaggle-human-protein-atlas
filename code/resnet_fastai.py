@@ -31,13 +31,12 @@ parser.add_argument("-a","--arch", help="Neural network architecture", type=str,
 parser.add_argument("-b","--batchsize", help="Batch size", type=int, default=64)
 parser.add_argument("-d","--encoderdepth", help="Encoder depth of the network", type=int, choices=[18,34,50,101,152], default=50)
 parser.add_argument("-D","--dataset", help="Dataset", type=str, choices=["official", "hpav18", "official_hpav18"], default="official")
-parser.add_argument("-e","--epochnum1", help="Epoch number for stage 1", type=int, default=5)
-parser.add_argument("-E","--epochnum2", help="Epoch number for stage 2", type=int, default=15)
+parser.add_argument("-e","--epochnum1", help="Epoch number for stage 1", type=int, default=0)
+parser.add_argument("-E","--epochnum2", help="Epoch number for stage 2", type=int, default=0)
 parser.add_argument("-f","--fold", help="K fold cross validation", type=int, default=1)
 parser.add_argument("-i","--gpuid", help="GPU device id", type=int, choices=range(-1, 8), default=0)
 parser.add_argument("-l","--loss", help="Loss function", type=str, choices=["bce", "focal", "f1"], default="bce")
-parser.add_argument("-m","--model1", help="Trained model to load to stage 1", type=str, default=None)
-parser.add_argument("-M","--model2", help="Trained model to load to stage 2", type=str, default=None)
+parser.add_argument("-m","--model", help="Trained model to load", type=str, default=None)
 parser.add_argument("-p","--dropout", help="Dropout ratio", type=float, default=0.5)
 parser.add_argument("-r","--learningrate", help="Learning rate", type=float, default=3e-2)
 parser.add_argument("-s","--imagesize", help="Image size", type=int, default=256)
@@ -57,8 +56,10 @@ th     = args.thres
 ds     = args.dataset
 fold   = args.fold
 uf     = args.unfreezeto
+epochnum1 = args.epochnum1
+epochnum2 = args.epochnum2
 
-if not args.model2:
+if not args.model:
     dropout   = args.dropout
     imgsize   = args.imagesize
     arch      = args.arch
@@ -66,8 +67,6 @@ if not args.model2:
     loss      = args.loss
     sampler   = args.sampler
     lr        = args.learningrate
-    epochnum1 = args.epochnum1
-    epochnum2 = args.epochnum2
     runname = (arch +
               str(args.encoderdepth) +
               '-' + str(imgsize) +
@@ -91,13 +90,13 @@ else:
 
     def get_lr(runname):
         search = re.search('-lr(\S+?)-', runname)
-        return search.group(1) if search else args.learningrate
+        return float(search.group(1)) if search else args.learningrate
 
     def get_bs(runname):
         search = re.search('-bs(\d+)-', runname)
-        return search.group(1) if search else bs
+        return int(search.group(1)) if search else bs
 
-    runname   = re.sub('stage-[12]-', '', str(Path(args.model2).name))
+    runname   = re.sub('stage-[12]-', '', str(Path(args.model).name))
     dropout   = float(re.search('-drop(0.\d+)',runname).group(1))
     imgsize   = int(re.search('(?<=resnet).+?-(\d+)', runname).group(1))
     arch      = re.search('^(\D+)', runname).group(1)
@@ -105,8 +104,6 @@ else:
     lr        = get_lr(runname)
     sampler   = get_sampler(runname)
     enc_depth = int(re.search('^\D+(\d+)', runname).group(1))
-    epochnum1 = int(re.search('-ep(\d+)_', runname).group(1))
-    epochnum2 = int(re.search('-ep\d+_(\d+)', runname).group(1))
 
 num_class = 28
 # mean and std in of each channel in the train set
@@ -335,30 +332,29 @@ def _prep_model(data, fold=0):
 # Fit model
 ###############################
 
-def _fit_model(learn, fold=0, model1=args.model1):
+def fit_model(learn, stage=1, fold=0):
+    assert stage in [1, 2]
+
+    if stage == 2:
+        learn.freeze_to(-uf)
+        logger.debug("Unfreezing model")
+
     # learn.lr_find()
     # learn.recorder.plot()
-    if not model1:
-        logger.info('Start model fitting: Stage 1')
-        learn.fit_one_cycle(epochnum1, slice(lr))
 
-        stage1_model_path = Path(MODEL_PATH)/f'stage-1-{runname}-{fold}.pth'
-        logger.info('Complete model fitting Stage 1.')
-        torch.save(learn.model.state_dict(), stage1_model_path)
-        logger.info('Stage 1 model saved.')
+    logger.info('Start model fitting: Stage {}'.format(stage))
+    if stage == 1:
+        cyc_len = epochnum1
+        max_lr = slice(lr)
     else:
-        logger.info('Loaded model for Stage 1: '+args.model1)
+        cyc_len = epochnum2
+        max_lr = slice(lr*1e-3, lr/epochnum2)
+    learn.fit_one_cycle(cyc_len, max_lr)
+    logger.info('Complete model fitting: Stage {}'.format(stage))
 
-    learn.freeze_to(-uf)
-    # learn.lr_find()
-    # learn.recorder.plot()
-    logger.info('Start model fitting: Stage 2')
-    learn.fit_one_cycle(epochnum2, slice(lr*1e-3, lr/epochnum2))
-
-    stage2_model_path = Path(MODEL_PATH)/f'stage-2-{runname}-{fold}.pth'
-    logger.info('Complete model fitting Stage 2.')
-    torch.save(learn.model.state_dict(), stage2_model_path)
-    logger.info('Stage 2 model saved.')
+    model_path = Path(MODEL_PATH)/f'stage-{stage}-{runname}-{fold}.pth'
+    torch.save(learn.model.state_dict(), model_path)
+    logger.info('Stage {} model saved.'.format(stage))
 
     return learn
 
@@ -367,6 +363,7 @@ def _fit_model(learn, fold=0, model1=args.model1):
 ###############################
 
 def _predict(learn):
+    logger.info('Start predicting test set')
     preds,_ = learn.get_preds(DatasetType.Test)
     logger.info('Complete test prediction.')
     return preds
@@ -391,28 +388,27 @@ if __name__=='__main__':
         # index = 0
         # src = get_src()
         logger.debug("Start of fold {}".format(index))
-        logger.debug(valid_idx.shape)
-        src = get_src(valid_idx)
+        logger.debug("Size of valid set: {}".format(valid_idx.shape[0]))
+        src = get_src(valid_idx=valid_idx)
         data = get_data(src)
-        learn = _prep_model(data, index)
-        if not args.model2:
-            learn = _fit_model(learn, index)
-        elif not args.model1:
+        learn = _prep_model(data, fold=index)
+
+        if args.model:
             logger.debug(runname)
-            logger.info('Loading stage 2 model: '+args.model2)
-            model_path = Path(MODEL_PATH)/f'{args.model2}.pth'
+            logger.info('Loading model: '+args.model)
+            model_path = Path(MODEL_PATH)/f'{args.model}.pth'
             learn.model.load_state_dict(torch.load(model_path,
                                                    map_location=device),
                                         strict=False)
-            logger.info('Finish loading stage 2 model')
+            logger.info('Finish loading model.')
         else:
-            logger.info('Loading stage 1 model: '+args.model1)
-            model_path = Path(MODEL_PATH)/f'{args.model1}.pth'
-            learn.model.load_state_dict(torch.load(model_path,
-                                                   map_location=device),
-                                        strict=False)
-            learn = _fit_model(learn, index)
-            logger.info('Finish loading stage 2 model')
+            logger.info('No pretrained model.')
+
+        if epochnum1 > 0:
+            learn = fit_model(learn, stage=1, fold=index)
+        if epochnum2 > 0:
+            learn = fit_model(learn, stage=2, fold=index)
+
         preds = _predict(learn)
         all_preds.append(preds)
 
