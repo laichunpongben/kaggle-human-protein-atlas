@@ -11,7 +11,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from fastai import *
 from fastai.vision import *
-from fastai.callbacks.tracker import EarlyStoppingCallback
+from fastai.callbacks.tracker import EarlyStoppingCallback, ReduceLROnPlateauCallback
 from sklearn.preprocessing import MultiLabelBinarizer
 
 from .utils import open_4_channel
@@ -308,7 +308,12 @@ def _prep_model(data, fold=0):
     early_stopping_callback = partial(EarlyStoppingCallback,
                                       monitor='fbeta',
                                       min_delta=0.005,
-                                      patience=3)
+                                      patience=5)
+    reduce_lr_on_plateau_callback = partial(ReduceLROnPlateauCallback,
+                                            monitor='fbeta',
+                                            min_delta=0.005,
+                                            factor=0.2,
+                                            patience=3)
     csv_logger = partial(CSVCustomPathLogger,
                          filename="{}-{}".format(runname, fold))
 
@@ -331,6 +336,7 @@ def _prep_model(data, fold=0):
                         metrics=[f1_score],
                         callback_fns=[
                             early_stopping_callback,
+                            reduce_lr_on_plateau_callback,
                             csv_logger,
                             # save_model_callback
                         ]
