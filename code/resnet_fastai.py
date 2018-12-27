@@ -372,10 +372,10 @@ def _predict(learn):
 # Output results
 ###############################
 
-def _output_results(preds):
+def _output_results(preds, suffix=""):
     pred_labels = [' '.join(list([str(i) for i in np.nonzero(row>th)[0]])) for row in np.array(preds)]
     df = pd.DataFrame({'Id':test_ids,'Predicted':pred_labels})
-    out_file = OUT_PATH+runname+'.csv'
+    out_file = out_path/f'{runname}{suffix}.csv'
     df.to_csv(out_file, header=True, index=False)
     logger.info('Results written to {}. Finished! :)'.format(out_file))
     return
@@ -411,8 +411,11 @@ if __name__=='__main__':
 
         preds = _predict(learn)
         all_preds.append(preds)
+        _output_results(preds, suffix="-{}".format(index))
 
     all_preds = torch.stack(all_preds)
     avg_preds = torch.mean(all_preds, dim=0)
     logger.debug(avg_preds.shape)
-    _output_results(avg_preds)
+
+    if fold > 1:
+        _output_results(avg_preds, suffix="-avg")
