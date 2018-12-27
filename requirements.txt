@@ -13,3 +13,4 @@ opencv-python==3.4.3.18
 fastai==1.0.28
 torch==0.4.1
 torchvision==0.2.1
+nvidia-ml-py3==7.352.0
