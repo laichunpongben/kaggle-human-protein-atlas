@@ -5,7 +5,6 @@ from pathlib import Path
 import argparse
 import logging
 import time
-import nvidia_smi
 
 import numpy as np
 import torch.nn as nn
@@ -169,11 +168,6 @@ conf_msg = '\n'.join([
                     ])
 logger.debug("Start a new training task")
 logger.info(conf_msg)
-
-def get_gpu_stats():
-    res = nvidia_smi.nvmlDeviceGetUtilizationRates(nvi_handle)
-    print(f'gpu: {res.gpu}%, gpu-mem: {res.memory}%')
-    return
 
 
 ###############################
