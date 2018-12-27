@@ -5,6 +5,7 @@ from pathlib import Path
 import argparse
 import logging
 import time
+import nvidia_smi
 
 import numpy as np
 import torch.nn as nn
@@ -49,6 +50,9 @@ parser.add_argument("-v","--verbose", help="Set verbosity 0-3, 0 to turn off out
 args = parser.parse_args()
 if args.gpuid >= 0:
     device = torch.cuda.set_device(args.gpuid)
+    nvidia_smi.nvmInit()
+    nvi_handle = nvidia_smi.nvmlDeviceGetHandleByIndex(device)
+
 else:
     device = 'cpu'
 bs     = args.batchsize
@@ -165,6 +169,12 @@ conf_msg = '\n'.join([
                     ])
 logger.debug("Start a new training task")
 logger.info(conf_msg)
+
+def get_gpu_stats():
+    res = nvidia_smi.nvmlDeviceGetUtilizationRates(nvi_handle)
+    print(f'gpu: {res.gpu}%, gpu-mem: {res.memory}%')
+    return
+
 
 ###############################
 # Load & preprocess data
