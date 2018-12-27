@@ -50,6 +50,8 @@ parser.add_argument("-v","--verbose", help="Set verbosity 0-3, 0 to turn off out
 args = parser.parse_args()
 if args.gpuid >= 0:
     device = torch.cuda.set_device(args.gpuid)
+    nvidia_smi.nvmInit()
+    nvi_handle = nvidia_smi.nvmlDeviceGetHandleByIndex(device)
 else:
     device = 'cpu'
 
