@@ -47,9 +47,11 @@ parser.add_argument("-v","--verbose", help="Set verbosity 0-3, 0 to turn off out
 
 
 args = parser.parse_args()
-
+if args.gpuid >= 0:
+    device = torch.cuda.set_device(args.gpuid)
 else:
     device = 'cpu'
+    
 bs     = args.batchsize
 th     = args.thres
 ds     = args.dataset
