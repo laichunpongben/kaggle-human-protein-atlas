@@ -415,9 +415,9 @@ if __name__=='__main__':
         learn = _prep_model(data, fold=index)
 
         if args.model:
-            logger.debug(runname)
-            logger.info('Loading model: '+args.model)
-            path = model_path/f'{args.model}.pth'
+            logger.debug("runname: {}".format(runname))
+            logger.info('Loading model: {}, with suffix {}'.format(args.model, index))
+            path = model_path/f'{args.model}-{index}.pth'
             learn.model.load_state_dict(torch.load(path,
                                                    map_location=device),
                                         strict=False)
