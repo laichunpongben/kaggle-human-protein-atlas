@@ -330,7 +330,7 @@ def _prep_model(data, fold=0):
     f1_score = partial(fbeta, thresh=0.2, beta=1)
     early_stopping_callback = partial(EarlyStoppingCallback,
                                       monitor='fbeta',
-                                      min_delta=0.005,
+                                      min_delta=0.001,
                                       patience=5)
     reduce_lr_on_plateau_callback = partial(ReduceLROnPlateauCallback,
                                             monitor='fbeta',
