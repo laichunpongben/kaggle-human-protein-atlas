@@ -379,6 +379,8 @@ def fit_model(learn, stage=1, fold=0):
         logger.debug("Unfreezing model")
 
     learn.lr_find()
+    lr_curve = list(zip(learn.recorder.lrs, learn.recorder.losses))
+    logger.debug(lr_curve)
     learn.recorder.plot()
     plt.show()
 
