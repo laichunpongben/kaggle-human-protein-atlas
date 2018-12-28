@@ -186,8 +186,10 @@ logger.info(conf_msg)
 np.random.seed(42)
 
 if "official" in ds:
+    stats = STATS["official"]
     logger.info("Offical stats: {}".format(STATS["official"]))
-if "hpav18" in ds:
+elif "hpav18" in ds:
+    stats = STATS["hpav18"]
     logger.info("HPAv18 stats: {}".format(STATS["hpav18"]))
 
 test_ids = list(sorted({fname.split('_')[0] for fname in os.listdir(src_path/'test') if fname.endswith('.png')}))
@@ -267,6 +269,7 @@ def get_data(src):
                                 max_lighting=0.05, max_warp=0.)
     data = (src.transform((trn_tfms, _), size=imgsize)
             .databunch(bs=bs))
+    data = data.normalize(stats)
 
     logger.debug("Databunch created")
 
