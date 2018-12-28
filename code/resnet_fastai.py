@@ -380,6 +380,7 @@ def _prep_model(data, fold=0):
 ###############################
 
 def fit_model(learn, stage=1, fold=0):
+    global lr
     assert stage in [1, 2]
 
     if stage == 2:
