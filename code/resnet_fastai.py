@@ -343,13 +343,20 @@ def _prep_model(data, fold=0):
     csv_logger = partial(CSVCustomPathLogger,
                          filename="{}-{}".format(runname, fold))
 
-    # TODO: Fix OSError: [Errno 12] Cannot allocate memory
-    # save_model_callback = partial(SaveModelCustomPathCallback,
-    #                               monitor='fbeta',
-    #                               mode='auto',
-    #                               every='improvement',
-    #                               name=runname+'-bestmodel',
-    #                               device=device)
+    save_model_callback = partial(SaveModelCustomPathCallback,
+                                  # monitor='fbeta',
+                                  mode='auto',
+                                  every='improvement',
+                                  name='{}-{}'.format(runname, fold),
+                                  device=device)
+
+    cb = [
+        early_stopping_callback,
+        reduce_lr_on_plateau_callback,
+        csv_logger
+    ]
+    # if args.gpuid > 0:
+    #     cb.append(save_model_callback)
 
     learn = create_cnn(
                         data,
@@ -360,12 +367,7 @@ def _prep_model(data, fold=0):
                         loss_func=loss_func,
                         path=src_path,
                         metrics=[f1_score],
-                        callback_fns=[
-                            early_stopping_callback,
-                            reduce_lr_on_plateau_callback,
-                            csv_logger,
-                            # save_model_callback
-                        ]
+                        callback_fns=[cb]
                       )
     logger.info('Complete initialising model.')
     return learn
