@@ -389,12 +389,14 @@ def fit_model(learn, stage=1, fold=0):
     if stage == 1:
         start_lr = 0.01
         end_lr = 0.04
+        num_it = 100
     else:
         start_lr = 1e-8
         end_lr = 1e-5
+        num_it = 1000
 
     logger.debug("Start finding LR")
-    learn.lr_find(start_lr=start_lr, end_lr=end_lr, num_it=1000)
+    learn.lr_find(start_lr=start_lr, end_lr=end_lr, num_it=num_it)
     lr_curve = list(zip(learn.recorder.lrs, learn.recorder.losses))
     logger.debug(lr_curve)
     best_lr = min(lr_curve, key=lambda x: x[1].data)[0]
@@ -406,7 +408,8 @@ def fit_model(learn, stage=1, fold=0):
     logger.info('Start model fitting: Stage {}'.format(stage))
 
     if args.learningrate == 0:
-        lr = best_lr
+        factor = 0.8  # arbitrary
+        lr = best_lr * factor
         logger.debug("Use best LR: {}".format(lr))
 
     if stage == 1:
