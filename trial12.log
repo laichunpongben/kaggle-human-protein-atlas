@@ -90,3 +90,437 @@ Start model fitting: Stage 2
 
 epoch     train_loss  valid_loss  fbeta   
 1         0.080939    0.085251    0.732964  
+2         0.081398    0.081801    0.733365  
+3         0.084122    0.082391    0.729502  
+4         0.082400    0.083027    0.727978  
+Epoch 4: reducing lr to 2.5894732212726296e-05
+5         0.083484    0.082573    0.727078  
+6         0.083756    0.085169    0.730540  
+*** 2018-12-27 20:17:33,677 - code.resnet_fastai - INFO ***
+Complete model fitting: Stage 2
+******
+
+*** 2018-12-27 20:17:34,008 - code.resnet_fastai - INFO ***
+Stage 2 model saved.
+******
+
+*** 2018-12-27 20:17:34,008 - code.resnet_fastai - INFO ***
+Start predicting test set
+******
+
+7         0.079377    0.116891    0.733705  
+Epoch 7: early stopping
+Epoch 7: reducing lr to 2.3107372528297853e-05
+*** 2018-12-27 20:20:21,387 - code.resnet_fastai - INFO ***
+Complete test prediction.
+******
+
+*** 2018-12-27 20:20:21,390 - code.resnet_fastai - INFO ***
+Prediction saved.
+******
+
+*** 2018-12-27 20:20:21,521 - code.resnet_fastai - INFO ***
+Results written to output/resnet50-512-official-bce-random-drop0.5-th0.1-bs32-lr0.01-ep5_15-0.csv. Finished! :)
+******
+
+*** 2018-12-27 20:20:22,188 - code.resnet_fastai - DEBUG ***
+Start of fold 1
+******
+
+*** 2018-12-27 20:20:22,189 - code.resnet_fastai - DEBUG ***
+Size of valid set: 6258
+******
+
+*** 2018-12-27 20:20:22,369 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (24814 items)
+[MultiCategory 16;0, MultiCategory 7;1;2;0, MultiCategory 5, MultiCategory 18, MultiCategory 0]...
+Path: data/official
+x: ImageItemList (24814 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/official
+******
+
+*** 2018-12-27 20:20:22,578 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (6258 items)
+[MultiCategory 1, MultiCategory 21, MultiCategory 25, MultiCategory 25;11, MultiCategory 25;0]...
+Path: data/official
+x: ImageItemList (6258 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/official
+******
+
+*** 2018-12-27 20:20:25,208 - code.resnet_fastai - DEBUG ***
+Databunch created
+******
+
+*** 2018-12-27 20:20:25,208 - code.resnet_fastai - INFO ***
+Initialising model.
+******
+
+*** 2018-12-27 20:20:25,996 - code.resnet_fastai - INFO ***
+Complete initialising model.
+******
+
+*** 2018-12-27 20:20:25,996 - code.resnet_fastai - DEBUG ***
+runname: resnet50-512-official-bce-random-drop0.5-th0.1-bs32-lr0.01-ep5_15
+******
+
+*** 2018-12-27 20:20:25,997 - code.resnet_fastai - INFO ***
+Loading model: stage-2-resnet50-512-official-bce-random-drop0.5-th0.1-bs32-lr0.01-ep5_15, with suffix 1
+******
+
+*** 2018-12-27 20:20:26,081 - code.resnet_fastai - INFO ***
+Finish loading model.
+******
+
+*** 2018-12-27 20:20:26,083 - code.resnet_fastai - DEBUG ***
+Unfreezing model
+******
+
+*** 2018-12-27 20:20:26,083 - code.resnet_fastai - INFO ***
+Start model fitting: Stage 2
+******
+
+epoch     train_loss  valid_loss  fbeta   
+1         0.079838    0.081005    0.726408  
+2         0.080581    0.080324    0.728931  
+3         0.081602    0.081886    0.729843  
+4         0.080210    0.080781    0.726076  
+Epoch 4: reducing lr to 2.589648422881889e-05
+5         0.079714    0.081666    0.727577  
+6         0.076937    0.081691    0.728093  
+*** 2018-12-27 21:23:24,413 - code.resnet_fastai - INFO ***
+Complete model fitting: Stage 2
+******
+
+*** 2018-12-27 21:23:24,755 - code.resnet_fastai - INFO ***
+Stage 2 model saved.
+******
+
+*** 2018-12-27 21:23:24,755 - code.resnet_fastai - INFO ***
+Start predicting test set
+******
+
+7         0.080165    0.082008    0.725052  
+Epoch 7: early stopping
+Epoch 7: reducing lr to 2.3106038719696447e-05
+*** 2018-12-27 21:26:10,671 - code.resnet_fastai - INFO ***
+Complete test prediction.
+******
+
+*** 2018-12-27 21:26:10,675 - code.resnet_fastai - INFO ***
+Prediction saved.
+******
+
+*** 2018-12-27 21:26:10,806 - code.resnet_fastai - INFO ***
+Results written to output/resnet50-512-official-bce-random-drop0.5-th0.1-bs32-lr0.01-ep5_15-1.csv. Finished! :)
+******
+
+*** 2018-12-27 21:26:11,483 - code.resnet_fastai - DEBUG ***
+Start of fold 2
+******
+
+*** 2018-12-27 21:26:11,484 - code.resnet_fastai - DEBUG ***
+Size of valid set: 6232
+******
+
+*** 2018-12-27 21:26:11,672 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (24840 items)
+[MultiCategory 7;1;2;0, MultiCategory 5, MultiCategory 1, MultiCategory 18, MultiCategory 0]...
+Path: data/official
+x: ImageItemList (24840 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/official
+******
+
+*** 2018-12-27 21:26:11,881 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (6232 items)
+[MultiCategory 16;0, MultiCategory 25;2, MultiCategory 7, MultiCategory 23, MultiCategory 25]...
+Path: data/official
+x: ImageItemList (6232 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/official
+******
+
+*** 2018-12-27 21:26:14,700 - code.resnet_fastai - DEBUG ***
+Databunch created
+******
+
+*** 2018-12-27 21:26:14,700 - code.resnet_fastai - INFO ***
+Initialising model.
+******
+
+*** 2018-12-27 21:26:15,515 - code.resnet_fastai - INFO ***
+Complete initialising model.
+******
+
+*** 2018-12-27 21:26:15,515 - code.resnet_fastai - DEBUG ***
+runname: resnet50-512-official-bce-random-drop0.5-th0.1-bs32-lr0.01-ep5_15
+******
+
+*** 2018-12-27 21:26:15,515 - code.resnet_fastai - INFO ***
+Loading model: stage-2-resnet50-512-official-bce-random-drop0.5-th0.1-bs32-lr0.01-ep5_15, with suffix 2
+******
+
+*** 2018-12-27 21:26:15,599 - code.resnet_fastai - INFO ***
+Finish loading model.
+******
+
+*** 2018-12-27 21:26:15,601 - code.resnet_fastai - DEBUG ***
+Unfreezing model
+******
+
+*** 2018-12-27 21:26:15,601 - code.resnet_fastai - INFO ***
+Start model fitting: Stage 2
+******
+
+epoch     train_loss  valid_loss  fbeta   
+1         0.100167    0.118970    0.681577  
+2         0.098371    0.096457    0.689508  
+3         0.095059    0.088818    0.696741  
+4         0.092379    0.098174    0.701440  
+5         0.092425    0.088169    0.696433  
+6         0.090326    0.088144    0.700646  
+Epoch 6: reducing lr to 2.5346256853692637e-05
+7         0.090784    0.088345    0.697571  
+8         0.088174    0.085230    0.703733  
+9         0.085800    0.085110    0.706863  
+10        0.085346    0.084015    0.713553  
+11        0.084607    0.083962    0.712619  
+12        0.084742    0.085821    0.713887  
+13        0.083086    0.088636    0.709012  
+Epoch 13: reducing lr to 2.3169137418547015e-06
+14        0.083012    0.085427    0.716890  
+*** 2018-12-27 23:40:09,861 - code.resnet_fastai - INFO ***
+Complete model fitting: Stage 2
+******
+
+*** 2018-12-27 23:40:10,201 - code.resnet_fastai - INFO ***
+Stage 2 model saved.
+******
+
+*** 2018-12-27 23:40:10,202 - code.resnet_fastai - INFO ***
+Start predicting test set
+******
+
+15        0.083662    0.084447    0.714962  
+*** 2018-12-27 23:42:54,009 - code.resnet_fastai - INFO ***
+Complete test prediction.
+******
+
+*** 2018-12-27 23:42:54,012 - code.resnet_fastai - INFO ***
+Prediction saved.
+******
+
+*** 2018-12-27 23:42:54,142 - code.resnet_fastai - INFO ***
+Results written to output/resnet50-512-official-bce-random-drop0.5-th0.1-bs32-lr0.01-ep5_15-2.csv. Finished! :)
+******
+
+*** 2018-12-27 23:42:54,808 - code.resnet_fastai - DEBUG ***
+Start of fold 3
+******
+
+*** 2018-12-27 23:42:54,809 - code.resnet_fastai - DEBUG ***
+Size of valid set: 6209
+******
+
+*** 2018-12-27 23:42:54,994 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (24863 items)
+[MultiCategory 16;0, MultiCategory 7;1;2;0, MultiCategory 5, MultiCategory 1, MultiCategory 18]...
+Path: data/official
+x: ImageItemList (24863 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/official
+******
+
+*** 2018-12-27 23:42:55,200 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (6209 items)
+[MultiCategory 25;2, MultiCategory 0, MultiCategory 14;2;0, MultiCategory 23, MultiCategory 2;0]...
+Path: data/official
+x: ImageItemList (6209 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/official
+******
+
+*** 2018-12-27 23:42:57,951 - code.resnet_fastai - DEBUG ***
+Databunch created
+******
+
+*** 2018-12-27 23:42:57,952 - code.resnet_fastai - INFO ***
+Initialising model.
+******
+
+*** 2018-12-27 23:42:58,738 - code.resnet_fastai - INFO ***
+Complete initialising model.
+******
+
+*** 2018-12-27 23:42:58,738 - code.resnet_fastai - DEBUG ***
+runname: resnet50-512-official-bce-random-drop0.5-th0.1-bs32-lr0.01-ep5_15
+******
+
+*** 2018-12-27 23:42:58,738 - code.resnet_fastai - INFO ***
+Loading model: stage-2-resnet50-512-official-bce-random-drop0.5-th0.1-bs32-lr0.01-ep5_15, with suffix 3
+******
+
+*** 2018-12-27 23:42:58,818 - code.resnet_fastai - INFO ***
+Finish loading model.
+******
+
+*** 2018-12-27 23:42:58,820 - code.resnet_fastai - DEBUG ***
+Unfreezing model
+******
+
+*** 2018-12-27 23:42:58,820 - code.resnet_fastai - INFO ***
+Start model fitting: Stage 2
+******
+
+epoch     train_loss  valid_loss  fbeta   
+1         0.079961    0.079241    0.734609  
+2         0.081138    0.078979    0.737679  
+3         0.081053    0.080157    0.732186  
+4         0.079466    0.080954    0.728682  
+Epoch 4: reducing lr to 2.5894732212726296e-05
+5         0.079656    0.080862    0.733437  
+6         0.078790    0.080772    0.734731  
+*** 2018-12-28 00:45:28,870 - code.resnet_fastai - INFO ***
+Complete model fitting: Stage 2
+******
+
+*** 2018-12-28 00:45:29,224 - code.resnet_fastai - INFO ***
+Stage 2 model saved.
+******
+
+*** 2018-12-28 00:45:29,224 - code.resnet_fastai - INFO ***
+Start predicting test set
+******
+
+7         0.077728    0.080416    0.734529  
+Epoch 7: early stopping
+Epoch 7: reducing lr to 2.3107372528297853e-05
+*** 2018-12-28 00:48:14,416 - code.resnet_fastai - INFO ***
+Complete test prediction.
+******
+
+*** 2018-12-28 00:48:14,419 - code.resnet_fastai - INFO ***
+Prediction saved.
+******
+
+*** 2018-12-28 00:48:14,555 - code.resnet_fastai - INFO ***
+Results written to output/resnet50-512-official-bce-random-drop0.5-th0.1-bs32-lr0.01-ep5_15-3.csv. Finished! :)
+******
+
+*** 2018-12-28 00:48:15,221 - code.resnet_fastai - DEBUG ***
+Start of fold 4
+******
+
+*** 2018-12-28 00:48:15,221 - code.resnet_fastai - DEBUG ***
+Size of valid set: 6172
+******
+
+*** 2018-12-28 00:48:15,409 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (24900 items)
+[MultiCategory 16;0, MultiCategory 7;1;2;0, MultiCategory 5, MultiCategory 1, MultiCategory 18]...
+Path: data/official
+x: ImageItemList (24900 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/official
+******
+
+*** 2018-12-28 00:48:15,619 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (6172 items)
+[MultiCategory 0, MultiCategory 0, MultiCategory 23, MultiCategory 25;0, MultiCategory 14;2;0]...
+Path: data/official
+x: ImageItemList (6172 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/official
+******
+
+*** 2018-12-28 00:48:18,213 - code.resnet_fastai - DEBUG ***
+Databunch created
+******
+
+*** 2018-12-28 00:48:18,213 - code.resnet_fastai - INFO ***
+Initialising model.
+******
+
+*** 2018-12-28 00:48:19,114 - code.resnet_fastai - INFO ***
+Complete initialising model.
+******
+
+*** 2018-12-28 00:48:19,114 - code.resnet_fastai - DEBUG ***
+runname: resnet50-512-official-bce-random-drop0.5-th0.1-bs32-lr0.01-ep5_15
+******
+
+*** 2018-12-28 00:48:19,114 - code.resnet_fastai - INFO ***
+Loading model: stage-2-resnet50-512-official-bce-random-drop0.5-th0.1-bs32-lr0.01-ep5_15, with suffix 4
+******
+
+*** 2018-12-28 00:48:19,197 - code.resnet_fastai - INFO ***
+Finish loading model.
+******
+
+*** 2018-12-28 00:48:19,199 - code.resnet_fastai - DEBUG ***
+Unfreezing model
+******
+
+*** 2018-12-28 00:48:19,199 - code.resnet_fastai - INFO ***
+Start model fitting: Stage 2
+******
+
+epoch     train_loss  valid_loss  fbeta   
+1         0.099201    0.095053    0.675205  
+2         0.097420    0.094273    0.682411  
+3         0.094068    0.091674    0.689456  
+4         0.095113    0.090950    0.690297  
+5         0.094406    0.091394    0.690120  
+6         0.090215    0.090140    0.704996  
+7         0.090639    0.087937    0.710239  
+8         0.090409    0.088480    0.706837  
+9         0.091186    0.087035    0.716447  
+10        0.085608    0.085648    0.719875  
+11        0.085253    0.085585    0.713473  
+12        0.084469    0.084956    0.715503  
+Epoch 12: reducing lr to 5.020222561339654e-06
+13        0.084112    0.084849    0.718972  
+14        0.084879    0.084437    0.722716  
+*** 2018-12-28 03:02:17,695 - code.resnet_fastai - INFO ***
+Complete model fitting: Stage 2
+******
+
+*** 2018-12-28 03:02:18,030 - code.resnet_fastai - INFO ***
+Stage 2 model saved.
+******
+
+*** 2018-12-28 03:02:18,030 - code.resnet_fastai - INFO ***
+Start predicting test set
+******
+
+15        0.083407    0.085039    0.718385  
+*** 2018-12-28 03:05:03,728 - code.resnet_fastai - INFO ***
+Complete test prediction.
+******
+
+*** 2018-12-28 03:05:03,732 - code.resnet_fastai - INFO ***
+Prediction saved.
+******
+
+*** 2018-12-28 03:05:03,852 - code.resnet_fastai - INFO ***
+Results written to output/resnet50-512-official-bce-random-drop0.5-th0.1-bs32-lr0.01-ep5_15-4.csv. Finished! :)
+******
+
+*** 2018-12-28 03:05:03,858 - code.resnet_fastai - DEBUG ***
+torch.Size([11702, 28])
+******
+
+*** 2018-12-28 03:05:03,958 - code.resnet_fastai - INFO ***
+Results written to output/resnet50-512-official-bce-random-drop0.5-th0.1-bs32-lr0.01-ep5_15-avg.csv. Finished! :)
+******
+
