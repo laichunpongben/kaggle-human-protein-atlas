@@ -7,6 +7,7 @@ MODEL_PATH = os.getenv("MODEL_PATH", "./model/")
 PRED_PATH = os.getenv("PRED_PATH", "./pred/")
 OUT_PATH = os.getenv("OUT_PATH", "./output/")
 LOG_PATH = os.getenv("LOG_PATH", "./logs/")
+PLOT_PATH = os.getenv("PLOT_PATH", "./plot/")
 
 _log_format = "*** %(asctime)s - %(name)s - %(levelname)s ***\n%(message)s\n******\n"
 logging.basicConfig(

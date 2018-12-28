@@ -20,7 +20,7 @@ from .arch import Resnet4Channel, Inception4Channel, SqueezeNet4Channel
 from .loss import focal_loss, f1_loss
 from .callback import SaveModelCustomPathCallback, CSVCustomPathLogger
 from .ml_stratifiers import MultilabelStratifiedShuffleSplit
-from config import DATASET_PATH, MODEL_PATH, PRED_PATH, OUT_PATH, STATS, WEIGHTS, formatter
+from config import DATASET_PATH, MODEL_PATH, PRED_PATH, OUT_PATH, PLOT_PATH, STATS, WEIGHTS, formatter
 
 
 ###############################
@@ -137,6 +137,9 @@ model_path.mkdir(parents=True, exist_ok=True)
 
 pred_path = Path(PRED_PATH)
 pred_path.mkdir(parents=True, exist_ok=True)
+
+plot_path = Path(PLOT_PATH)
+plot_path.mkdir(parents=True, exist_ok=True)
 
 train_csv = src_path/f'train.csv'
 
@@ -393,6 +396,7 @@ def fit_model(learn, stage=1, fold=0):
     logger.debug(best_lr)
     learn.recorder.plot()
     plt.show()
+    plt.savefig(plot_path/f'stage-{stage}-{runname}-{fold}.png')
 
     logger.info('Start model fitting: Stage {}'.format(stage))
 
