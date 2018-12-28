@@ -383,7 +383,7 @@ def fit_model(learn, stage=1, fold=0):
 
     if stage == 1:
         start_lr = 0.01
-        end_lr = 0.05
+        end_lr = 0.04
     else:
         start_lr = 1e-8
         end_lr = 1e-5
