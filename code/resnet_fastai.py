@@ -393,8 +393,8 @@ def fit_model(learn, stage=1, fold=0):
             end_lr = 0.04
             num_it = 1000
         else:
-            start_lr = 1e-6
-            end_lr = 3e-5
+            start_lr = 1e-5
+            end_lr = 4e-5
             num_it = 1000
 
         logger.debug("Start finding LR")
@@ -461,6 +461,9 @@ if __name__=='__main__':
     all_preds = []
     train_valid_split = generate_train_valid_split(train_csv, n_splits=fold, valid_size=0.2)
     for index, (train_idx, valid_idx) in enumerate(train_valid_split):
+
+        if index == 0:
+            continue
         # index = 0
         # src = get_src()
         logger.debug("Start of fold {}".format(index))
