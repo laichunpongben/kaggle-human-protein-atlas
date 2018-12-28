@@ -1,0 +1,121 @@
+*** 2018-12-27 17:57:01,137 - code.resnet_fastai - DEBUG ***
+Start a new training task
+******
+
+*** 2018-12-27 17:57:01,137 - code.resnet_fastai - INFO ***
+Device ID: 0
+Image size: 512
+Network architecture: resnet
+Loss function: bce
+Sampler: random
+Encoder depth: 50
+Dropout: 0.5
+Threshold: 0.1
+Stage 1 #epoch: 15
+Stage 2 #epoch: 0
+Learning rate #1: 0.005
+Batch size: 32
+Dataset: official
+Dataset directory: data/official
+Output directory: output
+******
+
+*** 2018-12-27 17:57:01,138 - code.resnet_fastai - INFO ***
+Offical stats: ([0.07986162506177984, 0.05217604947235713, 0.054227752481757215, 0.08201468927464939], [0.1403192215484648, 0.1041239635111223, 0.1532386688507187, 0.14099509309392533])
+******
+
+*** 2018-12-27 17:57:01,198 - code.resnet_fastai - DEBUG ***
+# Test ids: 11702
+******
+
+*** 2018-12-27 17:57:01,973 - code.resnet_fastai - DEBUG ***
+Start of fold 0
+******
+
+*** 2018-12-27 17:57:01,973 - code.resnet_fastai - DEBUG ***
+Size of valid set: 6209
+******
+
+*** 2018-12-27 17:57:02,168 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (24863 items)
+[MultiCategory 16;0, MultiCategory 1, MultiCategory 18, MultiCategory 0, MultiCategory 25;2]...
+Path: data/official
+x: ImageItemList (24863 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/official
+******
+
+*** 2018-12-27 17:57:02,484 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (6209 items)
+[MultiCategory 7;1;2;0, MultiCategory 5, MultiCategory 21, MultiCategory 0, MultiCategory 25;4]...
+Path: data/official
+x: ImageItemList (6209 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/official
+******
+
+*** 2018-12-27 17:57:05,428 - code.resnet_fastai - DEBUG ***
+Databunch created
+******
+
+*** 2018-12-27 17:57:05,428 - code.resnet_fastai - INFO ***
+Initialising model.
+******
+
+*** 2018-12-27 17:57:09,820 - code.resnet_fastai - INFO ***
+Complete initialising model.
+******
+
+*** 2018-12-27 17:57:09,820 - code.resnet_fastai - DEBUG ***
+runname: resnet50-512-official-bce-random-drop0.5-th0.1-bs32-lr0.01-ep5_15
+******
+
+*** 2018-12-27 17:57:09,820 - code.resnet_fastai - INFO ***
+Loading model: stage-1-resnet50-512-official-bce-random-drop0.5-th0.1-bs32-lr0.01-ep5_15, with suffix 0
+******
+
+*** 2018-12-27 17:57:09,964 - code.resnet_fastai - INFO ***
+Finish loading model.
+******
+
+*** 2018-12-27 17:57:09,964 - code.resnet_fastai - INFO ***
+Start model fitting: Stage 1
+******
+
+epoch     train_loss  valid_loss  fbeta   
+1         0.107954    0.114879    0.634453  
+2         0.112004    0.105647    0.641032  
+3         0.113876    0.241569    0.618221  
+4         0.113908    0.245342    0.578438  
+5         0.115460    0.140046    0.565097  
+Epoch 5: reducing lr to 0.0009944154354509119
+6         0.113002    0.138230    0.606532  
+7         0.110618    0.122965    0.584050  
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/usr/lib/python3.6/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/home/ubuntu/atlas/code/resnet_fastai.py", line 445, in <module>
+    learn = fit_model(learn, stage=1, fold=index)
+  File "/home/ubuntu/atlas/code/resnet_fastai.py", line 383, in fit_model
+    learn.fit_one_cycle(cyc_len, max_lr)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/fastai/train.py", line 21, in fit_one_cycle
+    learn.fit(cyc_len, max_lr, wd=wd, callbacks=callbacks)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/fastai/basic_train.py", line 166, in fit
+    callbacks=self.callbacks+callbacks)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/fastai/basic_train.py", line 94, in fit
+    raise e
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/fastai/basic_train.py", line 84, in fit
+    loss = loss_batch(model, xb, yb, loss_func, opt, cb_handler)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/fastai/basic_train.py", line 30, in loss_batch
+    opt.zero_grad()
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/fastai/callback.py", line 51, in zero_grad
+    self.opt.zero_grad()
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/torch/optim/optimizer.py", line 156, in zero_grad
+    p.grad.zero_()
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/torch/utils/data/dataloader.py", line 227, in handler
+    _error_if_any_worker_fails()
+RuntimeError: DataLoader worker (pid 30173) is killed by signal: Terminated. Details are lost due to multiprocessing. Rerunning with num_workers=0 may give better error trace.

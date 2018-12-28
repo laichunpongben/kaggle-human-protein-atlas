@@ -1,0 +1,177 @@
+*** 2018-12-26 05:12:54,378 - code.resnet_fastai - DEBUG ***
+Start a new training task
+******
+
+*** 2018-12-26 05:12:54,378 - code.resnet_fastai - INFO ***
+Device ID: 0
+Image size: 512
+Network architecture: resnet
+Loss function: bce
+Sampler: random
+Encoder depth: 50
+Dropout: 0.5
+Threshold: 0.1
+Stage 1 #epoch: 5
+Stage 2 #epoch: 15
+Learning rate #1: 0.01
+Batch size: 32
+Dataset: official
+Dataset directory: data/official
+Output directory: output
+******
+
+*** 2018-12-26 05:12:54,379 - code.resnet_fastai - INFO ***
+Offical stats: ([0.07986162506177984, 0.05217604947235713, 0.054227752481757215, 0.08201468927464939], [0.1403192215484648, 0.1041239635111223, 0.1532386688507187, 0.14099509309392533])
+******
+
+*** 2018-12-26 05:12:54,439 - code.resnet_fastai - DEBUG ***
+# Test ids: 11702
+******
+
+*** 2018-12-26 05:12:55,422 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (24863 items)
+[MultiCategory 16;0, MultiCategory 1, MultiCategory 18, MultiCategory 0, MultiCategory 25;2]...
+Path: data/official
+x: ImageItemList (24863 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/official
+******
+
+*** 2018-12-26 05:12:55,740 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (6209 items)
+[MultiCategory 7;1;2;0, MultiCategory 5, MultiCategory 21, MultiCategory 0, MultiCategory 25;4]...
+Path: data/official
+x: ImageItemList (6209 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/official
+******
+
+*** 2018-12-26 05:12:58,819 - code.resnet_fastai - DEBUG ***
+Databunch created
+******
+
+*** 2018-12-26 05:12:58,819 - code.resnet_fastai - INFO ***
+Initialising model.
+******
+
+*** 2018-12-26 05:13:03,218 - code.resnet_fastai - INFO ***
+Complete initialising model.
+******
+
+*** 2018-12-26 05:13:03,218 - code.resnet_fastai - INFO ***
+Start model fitting: Stage 1
+******
+
+epoch     train_loss  valid_loss  fbeta   
+1         0.144437    0.152797    0.415214  
+2         0.128190    0.128891    0.539894  
+3         0.121643    0.118359    0.590904  
+4         0.115494    0.107636    0.631147  
+*** 2018-12-26 05:57:07,734 - code.resnet_fastai - INFO ***
+Complete model fitting Stage 1.
+******
+
+*** 2018-12-26 05:57:07,933 - code.resnet_fastai - INFO ***
+Model saved.
+******
+
+*** 2018-12-26 05:57:07,936 - code.resnet_fastai - INFO ***
+Start model fitting: Stage 2
+******
+
+5         0.112166    0.108976    0.629655  
+epoch     train_loss  valid_loss  fbeta   
+1         0.108065    0.104667    0.640654  
+2         0.110899    0.105152    0.636429  
+3         0.109137    0.107527    0.636106  
+4         0.109499    0.109980    0.613510  
+*** 2018-12-26 06:42:28,213 - code.resnet_fastai - INFO ***
+Complete model fitting Stage 2.
+******
+
+*** 2018-12-26 06:42:28,339 - code.resnet_fastai - INFO ***
+Model saved.
+******
+
+5         0.104788    0.109429    0.623254  
+Epoch 5: early stopping
+*** 2018-12-26 06:45:17,271 - code.resnet_fastai - INFO ***
+Complete test prediction.
+******
+
+*** 2018-12-26 06:45:18,123 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (24814 items)
+[MultiCategory 16;0, MultiCategory 7;1;2;0, MultiCategory 5, MultiCategory 18, MultiCategory 0]...
+Path: data/official
+x: ImageItemList (24814 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/official
+******
+
+*** 2018-12-26 06:45:18,338 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (6258 items)
+[MultiCategory 1, MultiCategory 21, MultiCategory 25, MultiCategory 25;11, MultiCategory 25;0]...
+Path: data/official
+x: ImageItemList (6258 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/official
+******
+
+*** 2018-12-26 06:45:21,021 - code.resnet_fastai - DEBUG ***
+Databunch created
+******
+
+*** 2018-12-26 06:45:21,021 - code.resnet_fastai - INFO ***
+Initialising model.
+******
+
+*** 2018-12-26 06:45:21,835 - code.resnet_fastai - INFO ***
+Complete initialising model.
+******
+
+*** 2018-12-26 06:45:21,835 - code.resnet_fastai - INFO ***
+Start model fitting: Stage 1
+******
+
+epoch     train_loss  valid_loss  fbeta   
+1         0.142751    0.148735    0.434777  
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/usr/lib/python3.6/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/home/ubuntu/atlas/code/resnet_fastai.py", line 385, in <module>
+    learn = _fit_model(learn, index)
+  File "/home/ubuntu/atlas/code/resnet_fastai.py", line 335, in _fit_model
+    learn.fit_one_cycle(epochnum1, slice(lr))
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/fastai/train.py", line 21, in fit_one_cycle
+    learn.fit(cyc_len, max_lr, wd=wd, callbacks=callbacks)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/fastai/basic_train.py", line 166, in fit
+    callbacks=self.callbacks+callbacks)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/fastai/basic_train.py", line 94, in fit
+    raise e
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/fastai/basic_train.py", line 82, in fit
+    for xb,yb in progress_bar(data.train_dl, parent=pbar):
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/fastprogress/fastprogress.py", line 65, in __iter__
+    for i,o in enumerate(self._gen):
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/fastai/basic_data.py", line 70, in __iter__
+    for b in self.dl:
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/torch/utils/data/dataloader.py", line 330, in __next__
+    idx, batch = self._get_batch()
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/torch/utils/data/dataloader.py", line 309, in _get_batch
+    return self.data_queue.get()
+  File "/usr/lib/python3.6/multiprocessing/queues.py", line 335, in get
+    res = self._reader.recv_bytes()
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 216, in recv_bytes
+    buf = self._recv_bytes(maxlength)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 407, in _recv_bytes
+    buf = self._recv(4)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 379, in _recv
+    chunk = read(handle, remaining)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/torch/utils/data/dataloader.py", line 227, in handler
+    _error_if_any_worker_fails()
+RuntimeError: DataLoader worker (pid 4859) is killed by signal: Terminated. Details are lost due to multiprocessing. Rerunning with num_workers=0 may give better error trace.
