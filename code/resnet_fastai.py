@@ -379,7 +379,7 @@ def fit_model(learn, stage=1, fold=0):
         logger.debug("Unfreezing model")
 
     logger.debug("Start finding LR")
-    learn.lr_find(start_lr=1e-9, end_lr=1, num_it=500)
+    learn.lr_find(start_lr=1e-9, end_lr=1, num_it=1000)
     lr_curve = list(zip(learn.recorder.lrs, learn.recorder.losses))
     logger.debug(lr_curve)
     best_lr = min(lr_curve, key=lambda x: x[1].data)[0]
@@ -398,7 +398,7 @@ def fit_model(learn, stage=1, fold=0):
         max_lr = slice(lr)
     else:
         cyc_len = epochnum2
-        max_lr = slice(lr, lr/5)
+        max_lr = slice(lr, lr*2e2)
     learn.fit_one_cycle(cyc_len, max_lr)
     logger.info('Complete model fitting: Stage {}'.format(stage))
 
