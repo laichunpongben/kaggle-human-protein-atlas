@@ -386,31 +386,32 @@ def fit_model(learn, stage=1, fold=0):
         learn.freeze_to(-uf)
         logger.debug("Unfreezing model")
 
-    if stage == 1:
-        start_lr = 0.01
-        end_lr = 0.04
-        num_it = 1000
-    else:
-        start_lr = 1e-6
-        end_lr = 3e-5
-        num_it = 1000
-
-    logger.debug("Start finding LR")
-    learn.lr_find(start_lr=start_lr, end_lr=end_lr, num_it=num_it)
-    lr_curve = list(zip(learn.recorder.lrs, learn.recorder.losses))
-    logger.debug(lr_curve)
-    best_lr = min(lr_curve, key=lambda x: x[1].data)[0]
-    logger.debug(best_lr)
-    learn.recorder.plot()
-    plt.show()
-    plt.savefig(plot_path/f'stage-{stage}-{runname}-{fold}.png')
-
-    logger.info('Start model fitting: Stage {}'.format(stage))
-
     if args.learningrate == 0:
+        if stage == 1:
+            start_lr = 0.01
+            end_lr = 0.04
+            num_it = 1000
+        else:
+            start_lr = 1e-6
+            end_lr = 3e-5
+            num_it = 1000
+
+        logger.debug("Start finding LR")
+        learn.lr_find(start_lr=start_lr, end_lr=end_lr, num_it=num_it)
+        lr_curve = list(zip(learn.recorder.lrs, learn.recorder.losses))
+        logger.debug(lr_curve)
+        best_lr = min(lr_curve, key=lambda x: x[1].data)[0]
+        logger.debug("Best LR: {}".format(best_lr))
+        learn.recorder.plot()
+        plt.show()
+        plt.savefig(plot_path/f'stage-{stage}-{runname}-{fold}.png')
+
+        logger.info('Start model fitting: Stage {}'.format(stage))
+
         factor = 0.7  # arbitrary
         lr = best_lr * factor
-        logger.debug("Use best LR: {}".format(lr))
+
+    logger.debug("LR: {}".format(lr))
 
     if stage == 1:
         cyc_len = epochnum1
