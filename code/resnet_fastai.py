@@ -378,8 +378,9 @@ def fit_model(learn, stage=1, fold=0):
         learn.freeze_to(-uf)
         logger.debug("Unfreezing model")
 
-    # learn.lr_find()
-    # learn.recorder.plot()
+    learn.lr_find()
+    learn.recorder.plot()
+    plt.show()
 
     logger.info('Start model fitting: Stage {}'.format(stage))
     if stage == 1:
