@@ -39,7 +39,7 @@ parser.add_argument("-i","--gpuid", help="GPU device id", type=int, choices=rang
 parser.add_argument("-l","--loss", help="Loss function", type=str, choices=["bce", "focal", "f1"], default="bce")
 parser.add_argument("-m","--model", help="Trained model to load", type=str, default=None)
 parser.add_argument("-p","--dropout", help="Dropout ratio", type=float, default=0.5)
-parser.add_argument("-r","--learningrate", help="Learning rate", type=float, default=3e-2)
+parser.add_argument("-r","--learningrate", help="Learning rate", type=float, default=0)
 parser.add_argument("-s","--imagesize", help="Image size", type=int, default=512)
 parser.add_argument("-S","--sampler", help="Sampler", type=str, choices=["random", "weighted"], default="random")
 parser.add_argument("-t","--thres", help="Threshold", type=float, default=0.1)
@@ -381,16 +381,23 @@ def fit_model(learn, stage=1, fold=0):
     learn.lr_find()
     lr_curve = list(zip(learn.recorder.lrs, learn.recorder.losses))
     logger.debug(lr_curve)
+    best_lr = min(lr_curve, lambda x: x[1])[0]
+    logger.debug(best_lr)
     learn.recorder.plot()
     plt.show()
 
     logger.info('Start model fitting: Stage {}'.format(stage))
+
+    if args.learningrate == 0:
+        lr = best_lr
+        logger.debug("Use best LR")
+
     if stage == 1:
         cyc_len = epochnum1
         max_lr = slice(lr)
     else:
         cyc_len = epochnum2
-        max_lr = slice(lr*1e-3, lr/epochnum2)
+        max_lr = slice(lr, lr/epochnum2)
     learn.fit_one_cycle(cyc_len, max_lr)
     logger.info('Complete model fitting: Stage {}'.format(stage))
 
