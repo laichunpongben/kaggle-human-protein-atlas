@@ -40,7 +40,7 @@ parser.add_argument("-l","--loss", help="Loss function", type=str, choices=["bce
 parser.add_argument("-m","--model", help="Trained model to load", type=str, default=None)
 parser.add_argument("-p","--dropout", help="Dropout ratio", type=float, default=0.5)
 parser.add_argument("-r","--learningrate", help="Learning rate", type=float, default=3e-2)
-parser.add_argument("-s","--imagesize", help="Image size", type=int, default=256)
+parser.add_argument("-s","--imagesize", help="Image size", type=int, default=512)
 parser.add_argument("-S","--sampler", help="Sampler", type=str, choices=["random", "weighted"], default="random")
 parser.add_argument("-t","--thres", help="Threshold", type=float, default=0.1)
 parser.add_argument("-u","--unfreezeto", help="Number of layers to unfreeze", type=int, default=0)
