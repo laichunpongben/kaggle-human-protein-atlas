@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import numpy as np
 import requests
 from multiprocessing import Pool
 from pathlib import Path
@@ -23,9 +24,22 @@ def download(id_):
                 url = f'http://v18.proteinatlas.org/images/{image_dir}/{image_id}_{color}.jpg'
                 print(url)
                 r = requests.get(url)
-                image = Image.open(BytesIO(r.content)).resize((512, 512), Image.LANCZOS).convert('L')
+                img = np.array(Image.open(BytesIO(r.content)).resize((512, 512), Image.LANCZOS))
+                img_gs = None
+                if color == 'red':
+                    img_gs = img[:, :, 0]
+                if color == 'green':
+                    img_gs = img[:, :, 1]
+                if color == 'blue':
+                    img_gs = img[:, :, 2]
+                else:
+                    img_gs = (img[:, :, 0] + img[:, :, 1])/2
+
+                img_gs = img_gs.astype(np.uint8)
+                image = Image.fromarray(img_gs)
                 image.save(hpa_dir / f'{id_}_{color}.png', format='png')
-            except:
+            except Exception as e:
+                print(e)
                 print(f'{id_}_{color} broke...')
 
 p = Pool()
