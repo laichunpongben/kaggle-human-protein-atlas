@@ -382,7 +382,7 @@ def fit_model(learn, stage=1, fold=0):
     learn.lr_find()
     lr_curve = list(zip(learn.recorder.lrs, learn.recorder.losses))
     logger.debug(lr_curve)
-    best_lr = min(lr_curve, lambda x: x[1].data)[0]
+    best_lr = min(lr_curve, key=lambda x: x[1].data)[0]
     logger.debug(best_lr)
     learn.recorder.plot()
     plt.show()
@@ -398,7 +398,7 @@ def fit_model(learn, stage=1, fold=0):
         max_lr = slice(lr)
     else:
         cyc_len = epochnum2
-        max_lr = slice(lr, lr/epochnum2)
+        max_lr = slice(lr, lr/5)
     learn.fit_one_cycle(cyc_len, max_lr)
     logger.info('Complete model fitting: Stage {}'.format(stage))
 
