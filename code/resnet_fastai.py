@@ -379,7 +379,7 @@ def fit_model(learn, stage=1, fold=0):
         logger.debug("Unfreezing model")
 
     logger.debug("Start finding LR")
-    learn.lr_find(start_lr=1e-9, end_lr=1)
+    learn.lr_find(start_lr=1e-9, end_lr=1, num_it=500)
     lr_curve = list(zip(learn.recorder.lrs, learn.recorder.losses))
     logger.debug(lr_curve)
     best_lr = min(lr_curve, key=lambda x: x[1].data)[0]
