@@ -370,7 +370,7 @@ def _prep_model(data, fold=0):
                         loss_func=loss_func,
                         path=src_path,
                         metrics=[f1_score],
-                        callback_fns=[cb]
+                        callback_fns=cb
                       )
     logger.info('Complete initialising model.')
     return learn
