@@ -2,6 +2,7 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 from torch.autograd import Variable
+from fastai.metrics import fbeta
 
 # input = pred value, target = true value
 
@@ -56,8 +57,11 @@ def focal_loss(input, target, gamma=2):
     # return loss
 
 
-def f1_loss(input, target, threshold=0.5):
-    epsilon = 1e-9
+def f1_loss(input, target, thresh=0.2):
+    return fbeta(input, target, thresh=thresh, beta=1)
+
+
+    # epsilon = 1e-9
     # true_positive = input * target
     # false_positive = (1 - target) * input
     # false_negative = target * (1 - input)
@@ -86,12 +90,12 @@ def f1_loss(input, target, threshold=0.5):
     #
     # return -K.mean(tf_score)
 
-    beta = 1
-    input = torch.ge(input.float(), threshold).float()
-    target = target.float()
-    true_positive = (input * target).sum(dim=1)
-    precision = true_positive.div(input.sum(dim=1).add(epsilon))
-    recall = true_positive.div(target.sum(dim=1).add(epsilon))
-    f1 = torch.mean((precision*recall).div(precision.mul(beta) + recall + epsilon).mul(1 + beta))
-    f1 = Variable(f1, requires_grad=True)
-    return f1
+    # beta = 1
+    # input = torch.ge(input.float(), threshold).float()
+    # target = target.float()
+    # true_positive = (input * target).sum(dim=1)
+    # precision = true_positive.div(input.sum(dim=1).add(epsilon))
+    # recall = true_positive.div(target.sum(dim=1).add(epsilon))
+    # f1 = torch.mean((precision*recall).div(precision.mul(beta) + recall + epsilon).mul(1 + beta))
+    # f1 = Variable(f1, requires_grad=True)
+    # return f1
