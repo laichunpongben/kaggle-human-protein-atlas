@@ -28,9 +28,9 @@ def download(id_):
                 img_gs = None
                 if color == 'red':
                     img_gs = img[:, :, 0]
-                if color == 'green':
+                elif color == 'green':
                     img_gs = img[:, :, 1]
-                if color == 'blue':
+                elif color == 'blue':
                     img_gs = img[:, :, 2]
                 else:
                     img_gs = (img[:, :, 0] + img[:, :, 1])/2
