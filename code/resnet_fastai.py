@@ -382,8 +382,8 @@ def fit_model(learn, stage=1, fold=0):
         logger.debug("Unfreezing model")
 
     if stage == 1:
-        start_lr = 0.005
-        end_lr = 0.5
+        start_lr = 0.01
+        end_lr = 0.05
     else:
         start_lr = 1e-8
         end_lr = 1e-5
