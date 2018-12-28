@@ -408,7 +408,7 @@ def fit_model(learn, stage=1, fold=0):
     logger.info('Start model fitting: Stage {}'.format(stage))
 
     if args.learningrate == 0:
-        factor = 0.8  # arbitrary
+        factor = 0.7  # arbitrary
         lr = best_lr * factor
         logger.debug("Use best LR: {}".format(lr))
 
