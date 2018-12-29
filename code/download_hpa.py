@@ -26,14 +26,18 @@ def download(id_):
                 r = requests.get(url)
                 img = np.array(Image.open(BytesIO(r.content)).resize((512, 512), Image.LANCZOS))
                 img_gs = None
-                if color == 'red':
-                    img_gs = img[:, :, 0]
-                elif color == 'green':
-                    img_gs = img[:, :, 1]
-                elif color == 'blue':
-                    img_gs = img[:, :, 2]
+                if img.shape == (512, 512, 3):
+                    if color == 'red':
+                        img_gs = img[:, :, 0]
+                    elif color == 'green':
+                        img_gs = img[:, :, 1]
+                    elif color == 'blue':
+                        img_gs = img[:, :, 2]
+                    else:
+                        img_gs = (img[:, :, 0] + img[:, :, 1])/2
                 else:
-                    img_gs = (img[:, :, 0] + img[:, :, 1])/2
+                    # 24089_si27_F4_11 blue is all black
+                    img_gs = img
 
                 img_gs = img_gs.astype(np.uint8)
                 image = Image.fromarray(img_gs)
