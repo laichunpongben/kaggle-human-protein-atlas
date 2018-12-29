@@ -185,12 +185,8 @@ logger.info(conf_msg)
 
 np.random.seed(42)
 
-if "official" in ds:
-    stats = STATS["official"]
-    logger.info("Offical stats: {}".format(STATS["official"]))
-elif "hpav18" in ds:
-    stats = STATS["hpav18"]
-    logger.info("HPAv18 stats: {}".format(STATS["hpav18"]))
+stats = STATS[ds]
+logger.info("{} stats: {}".format(ds, stats))
 
 test_ids = list(sorted({fname.split('_')[0] for fname in os.listdir(src_path/'test') if fname.endswith('.png')}))
 logger.debug("# Test ids: {}".format(len(test_ids)))
