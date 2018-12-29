@@ -252,7 +252,7 @@ def get_multilabel_weights(data):
         weights.extend(get_rarest_class_weight(y))
     return weights
 
-def get_data(src):
+def get_data(src, is_normalize=True):
     src.train.x.create_func = open_4_channel
     src.train.x.open = open_4_channel
     src.valid.x.create_func = open_4_channel
@@ -269,7 +269,8 @@ def get_data(src):
                                 max_lighting=0.05, max_warp=0.)
     data = (src.transform((trn_tfms, _), size=imgsize)
             .databunch(bs=bs))
-    data = data.normalize(stats)
+    if is_normalize:
+        data = data.normalize(stats)
 
     logger.debug("Databunch created")
 
