@@ -185,12 +185,8 @@ logger.info(conf_msg)
 
 np.random.seed(42)
 
-if "official" in ds:
-    stats = STATS["official"]
-    logger.info("Offical stats: {}".format(STATS["official"]))
-elif "hpav18" in ds:
-    stats = STATS["hpav18"]
-    logger.info("HPAv18 stats: {}".format(STATS["hpav18"]))
+stats = STATS[ds]
+logger.info("{} stats: {}".format(ds, stats))
 
 test_ids = list(sorted({fname.split('_')[0] for fname in os.listdir(src_path/'test') if fname.endswith('.png')}))
 logger.debug("# Test ids: {}".format(len(test_ids)))
@@ -252,7 +248,7 @@ def get_multilabel_weights(data):
         weights.extend(get_rarest_class_weight(y))
     return weights
 
-def get_data(src):
+def get_data(src, is_normalize=True):
     src.train.x.create_func = open_4_channel
     src.train.x.open = open_4_channel
     src.valid.x.create_func = open_4_channel
@@ -269,7 +265,8 @@ def get_data(src):
                                 max_lighting=0.05, max_warp=0.)
     data = (src.transform((trn_tfms, _), size=imgsize)
             .databunch(bs=bs))
-    data = data.normalize(stats)
+    if is_normalize:
+        data = data.normalize(stats)
 
     logger.debug("Databunch created")
 
@@ -461,9 +458,6 @@ if __name__=='__main__':
     all_preds = []
     train_valid_split = generate_train_valid_split(train_csv, n_splits=fold, valid_size=0.2)
     for index, (train_idx, valid_idx) in enumerate(train_valid_split):
-
-        if index == 0:
-            continue
         # index = 0
         # src = get_src()
         logger.debug("Start of fold {}".format(index))
