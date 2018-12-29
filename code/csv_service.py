@@ -80,6 +80,8 @@ def vote(list_, min_vote, first_n):
     return ' '.join(labels)
 
 def get_preds(runname, fold):
+    assert fold > 0
+
     all_preds = []
     for i in range(fold):
         path = Path(PRED_PATH)/f'{runname}-{i}.pth'
@@ -114,11 +116,12 @@ def output_csv_vote(runname, fold, th, min_vote, first_n=99):
     ensemble(csvs, vote_out, min_vote, first_n)
 
 if __name__ == '__main__':
-    runname = "resnet50-512-official-bce-random-drop0.5-th0.1-bs32-lr0.01-ep5_15"
+    runname = "resnet50-512-official-bce-random-drop0.5-th0.1-bs32-lr0-ep3_25"
     fold = 5
-    th = 0.2
+    th = 0.1
     min_vote = 4
     output_csv_vote(runname, fold, th, min_vote)
+    # output_csv_avg(runname, fold, th)
 
     # csvs = [
     #     "output/resnet50-512-bce-random-drop0.5-th0.1-bs16-lr0.01-ep15_25.csv",  # 0.465
