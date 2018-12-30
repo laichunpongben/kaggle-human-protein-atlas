@@ -25,11 +25,11 @@ def open_4_channel(fname):
     x = np.stack(img, axis=-1)
 
     # normalize
-    # if "ac1f6b6435d0" in fname:
-    #     mean, std = STATS["official"]
-    # else:
-    #     mean, std = STATS["hpav18"]
-    # x = normalize(x, mean, std)
+    if "ac1f6b6435d0" in fname:
+        mean, std = STATS["official"]
+    else:
+        mean, std = STATS["hpav18"]
+    x = normalize(x, mean, std)
 
     # zoom
     # nuclei_count, nuclei_density = nuclei_count_density.get(fname, (BASE_NUCLEI_COUNT, BASE_NUCLEI_DENSITY))
