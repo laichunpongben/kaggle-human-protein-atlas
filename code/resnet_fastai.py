@@ -465,7 +465,7 @@ if __name__=='__main__':
         logger.debug("Start of fold {}".format(index))
         logger.debug("Size of valid set: {}".format(valid_idx.shape[0]))
         src = get_src(valid_idx=valid_idx)
-        data = get_data(src, is_normalize=False)
+        data = get_data(src)
         learn = _prep_model(data, fold=index)
 
         if args.model:
