@@ -97,7 +97,7 @@ def output_csv_avg(runname, fold, th):
 
     test_ids = list(sorted({fname.split('_')[0] for fname in os.listdir(Path(DATASET_PATH)/'test') if fname.endswith('.png')}))
     df = pd.DataFrame({'Id':test_ids,'Predicted':pred_labels})
-    out_file = Path(OUT_PATH)/f'{runname}-avg-th{th}.csv'
+    out_file = Path(OUT_PATH)/f'{runname}-th{th}-avg.csv'
     df.to_csv(out_file, header=True, index=False)
 
 def output_csv_vote(runname, fold, th, min_vote, first_n=99):
@@ -118,10 +118,10 @@ def output_csv_vote(runname, fold, th, min_vote, first_n=99):
 if __name__ == '__main__':
     runname = "resnet50-512-official-bce-random-drop0.5-th0.1-bs32-lr0-ep3_25"
     fold = 5
-    th = 0.1
+    th = 0.25
     min_vote = 4
-    output_csv_vote(runname, fold, th, min_vote)
-    # output_csv_avg(runname, fold, th)
+    # output_csv_vote(runname, fold, th, min_vote)
+    output_csv_avg(runname, fold, th)
 
     # csvs = [
     #     "output/resnet50-512-bce-random-drop0.5-th0.1-bs16-lr0.01-ep15_25.csv",  # 0.465
