@@ -218,9 +218,9 @@ if device != 'cpu':
 def get_multilabel_weights(dl):
     weights = []
     for index, (x,y) in enumerate(dl):
-        for row in y:
-            w = max(row.mul(lows)).item()
-            weights.append(w)
+        w, _ = torch.max(y.mul(lows), dim=1)
+        w = w.tolist()
+        weights.extend(w)
     return weights
 
 def get_data(src, is_normalize=True):
