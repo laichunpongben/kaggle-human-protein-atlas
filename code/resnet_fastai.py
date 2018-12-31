@@ -198,15 +198,32 @@ test_ids = list(sorted({fname.split('_')[0] for fname in os.listdir(src_path/'te
 logger.debug("# Test ids: {}".format(len(test_ids)))
 test_fnames = [src_path/'test'/test_id for test_id in test_ids]
 
-def generate_train_valid_split(train_csv, n_splits=3, valid_size=0.2):
-    df = pd.read_csv(train_csv)
+def oversample_df(df):
+    lows = [15,15,15,8,9,10,8,9,10,8,9,10,17,20,24,26,15,27,15,20,24,17,8,15,27,27,27]
+    df_orig = df.copy()
+    for i in lows:
+        target = str(i)
+        indicies = df_orig.loc[df_orig['Target'] == target].index
+        df = pd.concat([df,df_orig.loc[indicies]], ignore_index=True)
+        indicies = df_orig.loc[df_orig['Target'].str.startswith(target+" ")].index
+        df = pd.concat([df,df_orig.loc[indicies]], ignore_index=True)
+        indicies = df_orig.loc[df_orig['Target'].str.endswith(" "+target)].index
+        df = pd.concat([df,df_orig.loc[indicies]], ignore_index=True)
+        indicies = df_orig.loc[df_orig['Target'].str.contains(" "+target+" ")].index
+        df = pd.concat([df,df_orig.loc[indicies]], ignore_index=True)
+    return df
+
+train_df = pd.read_csv(train_csv)
+train_df = oversample_df(train_df)
+
+def generate_train_valid_split(df, n_splits=3, valid_size=0.2):
     X, y = df.Id, df.Target
     y = MultiLabelBinarizer().fit_transform(y)
     msss = MultilabelStratifiedShuffleSplit(n_splits=n_splits, test_size=valid_size, random_state=42)
     return msss.split(X, y)
 
 def get_src(valid_idx=None, split_pct=0.2):
-    src = ImageItemList.from_csv(src_path, 'train.csv', folder='train', suffix='.png')
+    src = ImageItemList.from_df(train_df, path=src_path, folder='train', suffix='.png')
     if valid_idx is not None:
         src = src.split_by_idx(valid_idx)
     else:
@@ -214,14 +231,14 @@ def get_src(valid_idx=None, split_pct=0.2):
     src = src.label_from_df(sep=' ',  classes=[str(i) for i in range(num_class)])
     return src
 
-lows = torch.FloatTensor([1/w for w in WEIGHTS])
+inv_weights = torch.FloatTensor([1/w for w in WEIGHTS])
 if device != 'cpu':
-    lows = lows.cuda()
+    inv_weights = inv_weights.cuda()
 
 def get_multilabel_weights(dl):
     weights = []
     for index, (x,y) in enumerate(dl):
-        w, _ = torch.max(y.mul(lows), dim=1)
+        w, _ = torch.max(y.mul(inv_weights), dim=1)
         w = w.tolist()
         weights.extend(w)
     return weights
@@ -437,7 +454,7 @@ def _output_results(preds, suffix=""):
 
 if __name__=='__main__':
     all_preds = []
-    train_valid_split = generate_train_valid_split(train_csv, n_splits=fold, valid_size=0.2)
+    train_valid_split = generate_train_valid_split(train_df, n_splits=fold, valid_size=0.2)
     for index, (train_idx, valid_idx) in enumerate(train_valid_split):
         # index = 0
         # src = get_src()
