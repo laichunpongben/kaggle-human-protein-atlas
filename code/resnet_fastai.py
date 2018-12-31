@@ -249,6 +249,8 @@ def get_src(valid_idx=None, split_pct=0.2):
 
 # lows = [8,9,10,15,17,20,24,26,27]
 lows = torch.FloatTensor([0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,1,0,1,0,0,1,0,0,0,1,0,1,1])
+if device != 'cpu':
+    lows = lows.cuda()
 
 def get_multilabel_weights(dl):
     weights = []
