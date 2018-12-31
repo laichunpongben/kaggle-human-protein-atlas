@@ -12,9 +12,9 @@ def my_fit_one_cycle(learn:Learner, cyc_len:int, max_lr:Union[Floats,slice]=defa
     callbacks = ifnone(callbacks, [])
     scheduler = OneCycleScheduler(learn, max_lr, moms=moms, div_factor=div_factor,
                                   pct_start=pct_start, **kwargs)
-    print(scheduler.phases)
-    print(scheduler.lr_scheds)
-    print(scheduler.mom_scheds)
-    print(scheduler.opt)
+    # print(scheduler.phases)
+    # print(scheduler.lr_scheds)
+    # print(scheduler.mom_scheds)
+    # print(scheduler.opt)
     callbacks.append(scheduler)
     learn.fit(cyc_len, max_lr, wd=wd, callbacks=callbacks)
