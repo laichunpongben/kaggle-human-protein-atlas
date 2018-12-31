@@ -211,55 +211,16 @@ def get_src(valid_idx=None, split_pct=0.2):
     src = src.label_from_df(sep=' ',  classes=[str(i) for i in range(num_class)])
     return src
 
-# def sort_class_by_rarity(weights):
-#     return [y for y,_ in sorted(list(zip(range(num_class), weights)), key=lambda x: x[1])]
-
-# def get_rarest_class_weight(y):
-#     max_w = 1e9
-#     weights = []
-#
-#     sorted_class = sort_class_by_rarity(WEIGHTS)
-#
-#     for row in y:
-#         hasLabel = False
-#         for c in sorted_class:
-#             if row[c]:
-#                 try:
-#                     w = 1/WEIGHTS[c]  # invert the weights
-#                 except ZeroDivisionError:
-#                     w = max_w
-#                 weights.append(w)
-#                 hasLabel = True
-#                 break
-#         if not hasLabel:
-#             try:
-#                 w = 1/WEIGHTS[sorted_class[-1]]
-#             except ZeroDivisionError:
-#                 w = max_w
-#             weights.append(w)
-#
-#     return weights
-
-# def get_multilabel_weights(data):
-#     weights = []
-#     start = time.time()
-#     for index, (x,y) in enumerate(data.train_dl):
-#         weights.extend(get_rarest_class_weight(y))
-#     return weights
-
-# lows = [8,9,10,15,17,20,24,26,27]
-lows = torch.FloatTensor([0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,1,0,1,0,0,1,0,0,0,1,0,1,1])
+lows = torch.FloatTensor([1/w for w in WEIGHTS])
 if device != 'cpu':
     lows = lows.cuda()
 
 def get_multilabel_weights(dl):
     weights = []
     for index, (x,y) in enumerate(dl):
-        for row in y:
-            if 1.0 in row.mul(lows):
-                weights.append(100)
-            else:
-                weights.append(1)
+        w, _ = torch.max(y.mul(lows), dim=1)
+        w = w.tolist()
+        weights.extend(w)
     return weights
 
 def get_data(src, is_normalize=True):
