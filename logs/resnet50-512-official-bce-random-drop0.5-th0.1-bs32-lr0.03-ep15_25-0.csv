@@ -1,0 +1,2 @@
+epoch,train_loss,valid_loss,fbeta
+1,0.143087,0.151302,0.430515
