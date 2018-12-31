@@ -20,6 +20,7 @@ from .arch import Resnet4Channel, Inception4Channel, SqueezeNet4Channel
 from .loss import focal_loss, f1_loss
 from .callback import SaveModelCustomPathCallback, CSVCustomPathLogger
 from .ml_stratifiers import MultilabelStratifiedShuffleSplit
+from .train import my_fit_one_cycle
 from config import DATASET_PATH, MODEL_PATH, PRED_PATH, OUT_PATH, PLOT_PATH, STATS, WEIGHTS, formatter
 
 
@@ -419,6 +420,9 @@ def fit_model(learn, stage=1, fold=0):
     else:
         cyc_len = epochnum2
         max_lr = slice(lr, lr*2e2)
+
+    learn.fit_one_cycle = my_fit_one_cycle
+
     learn.fit_one_cycle(cyc_len, max_lr)
     logger.info('Complete model fitting: Stage {}'.format(stage))
 
