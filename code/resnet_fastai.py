@@ -421,7 +421,7 @@ def fit_model(learn, stage=1, fold=0):
         cyc_len = epochnum2
         max_lr = slice(lr, lr*2e2)
 
-    learn.fit_one_cycle = my_fit_one_cycle
+    learn.__class__.fit_one_cycle = my_fit_one_cycle
 
     learn.fit_one_cycle(cyc_len, max_lr)
     logger.info('Complete model fitting: Stage {}'.format(stage))
