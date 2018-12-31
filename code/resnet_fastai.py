@@ -21,7 +21,7 @@ from .loss import focal_loss, f1_loss
 from .callback import SaveModelCustomPathCallback, CSVCustomPathLogger
 from .ml_stratifiers import MultilabelStratifiedShuffleSplit
 from .train import my_fit_one_cycle
-from config import DATASET_PATH, MODEL_PATH, PRED_PATH, OUT_PATH, PLOT_PATH, STATS, WEIGHTS, formatter
+from config import DATASET_PATH, MODEL_PATH, PRED_PATH, OUT_PATH, PLOT_PATH, LOG_PATH, STATS, WEIGHTS, formatter
 
 
 ###############################
@@ -140,6 +140,9 @@ pred_path = Path(PRED_PATH)
 pred_path.mkdir(parents=True, exist_ok=True)
 
 plot_path = Path(PLOT_PATH)
+plot_path.mkdir(parents=True, exist_ok=True)
+
+log_path = Path(LOG_PATH)
 plot_path.mkdir(parents=True, exist_ok=True)
 
 train_csv = src_path/f'train.csv'
