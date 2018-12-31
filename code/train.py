@@ -1,7 +1,7 @@
-from .torch_core import *
-from .callbacks import *
-from .basic_data import *
-from .basic_train import *
+from fastai.torch_core import *
+from fastai.callbacks import *
+from fastai.basic_data import *
+from fastai.basic_train import *
 
 def my_fit_one_cycle(learn:Learner, cyc_len:int, max_lr:Union[Floats,slice]=defaults.lr,
                   moms:Tuple[float,float]=(0.95,0.85), div_factor:float=25., pct_start:float=0.3,
