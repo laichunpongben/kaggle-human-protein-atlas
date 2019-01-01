@@ -1,0 +1,114 @@
+*** 2019-01-01 02:53:21,214 - code.resnet_fastai - DEBUG ***
+Start a new training task
+******
+
+*** 2019-01-01 02:53:21,214 - code.resnet_fastai - INFO ***
+Device ID: 0
+Image size: 256
+Network architecture: resnet
+Loss function: f1
+Sampler: random
+Encoder depth: 50
+Dropout: 0.5
+Threshold: 0.1
+Stage 1 #epoch: 3
+Stage 2 #epoch: 30
+Learning rate #1: 0.01
+Batch size: 64
+Dataset: official
+Dataset directory: data/official
+Output directory: output
+******
+
+*** 2019-01-01 02:53:21,214 - code.resnet_fastai - INFO ***
+official stats: ([0.08035214900985806, 0.052662718446443796, 0.054821162479790554, 0.08270705238092081], [0.1441818831316468, 0.10766732147991964, 0.15509390386065397, 0.1447311870215956])
+******
+
+*** 2019-01-01 02:53:21,214 - code.resnet_fastai - INFO ***
+official stats: ([0.08035214900985806, 0.052662718446443796, 0.054821162479790554, 0.08270705238092081], [0.1441818831316468, 0.10766732147991964, 0.15509390386065397, 0.1447311870215956])
+******
+
+*** 2019-01-01 02:53:21,214 - code.resnet_fastai - INFO ***
+hpav18 stats: ([0.11810116173772936, 0.06795416990341785, 0.06612933906943513, 0.08437984839655913], [0.17499094128737935, 0.12197690061419421, 0.17568283970650891, 0.11266782268834614])
+******
+
+*** 2019-01-01 02:53:21,275 - code.resnet_fastai - DEBUG ***
+# Test ids: 11702
+******
+
+*** 2019-01-01 02:53:27,041 - code.resnet_fastai - DEBUG ***
+Start of fold 0
+******
+
+*** 2019-01-01 02:53:27,041 - code.resnet_fastai - DEBUG ***
+Size of valid set: 6684
+******
+
+*** 2019-01-01 02:53:27,270 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (26725 items)
+[MultiCategory 16;0, MultiCategory 1, MultiCategory 18, MultiCategory 0, MultiCategory 25;2]...
+Path: data/official
+x: ImageItemList (26725 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/official
+******
+
+*** 2019-01-01 02:53:27,408 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (6684 items)
+[MultiCategory 7;1;2;0, MultiCategory 5, MultiCategory 7, MultiCategory 21, MultiCategory 24;0]...
+Path: data/official
+x: ImageItemList (6684 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/official
+******
+
+*** 2019-01-01 02:53:29,288 - code.resnet_fastai - DEBUG ***
+Databunch created
+******
+
+*** 2019-01-01 02:53:29,289 - code.resnet_fastai - INFO ***
+Initialising model.
+******
+
+*** 2019-01-01 02:53:30,118 - code.resnet_fastai - INFO ***
+Complete initialising model.
+******
+
+*** 2019-01-01 02:53:30,119 - code.resnet_fastai - INFO ***
+No pretrained model.
+******
+
+*** 2019-01-01 02:53:30,119 - code.resnet_fastai - DEBUG ***
+LR: 0.01
+******
+
+[0.001 0.001 0.01 ]
+epoch     train_loss  valid_loss  fbeta   
+1         0.890651    0.889851    0.110149  
+2         0.890876    0.889751    0.110249  
+*** 2019-01-01 03:03:51,615 - code.resnet_fastai - INFO ***
+Complete model fitting: Stage 1
+******
+
+*** 2019-01-01 03:03:51,833 - code.resnet_fastai - INFO ***
+Stage 1 model saved.
+******
+
+*** 2019-01-01 03:03:51,835 - code.resnet_fastai - DEBUG ***
+Unfreezing model
+******
+
+*** 2019-01-01 03:03:51,835 - code.resnet_fastai - DEBUG ***
+LR: 0.01
+******
+
+3         0.891529    0.889875    0.110125  
+[0.01     0.141421 2.      ]
+epoch     train_loss  valid_loss  fbeta   
+1         0.888760    0.889241    0.110759  
+2         0.888207    0.889241    0.110759  
+3         0.888265    0.889241    0.110759  
+4         0.888794    0.889241    0.110759  
+5         0.889775    0.889241    0.110759  
