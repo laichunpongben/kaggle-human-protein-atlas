@@ -190,7 +190,7 @@ logger.info(conf_msg)
 
 np.random.seed(42)
 
-stats = STATS[ds]
+stats = STATS["official"]
 logger.info("{} stats: {}".format(ds, stats))
 logger.info("official stats: {}".format(STATS["official"]))
 logger.info("hpav18 stats: {}".format(STATS["hpav18"]))
