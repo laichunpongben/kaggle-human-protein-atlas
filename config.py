@@ -2,7 +2,7 @@ import os
 import logging
 
 APP_NAME = "kaggle-human-protein-atlas"
-DATASET_PATH = os.getenv("DATASET_PATH", "./data/official/")
+DATASET_PATH = os.getenv("DATASET_PATH", "./data/hpav18/")
 MODEL_PATH = os.getenv("MODEL_PATH", "./model/")
 PRED_PATH = os.getenv("PRED_PATH", "./pred/")
 OUT_PATH = os.getenv("OUT_PATH", "./output/")
