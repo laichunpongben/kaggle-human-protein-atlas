@@ -456,8 +456,6 @@ if __name__=='__main__':
     all_preds = []
     train_valid_split = generate_train_valid_split(train_df, n_splits=fold, valid_size=0.2)
     for index, (train_idx, valid_idx) in enumerate(train_valid_split):
-        if index == 0:
-            continue
         # index = 0
         # src = get_src()
         logger.debug("Start of fold {}".format(index))
