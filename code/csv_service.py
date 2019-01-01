@@ -85,8 +85,12 @@ def get_preds(runname, fold):
     all_preds = []
     for i in range(fold):
         path = Path(PRED_PATH)/f'{runname}-{i}.pth'
-        preds = torch.load(path)
-        all_preds.append(preds)
+        try:
+            preds = torch.load(path)
+            all_preds.append(preds)
+        except FileNotFoundError as e:
+            print(e)
+    print("# preds: {}".format(len(all_preds)))
     return all_preds
 
 def output_csv_avg(runname, fold, th):
@@ -116,12 +120,12 @@ def output_csv_vote(runname, fold, th, min_vote, first_n=99):
     ensemble(csvs, vote_out, min_vote, first_n)
 
 if __name__ == '__main__':
-    runname = "resnet50-512-official-bce-random-drop0.5-th0.1-bs32-lr0-ep3_25"
-    fold = 5
-    th = 0.25
-    min_vote = 4
-    # output_csv_vote(runname, fold, th, min_vote)
-    output_csv_avg(runname, fold, th)
+    runname = "resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30"
+    fold = 1
+    th = 0.20
+    min_vote = 0
+    output_csv_vote(runname, fold, th, min_vote)
+    # output_csv_avg(runname, fold, th)
 
     # csvs = [
     #     "output/resnet50-512-bce-random-drop0.5-th0.1-bs16-lr0.01-ep15_25.csv",  # 0.465
