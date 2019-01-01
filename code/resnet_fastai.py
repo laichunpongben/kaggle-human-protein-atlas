@@ -146,7 +146,7 @@ log_path = Path(LOG_PATH)
 plot_path.mkdir(parents=True, exist_ok=True)
 
 train_csv = src_path/f'train.csv'
-hpav18_csv = src_path/f'train_hpav18_no_uncertain.csv'
+hpav18_csv = src_path/f'train_hpa_no_uncertain.csv'
 
 ###############################
 # Set up logger
