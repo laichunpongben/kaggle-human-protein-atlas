@@ -146,6 +146,7 @@ log_path = Path(LOG_PATH)
 plot_path.mkdir(parents=True, exist_ok=True)
 
 train_csv = src_path/f'train.csv'
+hpav18_csv = src_path/f'train_hpav18_no_uncertain.csv'
 
 ###############################
 # Set up logger
@@ -198,6 +199,23 @@ test_ids = list(sorted({fname.split('_')[0] for fname in os.listdir(src_path/'te
 logger.debug("# Test ids: {}".format(len(test_ids)))
 test_fnames = [src_path/'test'/test_id for test_id in test_ids]
 
+def extract_rare(df):
+    lows = [15,15,15,8,9,10,8,9,10,8,9,10,17,20,24,26,15,27,15,20,24,17,8,15,27,27,27]
+    df_orig = df.copy()
+    df = df[0:0]
+    logger.debug("empty size {}".format(df.shape))
+    for i in lows:
+        target = str(i)
+        indicies = df_orig.loc[df_orig['Target'] == target].index
+        df = pd.concat([df,df_orig.loc[indicies]], ignore_index=True)
+        indicies = df_orig.loc[df_orig['Target'].str.startswith(target+" ")].index
+        df = pd.concat([df,df_orig.loc[indicies]], ignore_index=True)
+        indicies = df_orig.loc[df_orig['Target'].str.endswith(" "+target)].index
+        df = pd.concat([df,df_orig.loc[indicies]], ignore_index=True)
+        indicies = df_orig.loc[df_orig['Target'].str.contains(" "+target+" ")].index
+        df = pd.concat([df,df_orig.loc[indicies]], ignore_index=True)
+    return df
+
 def oversample_df(df):
     lows = [15,15,15,8,9,10,8,9,10,8,9,10,17,20,24,26,15,27,15,20,24,17,8,15,27,27,27]
     df_orig = df.copy()
@@ -214,7 +232,19 @@ def oversample_df(df):
     return df
 
 train_df = pd.read_csv(train_csv)
+logger.debug("official train size: {}".format(train_df.shape))
+
 train_df = oversample_df(train_df)
+logger.debug("oversample official size: {}".format(train_df.shape))
+
+hpav18_df = pd.read_csv(hpav18_csv)
+logger.debug("hpav18 train size: {}".format(hpav18_df.shape))
+
+hpav18_df = extract_rare(hpav18_df)
+logger.debug("hpav18 rare size: {}".format(hpav18_df.shape))
+
+train_df = pd.concat([train_df, hpav18_df], ignore_index=True)
+logger.debug("concat size: {}".format(train_df.shape))
 
 def generate_train_valid_split(df, n_splits=3, valid_size=0.2):
     X, y = df.Id, df.Target
