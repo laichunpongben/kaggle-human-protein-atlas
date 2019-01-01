@@ -200,8 +200,8 @@ logger.debug("# Test ids: {}".format(len(test_ids)))
 test_fnames = [src_path/'test'/test_id for test_id in test_ids]
 
 def extract_rare(df):
-    # lows = [15,15,15,8,9,10,8,9,10,8,9,10,17,20,24,26,15,27,15,20,24,17,8,15,27,27,27]  # 0.520
-    lows = [15,15,15,8,9,10,8,9,10,8,9,10,17,20,24,26,15,27,15,20,24,17,8,15,27,27,27,12,13,16,18,20,22]
+    lows = [15,15,15,8,9,10,8,9,10,8,9,10,17,20,24,26,15,27,15,20,24,17,8,15,27,27,27]  # 0.520
+    # lows = [15,15,15,8,9,10,8,9,10,8,9,10,17,20,24,26,15,27,15,20,24,17,8,15,27,27,27,12,13,16,18,20,22]
     df_orig = df.copy()
     df = df[0:0]
     logger.debug("empty size {}".format(df.shape))
@@ -287,7 +287,7 @@ def get_data(src, is_normalize=True):
     src.test.x.create_func = open_4_channel
     src.test.x.open = open_4_channel
 
-    trn_tfms,_ = get_transforms(do_flip=True, flip_vert=True, max_rotate=30., max_zoom=1,
+    trn_tfms,_ = get_transforms(do_flip=True, flip_vert=True, max_rotate=30., max_zoom=1.5,
                                 max_lighting=0.05, max_warp=0.)
     data = (src.transform((trn_tfms, _), size=imgsize)
             .databunch(bs=bs))
@@ -416,8 +416,8 @@ def fit_model(learn, stage=1, fold=0):
             end_lr = 0.04
             num_it = 1000
         else:
-            start_lr = 1e-5
-            end_lr = 4e-5
+            start_lr = 8e-6
+            end_lr = 3e-5
             num_it = 1000
 
         logger.debug("Start finding LR")
@@ -487,6 +487,8 @@ if __name__=='__main__':
     all_preds = []
     train_valid_split = generate_train_valid_split(train_df, n_splits=fold, valid_size=0.2)
     for index, (train_idx, valid_idx) in enumerate(train_valid_split):
+        if index == 0:
+            continue
         # index = 0
         # src = get_src()
         logger.debug("Start of fold {}".format(index))
