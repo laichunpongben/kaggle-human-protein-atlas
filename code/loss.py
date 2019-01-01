@@ -58,8 +58,9 @@ def focal_loss(input, target, gamma=2):
 
 
 def f1_loss(input, target, thresh=0.2):
-    return 1 - fbeta(input, target, thresh=thresh, beta=1)
-
+    f1 = 1 - fbeta(input, target, thresh=thresh, beta=1)
+    f1 = Variable(f1, requires_grad=True)
+    return f1
 
     # epsilon = 1e-9
     # true_positive = input * target
