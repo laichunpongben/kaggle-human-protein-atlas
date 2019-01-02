@@ -258,7 +258,7 @@ logger.debug("concat size: {}".format(train_df.shape))
 train_df = oversample_df(train_df)
 logger.debug("oversample train size: {}".format(train_df.shape))
 
-ros = RandomOverSampler(random_state=42)
+ros = RandomOverSampler(sampling_strategy="minority", random_state=42)
 X, y = train_df.Id, train_df.Target
 X = X.values.reshape(-1, 1)
 y = MultiLabelBinarizer().fit_transform(y)
