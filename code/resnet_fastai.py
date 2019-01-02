@@ -264,8 +264,8 @@ X = X.values.reshape(-1, 1)
 y = MultiLabelBinarizer().fit_transform(y)
 X, y = ros.fit_resample(X, y)
 indices = ros.sample_indices_
-logger.debug(indices)
-train_df = train_df.loc[indices]
+logger.debug(indices.shape)
+train_df = train_df.iloc[indices]
 logger.debug("oversample 2 size: {}".format(train_df.shape))
 
 
