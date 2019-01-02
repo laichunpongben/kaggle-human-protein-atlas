@@ -266,7 +266,7 @@ X, y = ros.fit_resample(X, y)
 indices = ros.sample_indices_
 logger.debug(indices)
 train_df = train_df.loc[indices]
-logger.debug("oversample 2 size: {}".format(df.shape))
+logger.debug("oversample 2 size: {}".format(train_df.shape))
 
 
 def generate_train_valid_split(df, n_splits=3, valid_size=0.2):
