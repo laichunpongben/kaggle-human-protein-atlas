@@ -219,18 +219,29 @@ def extract_rare(df):
         df = pd.concat([df,df_orig.loc[indicies]], ignore_index=True)
     return df
 
-def oversample_df(df):
+def remove_idx(list0, list1):
+    return [x for x in list0 if x not in list1]
+
+def oversample_df(df, valid_idx=[]):
     lows = [15,15,15,8,9,10,8,9,10,8,9,10,17,20,24,26,15,27,15,20,24,17,8,15,27,27,27]
     df_orig = df.copy()
     for i in lows:
         target = str(i)
+
         indicies = df_orig.loc[df_orig['Target'] == target].index
+        indicies = remove_idx(indicies, valid_idx)
         df = pd.concat([df,df_orig.loc[indicies]], ignore_index=True)
+
         indicies = df_orig.loc[df_orig['Target'].str.startswith(target+" ")].index
+        indicies = remove_idx(indicies, valid_idx)
         df = pd.concat([df,df_orig.loc[indicies]], ignore_index=True)
+
         indicies = df_orig.loc[df_orig['Target'].str.endswith(" "+target)].index
+        indicies = remove_idx(indicies, valid_idx)
         df = pd.concat([df,df_orig.loc[indicies]], ignore_index=True)
+
         indicies = df_orig.loc[df_orig['Target'].str.contains(" "+target+" ")].index
+        indicies = remove_idx(indicies, valid_idx)
         df = pd.concat([df,df_orig.loc[indicies]], ignore_index=True)
     return df
 
@@ -254,7 +265,10 @@ def generate_train_valid_split(df, n_splits=3, valid_size=0.2):
     return msss.split(X, y)
 
 def get_src(valid_idx=None, split_pct=0.2):
-    df = oversample_df(train_df)
+    if valid_idx is not None:
+        df = oversample_df(train_df, valid_idx=valid_idx)
+    else:
+        df = oversample_df(train_df)
     logger.debug("oversample official size: {}".format(df.shape))
 
     src = ImageItemList.from_df(df, path=src_path, folder='train', suffix='.png')
