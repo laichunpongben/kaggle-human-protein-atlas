@@ -201,8 +201,9 @@ test_fnames = [src_path/'test'/test_id for test_id in test_ids]
 
 def extract_rare(df):
     # lows = [15,15,15,8,9,10,8,9,10,8,9,10,17,20,24,26,15,27,15,20,24,17,8,15,27,27,27]  # 0.520
-    lows = [15,15,15,8,9,10,8,9,10,8,9,10,17,20,24,26,15,27,15,20,24,17,8,15,27,27,27,12,13,16,18,20,22]  # 0.537
+    # lows = [15,15,15,8,9,10,8,9,10,8,9,10,17,20,24,26,15,27,15,20,24,17,8,15,27,27,27,12,13,16,18,20,22]  # 0.537
     # lows = [15,15,15,8,9,10,8,9,10,8,9,10,17,20,24,26,15,27,15,20,24,17,8,15,27,27,27,12,13,16,18,20,22,11,14,19]  # 0.531
+    lows = [15,8,9,10,17,20,24,26,27,12,13,16,18,22]
     df_orig = df.copy()
     df = df[0:0]
     logger.debug("empty size {}".format(df.shape))
@@ -236,9 +237,6 @@ def oversample_df(df):
 train_df = pd.read_csv(train_csv)
 logger.debug("official train size: {}".format(train_df.shape))
 
-train_df = oversample_df(train_df)
-logger.debug("oversample official size: {}".format(train_df.shape))
-
 hpav18_df = pd.read_csv(hpav18_csv)
 logger.debug("hpav18 train size: {}".format(hpav18_df.shape))
 
@@ -248,6 +246,7 @@ logger.debug("hpav18 rare size: {}".format(hpav18_df.shape))
 train_df = pd.concat([train_df, hpav18_df], ignore_index=True)
 logger.debug("concat size: {}".format(train_df.shape))
 
+
 def generate_train_valid_split(df, n_splits=3, valid_size=0.2):
     X, y = df.Id, df.Target
     y = MultiLabelBinarizer().fit_transform(y)
@@ -255,7 +254,10 @@ def generate_train_valid_split(df, n_splits=3, valid_size=0.2):
     return msss.split(X, y)
 
 def get_src(valid_idx=None, split_pct=0.2):
-    src = ImageItemList.from_df(train_df, path=src_path, folder='train', suffix='.png')
+    df = oversample_df(train_df)
+    logger.debug("oversample official size: {}".format(train_df.shape))
+
+    src = ImageItemList.from_df(df, path=src_path, folder='train', suffix='.png')
     if valid_idx is not None:
         src = src.split_by_idx(valid_idx)
     else:
@@ -488,8 +490,6 @@ if __name__=='__main__':
     all_preds = []
     train_valid_split = generate_train_valid_split(train_df, n_splits=fold, valid_size=0.2)
     for index, (train_idx, valid_idx) in enumerate(train_valid_split):
-        if index in [0, 1]:
-            continue
         # index = 0
         # src = get_src()
         logger.debug("Start of fold {}".format(index))
