@@ -14,6 +14,7 @@ from fastai import *
 from fastai.vision import *
 from fastai.callbacks.tracker import EarlyStoppingCallback, ReduceLROnPlateauCallback
 from sklearn.preprocessing import MultiLabelBinarizer
+from imblearn.over_sampling import RandomOverSampler
 
 from .utils import open_4_channel
 from .arch import Resnet4Channel, Inception4Channel, SqueezeNet4Channel
@@ -219,6 +220,7 @@ def extract_rare(df):
         df = pd.concat([df,df_orig.loc[indicies]], ignore_index=True)
     return df
 
+
 def remove_idx(list0, list1):
     return [x for x in list0 if x not in list1]
 
@@ -229,19 +231,15 @@ def oversample_df(df, valid_idx=[]):
         target = str(i)
 
         indicies = df_orig.loc[df_orig['Target'] == target].index
-        indicies = remove_idx(indicies, valid_idx)
         df = pd.concat([df,df_orig.loc[indicies]], ignore_index=True)
 
         indicies = df_orig.loc[df_orig['Target'].str.startswith(target+" ")].index
-        indicies = remove_idx(indicies, valid_idx)
         df = pd.concat([df,df_orig.loc[indicies]], ignore_index=True)
 
         indicies = df_orig.loc[df_orig['Target'].str.endswith(" "+target)].index
-        indicies = remove_idx(indicies, valid_idx)
         df = pd.concat([df,df_orig.loc[indicies]], ignore_index=True)
 
         indicies = df_orig.loc[df_orig['Target'].str.contains(" "+target+" ")].index
-        indicies = remove_idx(indicies, valid_idx)
         df = pd.concat([df,df_orig.loc[indicies]], ignore_index=True)
     return df
 
@@ -257,6 +255,18 @@ logger.debug("hpav18 rare size: {}".format(hpav18_df.shape))
 train_df = pd.concat([train_df, hpav18_df], ignore_index=True)
 logger.debug("concat size: {}".format(train_df.shape))
 
+train_df = oversample_df(train_df)
+logger.debug("oversample train size: {}".format(train_df.shape))
+
+ros = RandomOverSampler(random_state=42)
+X, y = train_df.Id, train_df.Target
+y = MultiLabelBinarizer().fit_transform(y)
+X, y = ros.fit_resample(X, y)
+indices = ros.sample_indices_
+logger.debug(indices)
+train_df = train_df.loc[indices]
+logger.debug("oversample 2 size: {}".format(df.shape))
+
 
 def generate_train_valid_split(df, n_splits=3, valid_size=0.2):
     X, y = df.Id, df.Target
@@ -265,13 +275,7 @@ def generate_train_valid_split(df, n_splits=3, valid_size=0.2):
     return msss.split(X, y)
 
 def get_src(valid_idx=None, split_pct=0.2):
-    if valid_idx is not None:
-        df = oversample_df(train_df, valid_idx=valid_idx)
-    else:
-        df = oversample_df(train_df)
-    logger.debug("oversample official size: {}".format(df.shape))
-
-    src = ImageItemList.from_df(df, path=src_path, folder='train', suffix='.png')
+    src = ImageItemList.from_df(train_df, path=src_path, folder='train', suffix='.png')
     if valid_idx is not None:
         src = src.split_by_idx(valid_idx)
     else:
