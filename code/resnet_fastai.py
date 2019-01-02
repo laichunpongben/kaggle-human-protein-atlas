@@ -258,16 +258,6 @@ logger.debug("concat size: {}".format(train_df.shape))
 train_df = oversample_df(train_df)
 logger.debug("oversample train size: {}".format(train_df.shape))
 
-ros = RandomOverSampler(sampling_strategy="minority", random_state=42)
-X, y = train_df.Id, train_df.Target
-X = X.values.reshape(-1, 1)
-y = MultiLabelBinarizer().fit_transform(y)
-X, y = ros.fit_resample(X, y)
-indices = ros.sample_indices_
-logger.debug(indices.shape)
-train_df = train_df.iloc[indices]
-logger.debug("oversample 2 size: {}".format(train_df.shape))
-
 
 def generate_train_valid_split(df, n_splits=3, valid_size=0.2):
     X, y = df.Id, df.Target
@@ -509,6 +499,8 @@ if __name__=='__main__':
     all_preds = []
     train_valid_split = generate_train_valid_split(train_df, n_splits=fold, valid_size=0.2)
     for index, (train_idx, valid_idx) in enumerate(train_valid_split):
+        if index in [0,1,2]:
+            continue
         # index = 0
         # src = get_src()
         logger.debug("Start of fold {}".format(index))
