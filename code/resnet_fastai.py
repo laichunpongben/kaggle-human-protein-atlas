@@ -260,6 +260,7 @@ logger.debug("oversample train size: {}".format(train_df.shape))
 
 ros = RandomOverSampler(random_state=42)
 X, y = train_df.Id, train_df.Target
+X = X.reshape(-1, 1)
 y = MultiLabelBinarizer().fit_transform(y)
 X, y = ros.fit_resample(X, y)
 indices = ros.sample_indices_
