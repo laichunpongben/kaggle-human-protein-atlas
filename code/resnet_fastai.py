@@ -255,7 +255,7 @@ def generate_train_valid_split(df, n_splits=3, valid_size=0.2):
 
 def get_src(valid_idx=None, split_pct=0.2):
     df = oversample_df(train_df)
-    logger.debug("oversample official size: {}".format(train_df.shape))
+    logger.debug("oversample official size: {}".format(df.shape))
 
     src = ImageItemList.from_df(df, path=src_path, folder='train', suffix='.png')
     if valid_idx is not None:
