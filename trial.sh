@@ -48,4 +48,5 @@
 #python3 -m code.resnet_fastai -D official_hpav18 -a resnet -s 512 -b 32 -d 50 -t 0.1 -S random -l bce -e 3 -E 30 -i 0 >trial46.log 2>&1 & disown
 #python3 -m code.resnet_fastai -D official_hpav18 -a resnet -s 512 -b 32 -d 50 -t 0.1 -S random -l bce -e 3 -E 30 -i 0 >trial47.log 2>&1 & disown
 #python3 -m code.resnet_fastai -D official_hpav18 -a resnet -s 512 -b 32 -d 50 -t 0.1 -S random -l bce -e 3 -E 30 -i 0 -f 4 >trial48.log 2>&1 & disown
-python3 -m code.resnet_fastai -D official_hpav18 -a resnet -s 512 -b 32 -d 50 -t 0.1 -S random -l bce -e 3 -E 30 -i 0 -f 5 >trial49.log 2>&1 & disown
+#python3 -m code.resnet_fastai -D official_hpav18 -a resnet -s 512 -b 32 -d 50 -t 0.1 -S random -l bce -e 3 -E 30 -i 0 -f 5 >trial49.log 2>&1 & disown
+python3 -m code.resnet_fastai -D official_hpav18 -a resnet -s 256 -b 64 -d 50 -t 0.1 -S random -l focal -e 3 -E 30 -i 0 -f 6 >trial50.log 2>&1 & disown
