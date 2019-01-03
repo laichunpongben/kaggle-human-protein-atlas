@@ -439,7 +439,6 @@ def fit_model(learn, stage=1, fold=0):
         best_lr = min(lr_curve, key=lambda x: x[1].data)[0]
         logger.debug("Best LR: {}".format(best_lr))
         learn.recorder.plot()
-        plt.show()
         plt.savefig(plot_path/f'stage-{stage}-{runname}-{fold}.png')
 
         logger.info('Start model fitting: Stage {}'.format(stage))
