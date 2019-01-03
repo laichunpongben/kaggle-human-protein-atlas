@@ -79,11 +79,13 @@ def vote(list_, min_vote, first_n):
     labels = sorted([k for k, v in d.items() if v>=min_vote], key=lambda x: -d[x])[:first_n]
     return ' '.join(labels)
 
-def get_preds(runname, fold):
+def get_preds(runname, fold, start=0):
     assert fold > 0
 
     all_preds = []
     for i in range(fold):
+        if i < start:
+            continue
         path = Path(PRED_PATH)/f'{runname}-{i}.pth'
         try:
             preds = torch.load(path)
@@ -104,13 +106,15 @@ def output_csv_avg(runname, fold, th):
     out_file = Path(OUT_PATH)/f'{runname}-th{th}-avg.csv'
     df.to_csv(out_file, header=True, index=False)
 
-def output_csv_vote(runname, fold, th, min_vote, first_n=99):
+def output_csv_vote(runname, fold, th, min_vote, first_n=99, start=0):
     test_ids = list(sorted({fname.split('_')[0] for fname in os.listdir(Path(DATASET_PATH)/'test') if fname.endswith('.png')}))
 
-    preds = get_preds(runname, fold)
+    preds = get_preds(runname, fold, start=start)
     csvs = []
     for i in range(fold):
-        pred_labels = [' '.join(list([str(i) for i in np.nonzero(row>th)[0]])) for row in np.array(preds[i])]
+        if i < start:
+            continue
+        pred_labels = [' '.join(list([str(i) for i in np.nonzero(row>th)[0]])) for row in np.array(preds[i-start])]
         df = pd.DataFrame({'Id':test_ids,'Predicted':pred_labels})
         out_file = Path(OUT_PATH)/f'{runname}-th{th}-{i}.csv'
         csvs.append(out_file)
@@ -121,10 +125,11 @@ def output_csv_vote(runname, fold, th, min_vote, first_n=99):
 
 if __name__ == '__main__':
     runname = "resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30"
-    fold = 1
-    th = 0.20
+    fold = 5
+    start = 4
+    th = 0.30
     min_vote = 0
-    output_csv_vote(runname, fold, th, min_vote)
+    output_csv_vote(runname, fold, th, min_vote, start=start)
     # output_csv_avg(runname, fold, th)
 
     # csvs = [
