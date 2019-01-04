@@ -300,7 +300,7 @@ def get_data(src, is_normalize=True):
     src.test.x.open = open_4_channel
 
     trn_tfms,_ = get_transforms(do_flip=True, flip_vert=True, max_rotate=30., max_zoom=1,
-                                max_lighting=0.5, max_warp=0.)
+                                max_lighting=0.25, max_warp=0.)
     data = (src.transform((trn_tfms, _), size=imgsize)
             .databunch(bs=bs))
     if is_normalize:
@@ -498,6 +498,8 @@ if __name__=='__main__':
     all_preds = []
     train_valid_split = generate_train_valid_split(train_df, n_splits=fold, valid_size=0.2)
     for index, (train_idx, valid_idx) in enumerate(train_valid_split):
+        if index in [0,1,2,3,4]:
+            continue
         # index = 0
         # src = get_src()
         logger.debug("Start of fold {}".format(index))
