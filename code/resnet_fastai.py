@@ -408,6 +408,9 @@ def _prep_model(data, fold=0):
                         callback_fns=cb
                       )
     logger.info('Complete initialising model.')
+
+    learn.to_fp16()
+    logger.info('Use half precision float.')
     return learn
 
 ###############################
