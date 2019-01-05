@@ -1,0 +1,164 @@
+*** 2019-01-05 00:00:21,692 - code.resnet_fastai - DEBUG ***
+Start a new training task
+******
+
+*** 2019-01-05 00:00:21,692 - code.resnet_fastai - INFO ***
+Device ID: 0
+Image size: 512
+Network architecture: resnet
+Loss function: bce
+Sampler: random
+Encoder depth: 50
+Dropout: 0.5
+Threshold: 0.1
+Stage 1 #epoch: 0
+Stage 2 #epoch: 30
+Learning rate #1: 7e-06
+Batch size: 8
+Dataset: official_hpav18
+Dataset directory: data/hpav18
+Output directory: output
+******
+
+*** 2019-01-05 00:00:21,692 - code.resnet_fastai - INFO ***
+official_hpav18 stats: ([0.09268804824442385, 0.05610595307977252, 0.05822781634430247, 0.085418029487904], [0.15618502296096703, 0.1101010284421363, 0.16142362852859507, 0.13949583832380028])
+******
+
+*** 2019-01-05 00:00:21,692 - code.resnet_fastai - INFO ***
+official stats: ([0.09268804824442385, 0.05610595307977252, 0.05822781634430247, 0.085418029487904], [0.15618502296096703, 0.1101010284421363, 0.16142362852859507, 0.13949583832380028])
+******
+
+*** 2019-01-05 00:00:21,693 - code.resnet_fastai - INFO ***
+hpav18 stats: ([0.11810116173772936, 0.06795416990341785, 0.06612933906943513, 0.08437984839655913], [0.17499094128737935, 0.12197690061419421, 0.17568283970650891, 0.11266782268834614])
+******
+
+*** 2019-01-05 00:00:21,725 - code.resnet_fastai - DEBUG ***
+# Test ids: 11702
+******
+
+*** 2019-01-05 00:00:21,786 - code.resnet_fastai - DEBUG ***
+official train size: (31072, 2)
+******
+
+*** 2019-01-05 00:00:21,808 - code.resnet_fastai - DEBUG ***
+hpav18 train size: (71437, 2)
+******
+
+*** 2019-01-05 00:00:21,808 - code.resnet_fastai - DEBUG ***
+empty size (0, 2)
+******
+
+*** 2019-01-05 00:00:22,364 - code.resnet_fastai - DEBUG ***
+hpav18 rare size: (7404, 2)
+******
+
+*** 2019-01-05 00:00:22,365 - code.resnet_fastai - DEBUG ***
+concat size: (38476, 2)
+******
+
+*** 2019-01-05 00:00:23,008 - code.resnet_fastai - DEBUG ***
+oversample train size: (45767, 2)
+******
+
+*** 2019-01-05 00:00:25,556 - code.resnet_fastai - DEBUG ***
+Start of fold 0
+******
+
+*** 2019-01-05 00:00:25,557 - code.resnet_fastai - DEBUG ***
+Size of valid set: 9180
+******
+
+*** 2019-01-05 00:00:25,700 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (36587 items)
+[MultiCategory 16;0, MultiCategory 7;1;2;0, MultiCategory 5, MultiCategory 1, MultiCategory 18]...
+Path: data/hpav18
+x: ImageItemList (36587 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/hpav18
+******
+
+*** 2019-01-05 00:00:25,770 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (9180 items)
+[MultiCategory 7, MultiCategory 24;0, MultiCategory 25, MultiCategory 0, MultiCategory 11]...
+Path: data/hpav18
+x: ImageItemList (9180 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/hpav18
+******
+
+*** 2019-01-05 00:00:26,087 - code.resnet_fastai - DEBUG ***
+Databunch created
+******
+
+*** 2019-01-05 00:00:26,087 - code.resnet_fastai - INFO ***
+Initialising model.
+******
+
+*** 2019-01-05 00:00:26,729 - code.resnet_fastai - INFO ***
+Complete initialising model.
+******
+
+*** 2019-01-05 00:00:26,729 - code.resnet_fastai - DEBUG ***
+runname: resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs8-lr0.005-ep3_30
+******
+
+*** 2019-01-05 00:00:26,729 - code.resnet_fastai - INFO ***
+Loading model: stage-1-resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs8-lr0.005-ep3_30, with suffix 0
+******
+
+*** 2019-01-05 00:00:26,798 - code.resnet_fastai - INFO ***
+Finish loading model.
+******
+
+*** 2019-01-05 00:00:26,799 - code.resnet_fastai - DEBUG ***
+Unfreezing model
+******
+
+*** 2019-01-05 00:00:26,799 - code.resnet_fastai - DEBUG ***
+LR: 7e-06
+******
+
+[7.000000e-06 9.899495e-05 1.400000e-03]
+epoch     train_loss  valid_loss  fbeta   
+1         0.132807    0.114418    0.640693  
+2         0.131315    0.115306    0.666747  
+3         0.130420    0.111575    0.659367  
+4         0.123346    0.108124    0.678298  
+5         0.124317    0.114819    0.644309  
+6         0.124743    0.177897    0.667622  
+7         0.125675    0.203178    0.687012  
+8         0.117247    1.739555    0.647013  
+9         0.113947    0.311649    0.676272  
+*** 2019-01-05 03:45:12,234 - code.resnet_fastai - INFO ***
+Complete model fitting: Stage 2
+******
+
+*** 2019-01-05 03:45:12,319 - code.resnet_fastai - INFO ***
+Stage 2 model saved.
+******
+
+*** 2019-01-05 03:45:12,319 - code.resnet_fastai - INFO ***
+Start predicting test set
+******
+
+10        0.116861    0.298708    0.680477  
+Epoch 10: early stopping
+Epoch 10: reducing lr to 0.0002784363219262553
+*** 2019-01-05 03:47:23,659 - code.resnet_fastai - INFO ***
+Complete test prediction.
+******
+
+*** 2019-01-05 03:47:23,663 - code.resnet_fastai - INFO ***
+Prediction saved.
+******
+
+*** 2019-01-05 03:47:23,760 - code.resnet_fastai - INFO ***
+Results written to output/resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs8-lr0.005-ep3_30-0.csv. Finished! :)
+******
+
+*** 2019-01-05 03:47:23,764 - code.resnet_fastai - DEBUG ***
+torch.Size([11702, 28])
+******
+
