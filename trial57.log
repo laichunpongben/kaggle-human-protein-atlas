@@ -110,3 +110,34 @@ LR: 0.005
 
 [0.0005 0.0005 0.005 ]
 epoch     train_loss  valid_loss  fbeta   
+1         0.156751    0.142231    0.541742  
+2         0.148720    0.130480    0.607047  
+*** 2019-01-05 12:28:58,568 - code.resnet_fastai - INFO ***
+Complete model fitting: Stage 1
+******
+
+*** 2019-01-05 12:28:58,688 - code.resnet_fastai - INFO ***
+Stage 1 model saved.
+******
+
+*** 2019-01-05 12:28:58,688 - code.resnet_fastai - INFO ***
+Start predicting test set
+******
+
+3         0.132936    0.139629    0.629597  
+*** 2019-01-05 12:31:11,159 - code.resnet_fastai - INFO ***
+Complete test prediction.
+******
+
+*** 2019-01-05 12:31:11,160 - code.resnet_fastai - INFO ***
+Prediction saved.
+******
+
+*** 2019-01-05 12:31:11,224 - code.resnet_fastai - INFO ***
+Results written to output/resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs8-lr0.005-ep3_0-0.csv. Finished! :)
+******
+
+*** 2019-01-05 12:31:11,227 - code.resnet_fastai - DEBUG ***
+torch.Size([11702, 28])
+******
+

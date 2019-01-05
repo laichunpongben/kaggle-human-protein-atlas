@@ -1,0 +1,510 @@
+*** 2019-01-05 13:32:58,274 - code.resnet_fastai - DEBUG ***
+Start a new training task
+******
+
+*** 2019-01-05 13:32:58,274 - code.resnet_fastai - INFO ***
+Device ID: 0
+Image size: 512
+Network architecture: resnet
+Loss function: bce
+Sampler: random
+Encoder depth: 50
+Dropout: 0.5
+Threshold: 0.1
+Stage 1 #epoch: 0
+Stage 2 #epoch: 30
+Learning rate #1: 5e-06
+Batch size: 8
+Dataset: official_hpav18
+Dataset directory: data/hpav18
+Output directory: output
+******
+
+*** 2019-01-05 13:32:58,274 - code.resnet_fastai - INFO ***
+official_hpav18 stats: ([0.08035214900985806, 0.052662718446443796, 0.054821162479790554, 0.08270705238092081], [0.1441818831316468, 0.10766732147991964, 0.15509390386065397, 0.1447311870215956])
+******
+
+*** 2019-01-05 13:32:58,274 - code.resnet_fastai - INFO ***
+official stats: ([0.08035214900985806, 0.052662718446443796, 0.054821162479790554, 0.08270705238092081], [0.1441818831316468, 0.10766732147991964, 0.15509390386065397, 0.1447311870215956])
+******
+
+*** 2019-01-05 13:32:58,274 - code.resnet_fastai - INFO ***
+hpav18 stats: ([0.11810116173772936, 0.06795416990341785, 0.06612933906943513, 0.08437984839655913], [0.17499094128737935, 0.12197690061419421, 0.17568283970650891, 0.11266782268834614])
+******
+
+*** 2019-01-05 13:32:58,307 - code.resnet_fastai - DEBUG ***
+# Test ids: 11702
+******
+
+*** 2019-01-05 13:32:58,373 - code.resnet_fastai - DEBUG ***
+official train size: (31072, 2)
+******
+
+*** 2019-01-05 13:32:58,396 - code.resnet_fastai - DEBUG ***
+hpav18 train size: (71437, 2)
+******
+
+*** 2019-01-05 13:32:58,397 - code.resnet_fastai - DEBUG ***
+empty size (0, 2)
+******
+
+*** 2019-01-05 13:32:58,948 - code.resnet_fastai - DEBUG ***
+hpav18 rare size: (7404, 2)
+******
+
+*** 2019-01-05 13:32:58,949 - code.resnet_fastai - DEBUG ***
+concat size: (38476, 2)
+******
+
+*** 2019-01-05 13:32:59,595 - code.resnet_fastai - DEBUG ***
+oversample train size: (45767, 2)
+******
+
+*** 2019-01-05 13:33:03,502 - code.resnet_fastai - DEBUG ***
+Start of fold 0
+******
+
+*** 2019-01-05 13:33:03,502 - code.resnet_fastai - DEBUG ***
+Size of valid set: 9180
+******
+
+*** 2019-01-05 13:33:03,649 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (36587 items)
+[MultiCategory 16;0, MultiCategory 7;1;2;0, MultiCategory 5, MultiCategory 1, MultiCategory 18]...
+Path: data/hpav18
+x: ImageItemList (36587 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/hpav18
+******
+
+*** 2019-01-05 13:33:03,727 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (9180 items)
+[MultiCategory 7, MultiCategory 24;0, MultiCategory 25, MultiCategory 0, MultiCategory 11]...
+Path: data/hpav18
+x: ImageItemList (9180 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/hpav18
+******
+
+*** 2019-01-05 13:33:04,097 - code.resnet_fastai - DEBUG ***
+Databunch created
+******
+
+*** 2019-01-05 13:33:04,098 - code.resnet_fastai - INFO ***
+Initialising model.
+******
+
+*** 2019-01-05 13:33:04,774 - code.resnet_fastai - INFO ***
+Complete initialising model.
+******
+
+*** 2019-01-05 13:33:04,774 - code.resnet_fastai - DEBUG ***
+runname: resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs8-lr0.005-ep3_0
+******
+
+*** 2019-01-05 13:33:04,774 - code.resnet_fastai - INFO ***
+Loading model: stage-1-resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs8-lr0.005-ep3_0, with suffix 0
+******
+
+*** 2019-01-05 13:33:05,008 - code.resnet_fastai - INFO ***
+Finish loading model.
+******
+
+*** 2019-01-05 13:33:05,011 - code.resnet_fastai - DEBUG ***
+Unfreezing model
+******
+
+*** 2019-01-05 13:33:05,011 - code.resnet_fastai - DEBUG ***
+LR: 5e-06
+******
+
+[5.000000e-06 7.071068e-05 1.000000e-03]
+epoch     train_loss  valid_loss  fbeta   
+1         0.131816    0.143078    0.630767  
+2         0.123034    0.138066    0.657472  
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/queues.py", line 234, in _feed
+    obj = _ForkingPickler.dumps(obj)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/torch/multiprocessing/reductions.py", line 299, in reduce_storage
+    df = multiprocessing.reduction.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 191, in DupFd
+    return resource_sharer.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 53, in __init__
+    self._id = _resource_sharer.register(send, close)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 77, in register
+    self._start()
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 130, in _start
+    self._listener = Listener(authkey=process.current_process().authkey)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 432, in __init__
+    address = address or arbitrary_address(family)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 76, in arbitrary_address
+    return tempfile.mktemp(prefix='listener-', dir=util.get_temp_dir())
+  File "/usr/lib/python3.6/multiprocessing/util.py", line 114, in get_temp_dir
+    tempdir = tempfile.mkdtemp(prefix='pymp-')
+  File "/usr/lib/python3.6/tempfile.py", line 509, in mkdtemp
+    _os.mkdir(file, 0o700)
+OSError: [Errno 28] No space left on device: '/tmp/pymp-qnxt595b'
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/queues.py", line 234, in _feed
+    obj = _ForkingPickler.dumps(obj)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/torch/multiprocessing/reductions.py", line 299, in reduce_storage
+    df = multiprocessing.reduction.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 191, in DupFd
+    return resource_sharer.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 53, in __init__
+    self._id = _resource_sharer.register(send, close)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 77, in register
+    self._start()
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 130, in _start
+    self._listener = Listener(authkey=process.current_process().authkey)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 432, in __init__
+    address = address or arbitrary_address(family)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 76, in arbitrary_address
+    return tempfile.mktemp(prefix='listener-', dir=util.get_temp_dir())
+  File "/usr/lib/python3.6/multiprocessing/util.py", line 114, in get_temp_dir
+    tempdir = tempfile.mkdtemp(prefix='pymp-')
+  File "/usr/lib/python3.6/tempfile.py", line 509, in mkdtemp
+    _os.mkdir(file, 0o700)
+OSError: [Errno 28] No space left on device: '/tmp/pymp-rwy5kjas'
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/queues.py", line 234, in _feed
+    obj = _ForkingPickler.dumps(obj)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/torch/multiprocessing/reductions.py", line 299, in reduce_storage
+    df = multiprocessing.reduction.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 191, in DupFd
+    return resource_sharer.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 53, in __init__
+    self._id = _resource_sharer.register(send, close)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 77, in register
+    self._start()
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 130, in _start
+    self._listener = Listener(authkey=process.current_process().authkey)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 432, in __init__
+    address = address or arbitrary_address(family)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 76, in arbitrary_address
+    return tempfile.mktemp(prefix='listener-', dir=util.get_temp_dir())
+  File "/usr/lib/python3.6/multiprocessing/util.py", line 114, in get_temp_dir
+    tempdir = tempfile.mkdtemp(prefix='pymp-')
+  File "/usr/lib/python3.6/tempfile.py", line 509, in mkdtemp
+    _os.mkdir(file, 0o700)
+OSError: [Errno 28] No space left on device: '/tmp/pymp-my_tddkm'
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/queues.py", line 234, in _feed
+    obj = _ForkingPickler.dumps(obj)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/torch/multiprocessing/reductions.py", line 299, in reduce_storage
+    df = multiprocessing.reduction.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 191, in DupFd
+    return resource_sharer.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 53, in __init__
+    self._id = _resource_sharer.register(send, close)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 77, in register
+    self._start()
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 130, in _start
+    self._listener = Listener(authkey=process.current_process().authkey)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 432, in __init__
+    address = address or arbitrary_address(family)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 76, in arbitrary_address
+    return tempfile.mktemp(prefix='listener-', dir=util.get_temp_dir())
+  File "/usr/lib/python3.6/multiprocessing/util.py", line 114, in get_temp_dir
+    tempdir = tempfile.mkdtemp(prefix='pymp-')
+  File "/usr/lib/python3.6/tempfile.py", line 509, in mkdtemp
+    _os.mkdir(file, 0o700)
+OSError: [Errno 28] No space left on device: '/tmp/pymp-upql05aq'
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/queues.py", line 234, in _feed
+    obj = _ForkingPickler.dumps(obj)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/torch/multiprocessing/reductions.py", line 299, in reduce_storage
+    df = multiprocessing.reduction.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 191, in DupFd
+    return resource_sharer.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 53, in __init__
+    self._id = _resource_sharer.register(send, close)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 77, in register
+    self._start()
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 130, in _start
+    self._listener = Listener(authkey=process.current_process().authkey)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 432, in __init__
+    address = address or arbitrary_address(family)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 76, in arbitrary_address
+    return tempfile.mktemp(prefix='listener-', dir=util.get_temp_dir())
+  File "/usr/lib/python3.6/multiprocessing/util.py", line 114, in get_temp_dir
+    tempdir = tempfile.mkdtemp(prefix='pymp-')
+  File "/usr/lib/python3.6/tempfile.py", line 509, in mkdtemp
+    _os.mkdir(file, 0o700)
+OSError: [Errno 28] No space left on device: '/tmp/pymp-hy2v1sxy'
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/queues.py", line 234, in _feed
+    obj = _ForkingPickler.dumps(obj)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/torch/multiprocessing/reductions.py", line 299, in reduce_storage
+    df = multiprocessing.reduction.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 191, in DupFd
+    return resource_sharer.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 53, in __init__
+    self._id = _resource_sharer.register(send, close)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 77, in register
+    self._start()
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 130, in _start
+    self._listener = Listener(authkey=process.current_process().authkey)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 432, in __init__
+    address = address or arbitrary_address(family)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 76, in arbitrary_address
+    return tempfile.mktemp(prefix='listener-', dir=util.get_temp_dir())
+  File "/usr/lib/python3.6/multiprocessing/util.py", line 114, in get_temp_dir
+    tempdir = tempfile.mkdtemp(prefix='pymp-')
+  File "/usr/lib/python3.6/tempfile.py", line 509, in mkdtemp
+    _os.mkdir(file, 0o700)
+OSError: [Errno 28] No space left on device: '/tmp/pymp-1ura7uw4'
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/queues.py", line 234, in _feed
+    obj = _ForkingPickler.dumps(obj)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/torch/multiprocessing/reductions.py", line 299, in reduce_storage
+    df = multiprocessing.reduction.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 191, in DupFd
+    return resource_sharer.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 53, in __init__
+    self._id = _resource_sharer.register(send, close)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 77, in register
+    self._start()
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 130, in _start
+    self._listener = Listener(authkey=process.current_process().authkey)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 432, in __init__
+    address = address or arbitrary_address(family)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 76, in arbitrary_address
+    return tempfile.mktemp(prefix='listener-', dir=util.get_temp_dir())
+  File "/usr/lib/python3.6/multiprocessing/util.py", line 114, in get_temp_dir
+    tempdir = tempfile.mkdtemp(prefix='pymp-')
+  File "/usr/lib/python3.6/tempfile.py", line 509, in mkdtemp
+    _os.mkdir(file, 0o700)
+OSError: [Errno 28] No space left on device: '/tmp/pymp-yn602tn8'
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/queues.py", line 234, in _feed
+    obj = _ForkingPickler.dumps(obj)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/torch/multiprocessing/reductions.py", line 299, in reduce_storage
+    df = multiprocessing.reduction.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 191, in DupFd
+    return resource_sharer.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 53, in __init__
+    self._id = _resource_sharer.register(send, close)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 77, in register
+    self._start()
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 130, in _start
+    self._listener = Listener(authkey=process.current_process().authkey)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 432, in __init__
+    address = address or arbitrary_address(family)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 76, in arbitrary_address
+    return tempfile.mktemp(prefix='listener-', dir=util.get_temp_dir())
+  File "/usr/lib/python3.6/multiprocessing/util.py", line 114, in get_temp_dir
+    tempdir = tempfile.mkdtemp(prefix='pymp-')
+  File "/usr/lib/python3.6/tempfile.py", line 509, in mkdtemp
+    _os.mkdir(file, 0o700)
+OSError: [Errno 28] No space left on device: '/tmp/pymp-0eyh46vj'
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/queues.py", line 234, in _feed
+    obj = _ForkingPickler.dumps(obj)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/torch/multiprocessing/reductions.py", line 299, in reduce_storage
+    df = multiprocessing.reduction.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 191, in DupFd
+    return resource_sharer.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 53, in __init__
+    self._id = _resource_sharer.register(send, close)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 77, in register
+    self._start()
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 130, in _start
+    self._listener = Listener(authkey=process.current_process().authkey)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 432, in __init__
+    address = address or arbitrary_address(family)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 76, in arbitrary_address
+    return tempfile.mktemp(prefix='listener-', dir=util.get_temp_dir())
+  File "/usr/lib/python3.6/multiprocessing/util.py", line 114, in get_temp_dir
+    tempdir = tempfile.mkdtemp(prefix='pymp-')
+  File "/usr/lib/python3.6/tempfile.py", line 509, in mkdtemp
+    _os.mkdir(file, 0o700)
+OSError: [Errno 28] No space left on device: '/tmp/pymp-b5xu_445'
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/queues.py", line 234, in _feed
+    obj = _ForkingPickler.dumps(obj)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/torch/multiprocessing/reductions.py", line 299, in reduce_storage
+    df = multiprocessing.reduction.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 191, in DupFd
+    return resource_sharer.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 53, in __init__
+    self._id = _resource_sharer.register(send, close)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 77, in register
+    self._start()
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 130, in _start
+    self._listener = Listener(authkey=process.current_process().authkey)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 432, in __init__
+    address = address or arbitrary_address(family)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 76, in arbitrary_address
+    return tempfile.mktemp(prefix='listener-', dir=util.get_temp_dir())
+  File "/usr/lib/python3.6/multiprocessing/util.py", line 114, in get_temp_dir
+    tempdir = tempfile.mkdtemp(prefix='pymp-')
+  File "/usr/lib/python3.6/tempfile.py", line 509, in mkdtemp
+    _os.mkdir(file, 0o700)
+OSError: [Errno 28] No space left on device: '/tmp/pymp-i_trwh8f'
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/queues.py", line 234, in _feed
+    obj = _ForkingPickler.dumps(obj)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/torch/multiprocessing/reductions.py", line 299, in reduce_storage
+    df = multiprocessing.reduction.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 191, in DupFd
+    return resource_sharer.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 53, in __init__
+    self._id = _resource_sharer.register(send, close)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 77, in register
+    self._start()
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 130, in _start
+    self._listener = Listener(authkey=process.current_process().authkey)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 432, in __init__
+    address = address or arbitrary_address(family)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 76, in arbitrary_address
+    return tempfile.mktemp(prefix='listener-', dir=util.get_temp_dir())
+  File "/usr/lib/python3.6/multiprocessing/util.py", line 114, in get_temp_dir
+    tempdir = tempfile.mkdtemp(prefix='pymp-')
+  File "/usr/lib/python3.6/tempfile.py", line 509, in mkdtemp
+    _os.mkdir(file, 0o700)
+OSError: [Errno 28] No space left on device: '/tmp/pymp-0y_u7sq2'
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/queues.py", line 234, in _feed
+    obj = _ForkingPickler.dumps(obj)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/torch/multiprocessing/reductions.py", line 299, in reduce_storage
+    df = multiprocessing.reduction.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 191, in DupFd
+    return resource_sharer.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 53, in __init__
+    self._id = _resource_sharer.register(send, close)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 77, in register
+    self._start()
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 130, in _start
+    self._listener = Listener(authkey=process.current_process().authkey)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 432, in __init__
+    address = address or arbitrary_address(family)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 76, in arbitrary_address
+    return tempfile.mktemp(prefix='listener-', dir=util.get_temp_dir())
+  File "/usr/lib/python3.6/multiprocessing/util.py", line 114, in get_temp_dir
+    tempdir = tempfile.mkdtemp(prefix='pymp-')
+  File "/usr/lib/python3.6/tempfile.py", line 509, in mkdtemp
+    _os.mkdir(file, 0o700)
+OSError: [Errno 28] No space left on device: '/tmp/pymp-397ylr05'
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/queues.py", line 234, in _feed
+    obj = _ForkingPickler.dumps(obj)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/torch/multiprocessing/reductions.py", line 299, in reduce_storage
+    df = multiprocessing.reduction.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 191, in DupFd
+    return resource_sharer.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 53, in __init__
+    self._id = _resource_sharer.register(send, close)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 77, in register
+    self._start()
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 130, in _start
+    self._listener = Listener(authkey=process.current_process().authkey)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 432, in __init__
+    address = address or arbitrary_address(family)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 76, in arbitrary_address
+    return tempfile.mktemp(prefix='listener-', dir=util.get_temp_dir())
+  File "/usr/lib/python3.6/multiprocessing/util.py", line 114, in get_temp_dir
+    tempdir = tempfile.mkdtemp(prefix='pymp-')
+  File "/usr/lib/python3.6/tempfile.py", line 509, in mkdtemp
+    _os.mkdir(file, 0o700)
+OSError: [Errno 28] No space left on device: '/tmp/pymp-cau43zsc'
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/queues.py", line 234, in _feed
+    obj = _ForkingPickler.dumps(obj)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/torch/multiprocessing/reductions.py", line 299, in reduce_storage
+    df = multiprocessing.reduction.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 191, in DupFd
+    return resource_sharer.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 53, in __init__
+    self._id = _resource_sharer.register(send, close)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 77, in register
+    self._start()
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 130, in _start
+    self._listener = Listener(authkey=process.current_process().authkey)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 432, in __init__
+    address = address or arbitrary_address(family)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 76, in arbitrary_address
+    return tempfile.mktemp(prefix='listener-', dir=util.get_temp_dir())
+  File "/usr/lib/python3.6/multiprocessing/util.py", line 114, in get_temp_dir
+    tempdir = tempfile.mkdtemp(prefix='pymp-')
+  File "/usr/lib/python3.6/tempfile.py", line 509, in mkdtemp
+    _os.mkdir(file, 0o700)
+OSError: [Errno 28] No space left on device: '/tmp/pymp-n49911s1'
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/queues.py", line 234, in _feed
+    obj = _ForkingPickler.dumps(obj)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/torch/multiprocessing/reductions.py", line 299, in reduce_storage
+    df = multiprocessing.reduction.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 191, in DupFd
+    return resource_sharer.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 53, in __init__
+    self._id = _resource_sharer.register(send, close)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 77, in register
+    self._start()
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 130, in _start
+    self._listener = Listener(authkey=process.current_process().authkey)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 432, in __init__
+    address = address or arbitrary_address(family)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 76, in arbitrary_address
+    return tempfile.mktemp(prefix='listener-', dir=util.get_temp_dir())
+  File "/usr/lib/python3.6/multiprocessing/util.py", line 114, in get_temp_dir
+    tempdir = tempfile.mkdtemp(prefix='pymp-')
+  File "/usr/lib/python3.6/tempfile.py", line 509, in mkdtemp
+    _os.mkdir(file, 0o700)
+OSError: [Errno 28] No space left on device: '/tmp/pymp-1bws0xe9'
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/multiprocessing/queues.py", line 234, in _feed
+    obj = _ForkingPickler.dumps(obj)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/torch/multiprocessing/reductions.py", line 299, in reduce_storage
+    df = multiprocessing.reduction.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/reduction.py", line 191, in DupFd
+    return resource_sharer.DupFd(fd)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 53, in __init__
+    self._id = _resource_sharer.register(send, close)
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 77, in register
+    self._start()
+  File "/usr/lib/python3.6/multiprocessing/resource_sharer.py", line 130, in _start
+    self._listener = Listener(authkey=process.current_process().authkey)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 432, in __init__
+    address = address or arbitrary_address(family)
+  File "/usr/lib/python3.6/multiprocessing/connection.py", line 76, in arbitrary_address
+    return tempfile.mktemp(prefix='listener-', dir=util.get_temp_dir())
+  File "/usr/lib/python3.6/multiprocessing/util.py", line 114, in get_temp_dir
+    tempdir = tempfile.mkdtemp(prefix='pymp-')
+  File "/usr/lib/python3.6/tempfile.py", line 509, in mkdtemp
+    _os.mkdir(file, 0o700)
+OSError: [Errno 28] No space left on device: '/tmp/pymp-h0rerr0g'
