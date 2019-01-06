@@ -1,6 +1,10 @@
 import os
+import io
 import re
 import time
+from pathlib import Path
+import argparse
+
 import numpy as np
 import PIL
 from PIL import Image
@@ -13,8 +17,11 @@ from skimage.color import label2rgb
 from skimage.exposure import adjust_gamma
 import cv2
 import matplotlib.pyplot as plt
+import lzma
+import libarchive.public
 
 CHANNELS = ['red', 'blue', 'green', 'yellow']
+PATH = "/home/ben/Downloads"
 
 
 def get_ids(path):
@@ -209,7 +216,7 @@ def flann_match_images(dataset_dir0, dataset_dir1, channel=None):
 def clipped_zoom(img, zoom_factor):
     """
     https://stackoverflow.com/questions/37119071/scipy-rotate-and-zoom-an-image-without-changing-its-dimensions
-    
+
     Center zoom in/out of the given image and returning an enlarged/shrinked view of
     the image without changing dimensions
     Args:
@@ -240,5 +247,71 @@ def clipped_zoom(img, zoom_factor):
     assert result.shape[0] == height and result.shape[1] == width
     return result
 
+def tif2png(sz):
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-d","--ds", help="dataset", type=str, choices=["train", "test"], required=True)
+    args = parser.parse_args()
+    ds = args.ds
+    filename = ds + "_full_size"
+
+    fnames = os.listdir(Path(PATH)/'{}'.format(ds))
+    pattern = re.compile("NAME=\[(.+?)\] SIZE")
+
+    zip_path = Path(PATH)/f'{filename}.7z'
+    with libarchive.public.file_reader(zip_path.__str__()) as f0:
+        # x = sum(1 for _ in f0)
+        # print(x)
+        for entry in f0:
+            tif_name = re.search(pattern, str(entry)).group(1)
+            print(tif_name)
+            if ".tif" not in tif_name:
+                continue
+
+            if tif_name in [
+                # "a14399ee-bad4-11e8-b2b8-ac1f6b6435d0_yellow.tif",
+                # "d67b7b9a-bac5-11e8-b2b7-ac1f6b6435d0_yellow.tif",
+                # "fcb8e0b6-bad6-11e8-b2b9-ac1f6b6435d0_green.tif"
+                "8ba4bc58-bbb5-11e8-b2ba-ac1f6b6435d0_yellow.tif",
+                "a9125fa6-bbbb-11e8-b2ba-ac1f6b6435d0_yellow.tif"
+            ]:
+                continue
+
+            name = tif_name[:-4] + ".png"
+            if name in fnames:
+                continue
+
+            tif_path = Path(PATH)/'{}'.format(ds)/f'{tif_name}'
+            png_path = Path(PATH)/'{}'.format(ds)/f'{name}'
+
+            # try:
+            with open(tif_path, 'wb') as f1:
+                blocks = []
+                for block in entry.get_blocks():
+                    f1.write(block)
+            img = Image.open(tif_path)
+            img = img.resize((sz, sz))
+            img.save(png_path, format="png")
+            print("Saved {}".format(name))
+            # except Exception as e:
+            #     print(e)
+            # finally:
+            Path.unlink(tif_path)
+            # break
+            # with
+        # print(content)
+        # for name in compressed:
+        #     print(name)
+        #     img = Image.open(io.BytesIO(archive.read(name)))
+        #     output = io.BytesIO()
+        #     img.resize((sz,sz)).save(output, format='png')
+        #     archive_out.writestr(name, output.getvalue())
+
 if __name__ == '__main__':
-    missing_ids = check_colors("data/hpav18")
+    # missing_ids = check_colors("data/hpav18")
+    sz = 1024
+    tif2png(sz)
+    # dataset_dir = "/home/ben/github/atlas/data/hpav18/train"
+    # output_dir = "/home/ben/Downloads"
+    # size = sz
+    # id_ = "a9125fa6-bbbb-11e8-b2ba-ac1f6b6435d0_yellow"
+    # resize_png(dataset_dir, output_dir, size, id_=id_)
