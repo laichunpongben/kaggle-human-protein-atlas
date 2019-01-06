@@ -1,0 +1,165 @@
+*** 2019-01-06 01:12:31,625 - libarchive.library - DEBUG ***
+Using default library file-path: [libarchive.so]
+******
+
+*** 2019-01-06 01:12:31,628 - libarchive.library - DEBUG ***
+Using library file-path: [libarchive.so]
+******
+
+*** 2019-01-06 01:12:31,675 - code.resnet_fastai - DEBUG ***
+Start a new training task
+******
+
+*** 2019-01-06 01:12:31,675 - code.resnet_fastai - INFO ***
+Device ID: 0
+Image size: 512
+Network architecture: resnet
+Loss function: bce
+Sampler: random
+Encoder depth: 50
+Dropout: 0.5
+Threshold: 0.1
+Stage 1 #epoch: 0
+Stage 2 #epoch: 30
+Learning rate #1: 2e-06
+Batch size: 8
+Dataset: official_hpav18
+Dataset directory: data/hpav18
+Output directory: output
+******
+
+*** 2019-01-06 01:12:31,675 - code.resnet_fastai - INFO ***
+official_hpav18 stats: ([0.08035214900985806, 0.052662718446443796, 0.054821162479790554, 0.08270705238092081], [0.1441818831316468, 0.10766732147991964, 0.15509390386065397, 0.1447311870215956])
+******
+
+*** 2019-01-06 01:12:31,675 - code.resnet_fastai - INFO ***
+official stats: ([0.08035214900985806, 0.052662718446443796, 0.054821162479790554, 0.08270705238092081], [0.1441818831316468, 0.10766732147991964, 0.15509390386065397, 0.1447311870215956])
+******
+
+*** 2019-01-06 01:12:31,675 - code.resnet_fastai - INFO ***
+hpav18 stats: ([0.11810116173772936, 0.06795416990341785, 0.06612933906943513, 0.08437984839655913], [0.17499094128737935, 0.12197690061419421, 0.17568283970650891, 0.11266782268834614])
+******
+
+*** 2019-01-06 01:12:31,723 - code.resnet_fastai - DEBUG ***
+# Test ids: 11702
+******
+
+*** 2019-01-06 01:12:31,792 - code.resnet_fastai - DEBUG ***
+official train size: (31072, 2)
+******
+
+*** 2019-01-06 01:12:31,817 - code.resnet_fastai - DEBUG ***
+hpav18 train size: (71437, 2)
+******
+
+*** 2019-01-06 01:12:31,819 - code.resnet_fastai - DEBUG ***
+empty size (0, 2)
+******
+
+*** 2019-01-06 01:12:32,416 - code.resnet_fastai - DEBUG ***
+hpav18 rare size: (7404, 2)
+******
+
+*** 2019-01-06 01:12:32,417 - code.resnet_fastai - DEBUG ***
+concat size: (38476, 2)
+******
+
+*** 2019-01-06 01:12:33,140 - code.resnet_fastai - DEBUG ***
+oversample train size: (45767, 2)
+******
+
+*** 2019-01-06 01:12:37,333 - code.resnet_fastai - DEBUG ***
+Start of fold 0
+******
+
+*** 2019-01-06 01:12:37,333 - code.resnet_fastai - DEBUG ***
+Size of valid set: 9180
+******
+
+*** 2019-01-06 01:12:37,452 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (36587 items)
+[MultiCategory 16;0, MultiCategory 7;1;2;0, MultiCategory 5, MultiCategory 1, MultiCategory 18]...
+Path: data/hpav18
+x: ImageItemList (36587 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/hpav18
+******
+
+*** 2019-01-06 01:12:37,526 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (9180 items)
+[MultiCategory 7, MultiCategory 24;0, MultiCategory 25, MultiCategory 0, MultiCategory 11]...
+Path: data/hpav18
+x: ImageItemList (9180 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/hpav18
+******
+
+*** 2019-01-06 01:12:37,857 - code.resnet_fastai - DEBUG ***
+Databunch created
+******
+
+*** 2019-01-06 01:12:37,858 - code.resnet_fastai - INFO ***
+Initialising model.
+******
+
+*** 2019-01-06 01:12:38,500 - code.resnet_fastai - INFO ***
+Complete initialising model.
+******
+
+*** 2019-01-06 01:12:38,500 - code.resnet_fastai - DEBUG ***
+runname: resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs8-lr0.005-ep3_0
+******
+
+*** 2019-01-06 01:12:38,500 - code.resnet_fastai - INFO ***
+Loading model: stage-1-resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs8-lr0.005-ep3_0, with suffix 0
+******
+
+*** 2019-01-06 01:12:38,771 - code.resnet_fastai - INFO ***
+Finish loading model.
+******
+
+*** 2019-01-06 01:12:38,774 - code.resnet_fastai - DEBUG ***
+Unfreezing model
+******
+
+*** 2019-01-06 01:12:38,774 - code.resnet_fastai - DEBUG ***
+LR: 2e-06
+******
+
+[2.000000e-06 2.828427e-05 4.000000e-04]
+epoch     train_loss  valid_loss  fbeta   
+1         0.137569    0.250298    0.617139  
+2         0.137820    0.210719    0.620595  
+3         0.132859    0.124675    0.645731  
+4         0.132805    0.145406    0.644367  
+5         0.133485    0.389899    0.623740  
+6         0.120302    0.265550    0.656133  
+7         0.122533    1.360301    0.633593  
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/runpy.py", line 193, in _run_module_as_main
+    "__main__", mod_spec)
+  File "/usr/lib/python3.6/runpy.py", line 85, in _run_code
+    exec(code, run_globals)
+  File "/home/ben/github/atlas/code/resnet_fastai.py", line 524, in <module>
+    learn = fit_model(learn, stage=1, fold=index)
+  File "/home/ben/github/atlas/code/resnet_fastai.py", line 460, in fit_model
+    learn.fit_one_cycle(cyc_len, max_lr)
+  File "/home/ben/github/atlas/code/train.py", line 20, in my_fit_one_cycle
+    learn.fit(cyc_len, max_lr, wd=wd, callbacks=callbacks)
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/fastai/basic_train.py", line 166, in fit
+    callbacks=self.callbacks+callbacks)
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/fastai/basic_train.py", line 94, in fit
+    raise e
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/fastai/basic_train.py", line 89, in fit
+    cb_handler=cb_handler, pbar=pbar)
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/fastai/basic_train.py", line 49, in validate
+    for xb,yb in progress_bar(dl, parent=pbar, leave=(pbar is not None)):
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/fastprogress/fastprogress.py", line 65, in __iter__
+    for i,o in enumerate(self._gen):
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/fastai/basic_data.py", line 72, in __iter__
+    yield self.proc_batch(b)
+  File "/home/ben/venv_hpa/lib/python3.6/site-packages/torch/utils/data/dataloader.py", line 274, in handler
+    _error_if_any_worker_fails()
+RuntimeError: DataLoader worker (pid 6360) is killed by signal: Terminated. 

@@ -1,0 +1,137 @@
+*** 2019-01-05 23:04:40,111 - libarchive.library - DEBUG ***
+Using default library file-path: [libarchive.so]
+******
+
+*** 2019-01-05 23:04:40,112 - libarchive.library - DEBUG ***
+Using library file-path: [libarchive.so]
+******
+
+*** 2019-01-05 23:04:40,127 - code.resnet_fastai - DEBUG ***
+Start a new training task
+******
+
+*** 2019-01-05 23:04:40,127 - code.resnet_fastai - INFO ***
+Device ID: 0
+Image size: 512
+Network architecture: resnet
+Loss function: bce
+Sampler: random
+Encoder depth: 50
+Dropout: 0.5
+Threshold: 0.1
+Stage 1 #epoch: 0
+Stage 2 #epoch: 30
+Learning rate #1: 5e-06
+Batch size: 8
+Dataset: official_hpav18
+Dataset directory: data/hpav18
+Output directory: output
+******
+
+*** 2019-01-05 23:04:40,127 - code.resnet_fastai - INFO ***
+official_hpav18 stats: ([0.08035214900985806, 0.052662718446443796, 0.054821162479790554, 0.08270705238092081], [0.1441818831316468, 0.10766732147991964, 0.15509390386065397, 0.1447311870215956])
+******
+
+*** 2019-01-05 23:04:40,127 - code.resnet_fastai - INFO ***
+official stats: ([0.08035214900985806, 0.052662718446443796, 0.054821162479790554, 0.08270705238092081], [0.1441818831316468, 0.10766732147991964, 0.15509390386065397, 0.1447311870215956])
+******
+
+*** 2019-01-05 23:04:40,127 - code.resnet_fastai - INFO ***
+hpav18 stats: ([0.11810116173772936, 0.06795416990341785, 0.06612933906943513, 0.08437984839655913], [0.17499094128737935, 0.12197690061419421, 0.17568283970650891, 0.11266782268834614])
+******
+
+*** 2019-01-05 23:04:40,167 - code.resnet_fastai - DEBUG ***
+# Test ids: 11702
+******
+
+*** 2019-01-05 23:04:40,231 - code.resnet_fastai - DEBUG ***
+official train size: (31072, 2)
+******
+
+*** 2019-01-05 23:04:40,253 - code.resnet_fastai - DEBUG ***
+hpav18 train size: (71437, 2)
+******
+
+*** 2019-01-05 23:04:40,254 - code.resnet_fastai - DEBUG ***
+empty size (0, 2)
+******
+
+*** 2019-01-05 23:04:40,803 - code.resnet_fastai - DEBUG ***
+hpav18 rare size: (7404, 2)
+******
+
+*** 2019-01-05 23:04:40,804 - code.resnet_fastai - DEBUG ***
+concat size: (38476, 2)
+******
+
+*** 2019-01-05 23:04:41,438 - code.resnet_fastai - DEBUG ***
+oversample train size: (45767, 2)
+******
+
+*** 2019-01-05 23:04:45,528 - code.resnet_fastai - DEBUG ***
+Start of fold 0
+******
+
+*** 2019-01-05 23:04:45,528 - code.resnet_fastai - DEBUG ***
+Size of valid set: 9180
+******
+
+*** 2019-01-05 23:04:45,661 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (36587 items)
+[MultiCategory 16;0, MultiCategory 7;1;2;0, MultiCategory 5, MultiCategory 1, MultiCategory 18]...
+Path: data/hpav18
+x: ImageItemList (36587 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/hpav18
+******
+
+*** 2019-01-05 23:04:45,734 - code.resnet_fastai - DEBUG ***
+LabelList
+y: MultiCategoryList (9180 items)
+[MultiCategory 7, MultiCategory 24;0, MultiCategory 25, MultiCategory 0, MultiCategory 11]...
+Path: data/hpav18
+x: ImageItemList (9180 items)
+[Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512), Image (4, 512, 512)]...
+Path: data/hpav18
+******
+
+*** 2019-01-05 23:04:46,064 - code.resnet_fastai - DEBUG ***
+Databunch created
+******
+
+*** 2019-01-05 23:04:46,064 - code.resnet_fastai - INFO ***
+Initialising model.
+******
+
+*** 2019-01-05 23:04:46,667 - code.resnet_fastai - INFO ***
+Complete initialising model.
+******
+
+*** 2019-01-05 23:04:46,668 - code.resnet_fastai - DEBUG ***
+runname: resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs8-lr0.005-ep3_0
+******
+
+*** 2019-01-05 23:04:46,668 - code.resnet_fastai - INFO ***
+Loading model: stage-1-resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs8-lr0.005-ep3_0, with suffix 0
+******
+
+*** 2019-01-05 23:04:46,733 - code.resnet_fastai - INFO ***
+Finish loading model.
+******
+
+*** 2019-01-05 23:04:46,734 - code.resnet_fastai - DEBUG ***
+Unfreezing model
+******
+
+*** 2019-01-05 23:04:46,734 - code.resnet_fastai - DEBUG ***
+LR: 5e-06
+******
+
+[5.000000e-06 7.071068e-05 1.000000e-03]
+epoch     train_loss  valid_loss  fbeta   
+1         0.141335    0.235960    0.616661  
+2         0.132948    0.140182    0.632516  
+3         0.134417    0.416326    0.634688  
+4         0.126634    0.170059    0.655541  
+5         0.128416    0.205413    0.642356  
