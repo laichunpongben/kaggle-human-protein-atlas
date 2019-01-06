@@ -124,20 +124,20 @@ def output_csv_vote(runname, fold, th, min_vote, first_n=99, start=0):
     ensemble(csvs, vote_out, min_vote, first_n)
 
 if __name__ == '__main__':
-    # runname = "resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30"
-    # fold = 5
-    # start = 4
-    # th = 0.30
-    # min_vote = 0
-    # output_csv_vote(runname, fold, th, min_vote, start=start)
+    runname = "resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs16-lr0-ep3_30"
+    fold = 1
+    start = 0
+    th = 0.20
+    min_vote = 0
+    output_csv_vote(runname, fold, th, min_vote, start=start)
     # output_csv_avg(runname, fold, th)
 
-    csvs = [
-        "output/resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30-th0.2-4.csv",  # 0.465
-        "output/resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30-4.csv",  # 0.465
-        "output/resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30-0_1.csv",  # 0.460
-    ]
-    out = "output/ensemble_537_vote3.csv"
-    min_vote = 3
-    first_n = 99
-    ensemble(csvs, out, min_vote, first_n)
+    # csvs = [
+    #     "output/resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30-th0.2-4.csv",  # 0.465
+    #     "output/resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30-4.csv",  # 0.465
+    #     "output/resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30-0_1.csv",  # 0.460
+    # ]
+    # out = "output/ensemble_537_vote3.csv"
+    # min_vote = 3
+    # first_n = 99
+    # ensemble(csvs, out, min_vote, first_n)
