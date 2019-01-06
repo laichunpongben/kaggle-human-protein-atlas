@@ -37,6 +37,7 @@ parser.add_argument("-D","--dataset", help="Dataset", type=str, choices=["offici
 parser.add_argument("-e","--epochnum1", help="Epoch number for stage 1", type=int, default=0)
 parser.add_argument("-E","--epochnum2", help="Epoch number for stage 2", type=int, default=0)
 parser.add_argument("-f","--fold", help="K fold cross validation", type=int, default=1)
+parser.add_argument("-F","--float", help="Floating point precision", type=int, choices=[16,32], default=16)
 parser.add_argument("-i","--gpuid", help="GPU device id", type=int, choices=range(-1, 8), default=0)
 parser.add_argument("-l","--loss", help="Loss function", type=str, choices=["bce", "focal", "f1"], default="bce")
 parser.add_argument("-m","--model", help="Trained model to load", type=str, default=None)
@@ -65,7 +66,7 @@ uf     = args.unfreezeto
 epochnum1 = args.epochnum1
 epochnum2 = args.epochnum2
 lr        = args.learningrate
-
+fp        = args.float
 
 if not args.model:
     dropout   = args.dropout
@@ -410,8 +411,10 @@ def _prep_model(data, fold=0):
                       )
     logger.info('Complete initialising model.')
 
-    learn.to_fp16()
-    logger.info('Use half precision float.')
+    if fp == 16:
+        learn.to_fp16()
+        logger.info('Use half precision float.')
+        
     return learn
 
 ###############################
