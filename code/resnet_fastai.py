@@ -246,14 +246,15 @@ def oversample_df(df, valid_idx=[]):
 train_df = pd.read_csv(train_csv)
 logger.debug("official train size: {}".format(train_df.shape))
 
-hpav18_df = pd.read_csv(hpav18_csv)
-logger.debug("hpav18 train size: {}".format(hpav18_df.shape))
+if not ds == "official":
+    hpav18_df = pd.read_csv(hpav18_csv)
+    logger.debug("hpav18 train size: {}".format(hpav18_df.shape))
 
-hpav18_df = extract_rare(hpav18_df)
-logger.debug("hpav18 rare size: {}".format(hpav18_df.shape))
+    hpav18_df = extract_rare(hpav18_df)
+    logger.debug("hpav18 rare size: {}".format(hpav18_df.shape))
 
-train_df = pd.concat([train_df, hpav18_df], ignore_index=True)
-logger.debug("concat size: {}".format(train_df.shape))
+    train_df = pd.concat([train_df, hpav18_df], ignore_index=True)
+    logger.debug("concat size: {}".format(train_df.shape))
 
 train_df = oversample_df(train_df)
 logger.debug("oversample train size: {}".format(train_df.shape))
