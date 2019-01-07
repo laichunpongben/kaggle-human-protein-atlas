@@ -44,9 +44,9 @@ parser.add_argument("-m","--model", help="Trained model to load", type=str, defa
 parser.add_argument("-p","--dropout", help="Dropout ratio", type=float, default=0.5)
 parser.add_argument("-r","--learningrate1", help="Learning rate for stage 1", type=float, default=0)
 parser.add_argument("-R","--learningrate2", help="Learning rate for stage 2", type=float, default=0)
-parser.add_argument("-s","--imagesize", help="Image size", type=int, default=512)
+parser.add_argument("-s","--imagesize", help="Image size", type=int, default=1024)
 parser.add_argument("-S","--sampler", help="Sampler", type=str, choices=["random", "weighted"], default="random")
-parser.add_argument("-t","--thres", help="Threshold", type=float, default=0.1)
+parser.add_argument("-t","--thres", help="Threshold", type=float, default=0.2)
 parser.add_argument("-u","--unfreezeto", help="Number of layers to unfreeze", type=int, default=0)
 parser.add_argument("-v","--verbose", help="Set verbosity 0-3, 0 to turn off output (not yet implemented)", type=int, default=1)
 
