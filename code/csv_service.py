@@ -79,14 +79,10 @@ def vote(list_, min_vote, first_n):
     labels = sorted([k for k, v in d.items() if v>=min_vote], key=lambda x: -d[x])[:first_n]
     return ' '.join(labels)
 
-def get_preds(runname, fold, start=0):
-    assert fold > 0
-
+def get_preds(list_):
     all_preds = []
-    for i in range(fold):
-        if i < start:
-            continue
-        path = Path(PRED_PATH)/f'{runname}-{i}.pth'
+    for name in list_:
+        path = Path(PRED_PATH)/f'{name}.pth'
         try:
             preds = torch.load(path)
             all_preds.append(preds)
@@ -95,15 +91,14 @@ def get_preds(runname, fold, start=0):
     print("# preds: {}".format(len(all_preds)))
     return all_preds
 
-def output_csv_avg(runname, fold, th):
-    preds = get_preds(runname, fold)
+def output_csv_avg(preds, th, out_name):
     preds = torch.stack(preds)
     preds = torch.mean(preds, dim=0)
     pred_labels = [' '.join(list([str(i) for i in np.nonzero(row>th)[0]])) for row in np.array(preds)]
 
     test_ids = list(sorted({fname.split('_')[0] for fname in os.listdir(Path(DATASET_PATH)/'test') if fname.endswith('.png')}))
     df = pd.DataFrame({'Id':test_ids,'Predicted':pred_labels})
-    out_file = Path(OUT_PATH)/f'{runname}-th{th}-avg.csv'
+    out_file = Path(OUT_PATH)/f'{out_name}.csv'
     df.to_csv(out_file, header=True, index=False)
 
 def output_csv_vote(runname, fold, th, min_vote, first_n=99, start=0):
@@ -124,12 +119,12 @@ def output_csv_vote(runname, fold, th, min_vote, first_n=99, start=0):
     ensemble(csvs, vote_out, min_vote, first_n)
 
 if __name__ == '__main__':
-    runname = "resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs16-lr0-ep3_30"
-    fold = 1
-    start = 0
-    th = 0.20
-    min_vote = 0
-    output_csv_vote(runname, fold, th, min_vote, start=start)
+    # runname = "resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs16-lr0-ep3_30"
+    # fold = 1
+    # start = 0
+    # th = 0.20
+    # min_vote = 0
+    # output_csv_vote(runname, fold, th, min_vote, start=start)
     # output_csv_avg(runname, fold, th)
 
     # csvs = [
@@ -141,3 +136,14 @@ if __name__ == '__main__':
     # min_vote = 3
     # first_n = 99
     # ensemble(csvs, out, min_vote, first_n)
+
+    out_name = "ensemble_526_avg_th0.2"
+
+    list_ = [
+        "resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30-2",  # 0.533
+        "resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30-4",  # 0.547
+        "resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs16-lr0-ep3_30-0"  # 0.526
+    ]
+    preds = get_preds(list_)
+    th = 0.2
+    output_csv_avg(preds, th, out_name)
