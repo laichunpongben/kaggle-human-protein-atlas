@@ -1,17 +1,25 @@
 import os
+import argparse
+from multiprocessing import Pool
+from pathlib import Path
+from io import BytesIO
+
 import pandas as pd
 import numpy as np
 import requests
-from multiprocessing import Pool
-from pathlib import Path
 from PIL import Image
-from io import BytesIO
 
 df = pd.read_csv('data/HPAv18RBGY_wodpl.csv')
 colors = ['blue','red','green','yellow']
-hpa_dir = Path('data/hpav18/train')
+hpa_dir = Path('data/hpa1024/train')
 hpa_dir.mkdir(parents=True, exist_ok=True)
 exist_ids = sorted([f.split('.png')[0] for f in os.listdir(hpa_dir) if f.endswith('.png')])
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-p","--process", help="Number of processes", type=int, default=0)
+args = parser.parse_args()
+p_count = args.process
+
 
 def download(id_):
     for color in colors:
@@ -24,9 +32,9 @@ def download(id_):
                 url = f'http://v18.proteinatlas.org/images/{image_dir}/{image_id}_{color}.jpg'
                 print(url)
                 r = requests.get(url)
-                img = np.array(Image.open(BytesIO(r.content)).resize((512, 512), Image.LANCZOS))
+                img = np.array(Image.open(BytesIO(r.content)).resize((1024, 1024), Image.LANCZOS))
                 img_gs = None
-                if img.shape == (512, 512, 3):
+                if img.shape == (1024, 1024, 3):
                     if color == 'red':
                         img_gs = img[:, :, 0]
                     elif color == 'green':
@@ -46,5 +54,10 @@ def download(id_):
                 print(e)
                 print(f'{id_}_{color} broke...')
 
-p = Pool()
-p.map(download, df.Id)
+
+if __name__ == '__main__':
+    if p_count > 0:
+        p = Pool(p_count)
+    else:
+        p = Pool()
+    p.map(download, df.Id)
