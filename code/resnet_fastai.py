@@ -42,7 +42,8 @@ parser.add_argument("-i","--gpuid", help="GPU device id", type=int, choices=rang
 parser.add_argument("-l","--loss", help="Loss function", type=str, choices=["bce", "focal", "f1"], default="bce")
 parser.add_argument("-m","--model", help="Trained model to load", type=str, default=None)
 parser.add_argument("-p","--dropout", help="Dropout ratio", type=float, default=0.5)
-parser.add_argument("-r","--learningrate", help="Learning rate", type=float, default=0)
+parser.add_argument("-r","--learningrate1", help="Learning rate for stage 1", type=float, default=0)
+parser.add_argument("-R","--learningrate2", help="Learning rate for stage 2", type=float, default=0)
 parser.add_argument("-s","--imagesize", help="Image size", type=int, default=512)
 parser.add_argument("-S","--sampler", help="Sampler", type=str, choices=["random", "weighted"], default="random")
 parser.add_argument("-t","--thres", help="Threshold", type=float, default=0.1)
@@ -65,7 +66,8 @@ fold   = args.fold
 uf     = args.unfreezeto
 epochnum1 = args.epochnum1
 epochnum2 = args.epochnum2
-lr        = args.learningrate
+lr1       = args.learningrate1
+lr2       = args.learningrate2
 fp        = args.float
 
 if not args.model:
@@ -86,7 +88,8 @@ if not args.model:
               '-drop' + str(dropout) +
               '-th' + str(th) +
               '-bs' + str(bs) +
-              '-lr' + str(lr) +
+              '-lr' + str(lr1) +
+              '_' + str(lr2) +
               '-ep' + str(args.epochnum1) +
               '_' + str(args.epochnum2))
 else:
@@ -98,9 +101,13 @@ else:
         search = re.search('(random|weighted)', runname)
         return search.group(1) if search else 'random'
 
-    def get_lr(runname):
+    def get_lr1(runname):
         search = re.search('-lr(\S+?)-', runname)
-        return float(search.group(1)) if search else args.learningrate
+        return float(search.group(1)) if search else args.learningrate1
+
+    def get_lr2(runname):
+        search = re.search('-lr(?:\S+?)_(\S+?)', runname)
+        return float(search.group(1)) if search else args.learningrate1
 
     def get_bs(runname):
         search = re.search('-bs(\d+)-', runname)
@@ -171,7 +178,8 @@ conf_msg = '\n'.join([
                     'Threshold: ' + str(th),
                     'Stage 1 #epoch: ' + str(epochnum1),
                     'Stage 2 #epoch: ' + str(epochnum2),
-                    'Learning rate #1: ' + str(lr),
+                    'Learning rate #1: ' + str(lr1),
+                    'Learning rate #2: ' + str(lr2),
                     'Batch size: ' + str(bs),
                     'Dataset: ' + str(ds),
                     'Dataset directory: ' + str(src_path),
@@ -414,44 +422,46 @@ def _prep_model(data, fold=0):
     if fp == 16:
         learn.to_fp16()
         logger.info('Use half precision float.')
-        
+
     return learn
 
 ###############################
 # Fit model
 ###############################
 
+def find_lr(start_lr, end_lr, num_it=1000):
+    logger.debug("Start finding LR")
+    learn.lr_find(start_lr=start_lr, end_lr=end_lr, num_it=num_it)
+    lr_curve = list(zip(learn.recorder.lrs, learn.recorder.losses))
+    logger.debug(lr_curve)
+    best_lr = min(lr_curve, key=lambda x: x[1].data)[0]
+    logger.debug("Best LR: {}".format(best_lr))
+    learn.recorder.plot()
+    plt.savefig(plot_path/f'stage-{stage}-{runname}-{fold}.png')
+
+    factor = 0.021875 * bs  # arbitrary
+    lr = best_lr * factor
+    return lr
+
 def fit_model(learn, stage=1, fold=0):
-    global lr
+    global lr1, lr2
     assert stage in [1, 2]
+
+    logger.info('Start model fitting: Stage {}'.format(stage))
 
     if stage == 2:
         learn.freeze_to(-uf)
         logger.debug("Unfreezing model")
 
-    if args.learningrate == 0:
-        if stage == 1:
-            start_lr = 0.01
-            end_lr = 0.04
-            num_it = 1000
-        else:
-            start_lr = 1e-5
-            end_lr = 3e-5
-            num_it = 1000
+    if stage == 1:
+        if lr1 == 0:
+            lr1 = find_lr(0.01, 0.04, 1000)
+        lr = lr1
 
-        logger.debug("Start finding LR")
-        learn.lr_find(start_lr=start_lr, end_lr=end_lr, num_it=num_it)
-        lr_curve = list(zip(learn.recorder.lrs, learn.recorder.losses))
-        logger.debug(lr_curve)
-        best_lr = min(lr_curve, key=lambda x: x[1].data)[0]
-        logger.debug("Best LR: {}".format(best_lr))
-        learn.recorder.plot()
-        plt.savefig(plot_path/f'stage-{stage}-{runname}-{fold}.png')
-
-        logger.info('Start model fitting: Stage {}'.format(stage))
-
-        factor = 0.021875 * bs  # arbitrary
-        lr = best_lr * factor
+    if stage == 2:
+        if lr2 == 0:
+            lr2 = find_lr(1e-5, 3e-5, 1000)
+        lr = lr2
 
     logger.debug("LR: {}".format(lr))
 
