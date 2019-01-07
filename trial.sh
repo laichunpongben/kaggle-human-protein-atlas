@@ -65,4 +65,8 @@
 # python3 -m code.resnet_fastai -D official_hpav18 -a resnet -s 512 -b 8 -d 50 -t 0.1 -S random -l bce -e 0 -E 30 -r 2e-6 -m stage-1-resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs8-lr0.005-ep3_0 -i 0 >trial63.log 2>&1 & disown
 # python3 -m code.resnet_fastai -D official_hpav18 -a resnet -s 512 -b 8 -d 50 -t 0.1 -S random -l bce -e 3 -E 30 -i 0 -f 3 >trial64.log 2>&1 & disown
 # python3 -m code.resnet_fastai -D official_hpav18 -a resnet -s 512 -b 16 -d 50 -t 0.1 -S random -l bce -e 3 -E 30 -i 0 >trial65.log 2>&1 & disown
-python3 -m code.resnet_fastai -D official_hpav18 -a resnet -s 512 -b 16 -d 50 -t 0.1 -S random -l bce -e 3 -E 30 -i 0 >trial66.log 2>&1 & disown
+# python3 -m code.resnet_fastai -D official_hpav18 -a resnet -s 512 -b 16 -d 50 -t 0.1 -S random -l bce -e 3 -E 30 -i 0 >trial66.log 2>&1 & disown
+# python3 -m code.resnet_fastai -D official -a resnet -s 1024 -b 4 -d 50 -t 0.1 -S random -l bce -e 3 -E 0 -r 0.0015 -i 0 >trial67.log 2>&1 & disown
+# python3 -m code.resnet_fastai -D official -a resnet -s 1024 -b 4 -d 50 -t 0.1 -S random -l bce -e 0 -E 30 -r 8.75e-7 -i 0 >trial68.log 2>&1 & disown
+# python3 -m code.resnet_fastai -D official -a resnet -s 1024 -b 4 -d 50 -t 0.1 -S random -l bce -e 0 -E 30 -r 8.75e-7 -m stage-1-resnet50-1024-official-bce-random-drop0.5-th0.1-bs4-lr0.0015-ep3_0 -i 0 >trial69.log 2>&1 & disown
+python3 -m code.resnet_fastai -D official_hpav18 -a resnet -s 1024 -b 4 -d 50 -t 0.1 -S random -l bce -e 3 -E 30 -r 0.0015 -R 8.75e-7 -i 0 >trial70.log 2>&1 & disown
