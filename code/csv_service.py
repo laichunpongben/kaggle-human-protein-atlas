@@ -128,26 +128,39 @@ if __name__ == '__main__':
     # output_csv_avg(runname, fold, th)
 
     csvs = [
-        "output/0.533-rarelabels_union-base_ens0.555-cls9.csv",
-        "output/ensemble_526_avg_th0.2.csv",
-        "output/resnet50-1024-official-bce-random-drop0.5-th0.1-bs4-lr0.0015-ep3_0-0_th0.3.csv"
+        "output/ensemble_497_vote2.csv", # 0.566
+        "output/ensemble_542_vote2.csv", # 0.574
+        "output/resnet50-1024-official_hpav18-bce-random-drop0.5-th0.1-bs4-lr0.0015_8.75e-07-ep3_30-0.csv",  # 0.542
+        "output/0.533-rarelabels_union-base_ens0.555-cls9.csv",  # 0.557
+        "output/resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30-th0.2-2.csv",  # 0.533
+        "output/resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30-th0.2-4.csv",  # 0.547
+        "output/resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs16-lr0-ep3_30-0.csv",  # 0.526
+        # "output/resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30-0.csv",  # 0.520
+        # "output/resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30-th0.2-0.csv",  # 0.516
+        # "output/resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30-0_1.csv",  # 0.537
+        # "output/resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30-1.csv",  # 0.510
+        # "output/resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30-0_2.csv",  # 0.513
+        # "output/resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30-3.csv"
+        # "output/0.533-rarelabels_union-base_ens0.555-cls9.csv",
+        # "output/ensemble_526_avg_th0.2.csv",
+        # "output/resnet50-1024-official-bce-random-drop0.5-th0.1-bs4-lr0.0015-ep3_0-0_th0.3.csv",
         # "output/resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30-th0.2-4.csv",  # 0.465
         # "output/resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30-4.csv",  # 0.465
         # "output/resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30-0_1.csv",  # 0.460
     ]
-    out = "output/ensemble_497_vote2.csv"
-    min_vote = 2
+    out = "output/ensemble_526_vote3.csv"
+    min_vote = 3
     first_n = 99
     ensemble(csvs, out, min_vote, first_n)
 
-    # out_name = "resnet50-1024-official-bce-random-drop0.5-th0.1-bs4-lr0.0015-ep3_0-0_th0.25"
-
+    # out_name = "resnet50-1024-official_hpav18-bce-random-drop0.5-th0.1-bs4-lr0.0015_8.75e-07-ep3_30-0_th0.2"
+    #
     # list_ = [
-        # "resnet50-1024-official-bce-random-drop0.5-th0.1-bs4-lr0.0015-ep3_0-0"
+    #     "resnet50-1024-official_hpav18-bce-random-drop0.5-th0.1-bs4-lr0.0015_8.75e-07-ep3_30-0"
         # "resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30-2",  # 0.533
         # "resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs32-lr0-ep3_30-4",  # 0.547
         # "resnet50-512-official_hpav18-bce-random-drop0.5-th0.1-bs16-lr0-ep3_30-0"  # 0.526
     # ]
     # preds = get_preds(list_)
-    # th = 0.25
+    # th = 0.2
     # output_csv_avg(preds, th, out_name)
