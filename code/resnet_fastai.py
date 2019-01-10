@@ -310,7 +310,7 @@ def get_data(src, is_normalize=True):
     src.test.x.open = open_4_channel
 
     trn_tfms,_ = get_transforms(do_flip=True, flip_vert=True, max_rotate=30., max_zoom=1,
-                                max_lighting=0.25, max_warp=0.)
+                                max_lighting=0.5, max_warp=0.)
     data = (src.transform((trn_tfms, _), size=imgsize)
             .databunch(bs=bs))
     if is_normalize:
@@ -545,6 +545,7 @@ if __name__=='__main__':
         preds = _predict(learn, fold=index)
         all_preds.append(preds)
         _output_results(preds, suffix="-{}".format(index))
+
 
     all_preds = torch.stack(all_preds)
 
