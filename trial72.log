@@ -168,3 +168,49 @@ epoch     train_loss  valid_loss  fbeta
 14        0.112252    0.095094    0.715558  
 15        0.109523    0.096407    0.722446  
 16        0.103590    0.096398    0.724126  
+17        0.108956    0.100553    0.725431  
+18        0.106738    0.089667    0.736358  
+19        0.102664    0.089446    0.744500  
+20        0.103897    0.088101    0.744959  
+21        0.099161    0.088859    0.750737  
+22        0.095664    0.086951    0.753217  
+23        0.108318    0.086913    0.754696  
+24        0.100219    0.085401    0.756444  
+25        0.094257    0.084234    0.753077  
+26        0.089814    0.083921    0.755925  
+27        0.102087    0.084253    0.761831  
+28        0.089823    0.083837    0.762568  
+29        0.096083    0.082949    0.759535  
+*** 2019-01-10 16:06:05,640 - code.resnet_fastai - INFO ***
+Complete model fitting: Stage 2
+******
+
+*** 2019-01-10 16:06:05,682 - code.resnet_fastai - INFO ***
+Stage 2 model saved.
+******
+
+*** 2019-01-10 16:06:05,682 - code.resnet_fastai - INFO ***
+Start predicting test set
+******
+
+30        0.093083    0.082335    0.760414  
+*** 2019-01-10 16:13:03,878 - code.resnet_fastai - INFO ***
+Complete test prediction.
+******
+
+*** 2019-01-10 16:13:03,880 - code.resnet_fastai - INFO ***
+Prediction saved.
+******
+
+*** 2019-01-10 16:13:03,949 - code.resnet_fastai - INFO ***
+Results written to output/resnet50-1024-official_hpav18-bce-random-drop0.5-th0.2-bs4-lr0.0012_1e-06-ep3_30-2.csv. Finished! :)
+******
+
+*** 2019-01-10 16:13:03,953 - code.resnet_fastai - DEBUG ***
+torch.Size([11702, 28])
+******
+
+*** 2019-01-10 16:13:04,018 - code.resnet_fastai - INFO ***
+Results written to output/resnet50-1024-official_hpav18-bce-random-drop0.5-th0.2-bs4-lr0.0012_1e-06-ep3_30-avg.csv. Finished! :)
+******
+

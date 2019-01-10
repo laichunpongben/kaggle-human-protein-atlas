@@ -22811,3 +22811,35 @@ Unfreezing model
 LR: 1e-06
 ******
 
+*** 2019-01-10 16:06:05,640 - code.resnet_fastai - INFO ***
+Complete model fitting: Stage 2
+******
+
+*** 2019-01-10 16:06:05,682 - code.resnet_fastai - INFO ***
+Stage 2 model saved.
+******
+
+*** 2019-01-10 16:06:05,682 - code.resnet_fastai - INFO ***
+Start predicting test set
+******
+
+*** 2019-01-10 16:13:03,878 - code.resnet_fastai - INFO ***
+Complete test prediction.
+******
+
+*** 2019-01-10 16:13:03,880 - code.resnet_fastai - INFO ***
+Prediction saved.
+******
+
+*** 2019-01-10 16:13:03,949 - code.resnet_fastai - INFO ***
+Results written to output/resnet50-1024-official_hpav18-bce-random-drop0.5-th0.2-bs4-lr0.0012_1e-06-ep3_30-2.csv. Finished! :)
+******
+
+*** 2019-01-10 16:13:03,953 - code.resnet_fastai - DEBUG ***
+torch.Size([11702, 28])
+******
+
+*** 2019-01-10 16:13:04,018 - code.resnet_fastai - INFO ***
+Results written to output/resnet50-1024-official_hpav18-bce-random-drop0.5-th0.2-bs4-lr0.0012_1e-06-ep3_30-avg.csv. Finished! :)
+******
+
