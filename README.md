@@ -1,6 +1,10 @@
 # kaggle-human-protein-atlas
 Sharing code for Kaggle Human Protein Atlas competition
 
+Top 4% in Leaderboard
+
+https://www.kaggle.com/c/human-protein-atlas-image-classification
+
 ## Data
 Color filters for the fluorescent images
 
