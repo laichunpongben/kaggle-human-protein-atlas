@@ -1,8 +1,0 @@
-20181126 - protein atlas ideas
-==
-
-## ideas
-- check similar images between different channels as well, they can be immediate hints for simple localization
-- check for outlines: for many cases, molecules may either fill a compartment, or localize on the membrane surfaces
-- some marker channels got no signals, drop them from training and develop code to drop when encountered
-- check out ImageJ scripts
